@@ -1,7 +1,7 @@
 package cpu
 
 type memory struct {
-	mem [0xFFFF]byte
+	mem [0x10000]byte
 }
 
 func (m *memory) Read(i uint16) byte {

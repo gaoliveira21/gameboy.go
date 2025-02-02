@@ -24,3 +24,7 @@ func (flags *Flags) Set(f Flag, v bool) {
 func (flags *Flags) Get(f Flag) bool {
 	return flags.value&f != 0
 }
+
+func (flags *Flags) Value() byte {
+	return flags.value
+}

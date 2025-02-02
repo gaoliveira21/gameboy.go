@@ -80,3 +80,18 @@ func TestSetFlagsToMixedValues(t *testing.T) {
 		t.Errorf("cpu.Carry flag is not set")
 	}
 }
+
+func TestValue(t *testing.T) {
+	flags := &cpu.Flags{}
+
+	if flags.Value() != 0 {
+		t.Errorf("cpu.Value is not starting with 0")
+	}
+
+	flags.Set(cpu.Zero, true)
+	v := flags.Value()
+
+	if v != 128 {
+		t.Errorf("cpu.Value do not return correctly; expected 1 but got %d", v)
+	}
+}
