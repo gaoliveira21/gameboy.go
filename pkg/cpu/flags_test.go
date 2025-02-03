@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/gaoliveira21/gameboy.go/pkg/cpu"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestSetFlagsToTrue(t *testing.T) {
@@ -14,21 +15,10 @@ func TestSetFlagsToTrue(t *testing.T) {
 	flags.Set(cpu.HalfCarry, true)
 	flags.Set(cpu.Carry, true)
 
-	if flags.Get(cpu.Zero) != true {
-		t.Errorf("cpu.Zero flag is not set")
-	}
-
-	if flags.Get(cpu.Sub) != true {
-		t.Errorf("cpu.Sub flag is not set")
-	}
-
-	if flags.Get(cpu.HalfCarry) != true {
-		t.Errorf("cpu.HalfCarry flag is not set")
-	}
-
-	if flags.Get(cpu.Carry) != true {
-		t.Errorf("cpu.Carry flag is not set")
-	}
+	assert.Equal(t, true, flags.Get(cpu.Zero), "cpu.Zero flag is not set")
+	assert.Equal(t, true, flags.Get(cpu.Sub), "cpu.Sub flag is not set")
+	assert.Equal(t, true, flags.Get(cpu.HalfCarry), "cpu.HalfCarry flag is not set")
+	assert.Equal(t, true, flags.Get(cpu.Carry), "cpu.Carry flag is not set")
 }
 
 func TestSetFlagsToFalse(t *testing.T) {
@@ -39,21 +29,10 @@ func TestSetFlagsToFalse(t *testing.T) {
 	flags.Set(cpu.HalfCarry, false)
 	flags.Set(cpu.Carry, false)
 
-	if flags.Get(cpu.Zero) != false {
-		t.Errorf("cpu.Zero flag is not set")
-	}
-
-	if flags.Get(cpu.Sub) != false {
-		t.Errorf("cpu.Sub flag is not set")
-	}
-
-	if flags.Get(cpu.HalfCarry) != false {
-		t.Errorf("cpu.HalfCarry flag is not set")
-	}
-
-	if flags.Get(cpu.Carry) != false {
-		t.Errorf("cpu.Carry flag is not set")
-	}
+	assert.Equal(t, false, flags.Get(cpu.Zero), "cpu.Zero flag is set")
+	assert.Equal(t, false, flags.Get(cpu.Sub), "cpu.Sub flag is set")
+	assert.Equal(t, false, flags.Get(cpu.HalfCarry), "cpu.HalfCarry flag is set")
+	assert.Equal(t, false, flags.Get(cpu.Carry), "cpu.Carry flag is set")
 }
 
 func TestSetFlagsToMixedValues(t *testing.T) {
@@ -64,21 +43,10 @@ func TestSetFlagsToMixedValues(t *testing.T) {
 	flags.Set(cpu.HalfCarry, false)
 	flags.Set(cpu.Carry, true)
 
-	if flags.Get(cpu.Zero) != false {
-		t.Errorf("cpu.Zero flag is not set")
-	}
-
-	if flags.Get(cpu.Sub) != true {
-		t.Errorf("cpu.Sub flag is not set")
-	}
-
-	if flags.Get(cpu.HalfCarry) != false {
-		t.Errorf("cpu.HalfCarry flag is not set")
-	}
-
-	if flags.Get(cpu.Carry) != true {
-		t.Errorf("cpu.Carry flag is not set")
-	}
+	assert.Equal(t, false, flags.Get(cpu.Zero), "cpu.Zero flag is set")
+	assert.Equal(t, true, flags.Get(cpu.Sub), "cpu.Sub flag is not set")
+	assert.Equal(t, false, flags.Get(cpu.HalfCarry), "cpu.HalfCarry flag is set")
+	assert.Equal(t, true, flags.Get(cpu.Carry), "cpu.Carry flag is not set")
 }
 
 func TestValue(t *testing.T) {
@@ -89,9 +57,6 @@ func TestValue(t *testing.T) {
 	}
 
 	flags.Set(cpu.Zero, true)
-	v := flags.Value()
 
-	if v != 128 {
-		t.Errorf("cpu.Value do not return correctly; expected 1 but got %d", v)
-	}
+	assert.EqualValues(t, 128, flags.Value(), "cpu.Value do not return correctly")
 }
