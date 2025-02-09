@@ -54,7 +54,7 @@ func TestLength(t *testing.T) {
 	path := createFakeGbFile(t.TempDir(), rom)
 	c, _ := cartridge.New(path)
 
-	assert.Equal(t, c.Length(), len(rom))
+	assert.Equal(t, len(rom), c.Length())
 }
 
 func TestTitle(t *testing.T) {
@@ -63,7 +63,7 @@ func TestTitle(t *testing.T) {
 	path := createFakeGbFile(t.TempDir(), rom)
 	c, _ := cartridge.New(path)
 
-	assert.Equal(t, c.Title(), title)
+	assert.Equal(t, title, c.Title())
 }
 
 func TestPrintNintendoLogo(t *testing.T) {
@@ -74,4 +74,42 @@ func TestPrintNintendoLogo(t *testing.T) {
 	c.PrintLogo(buf)
 
 	snaps.MatchSnapshot(t, buf.String())
+}
+
+func TestMbcTypeRomOnly(t *testing.T) {
+	rom := append(createValidROM(), make([]byte, 50)...)
+	rom[0x147] = 0x0
+	path := createFakeGbFile(t.TempDir(), rom)
+	c, _ := cartridge.New(path)
+
+	assert.Equal(t, cartridge.RomOnly, c.MbcType())
+}
+
+func FuzzMbcTypeMbc1(f *testing.F) {
+	f.Add(0x1)
+	f.Add(0x2)
+	f.Add(0x3)
+
+	f.Fuzz(func(t *testing.T, b int) {
+		rom := append(createValidROM(), make([]byte, 50)...)
+		rom[0x147] = byte(b)
+		path := createFakeGbFile(t.TempDir(), rom)
+		c, _ := cartridge.New(path)
+
+		assert.Equal(t, cartridge.Mbc1, c.MbcType())
+	})
+}
+
+func FuzzMbcTypeMbc2(f *testing.F) {
+	f.Add(0x5)
+	f.Add(0x6)
+
+	f.Fuzz(func(t *testing.T, b int) {
+		rom := append(createValidROM(), make([]byte, 50)...)
+		rom[0x147] = byte(b)
+		path := createFakeGbFile(t.TempDir(), rom)
+		c, _ := cartridge.New(path)
+
+		assert.Equal(t, cartridge.Mbc2, c.MbcType())
+	})
 }

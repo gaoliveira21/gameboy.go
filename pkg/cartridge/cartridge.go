@@ -18,9 +18,18 @@ var OfficialNintendoLogo = []byte{
 var CartridgeLogoDoesNotMatch = errors.New("cartridge::New: Nintendo logo in this cartridge does not match the original nintendo logo")
 var CartridgeFileNotFound = errors.New("cartridge::New: Error opening file")
 
+type MbcType = int
+
+const (
+	RomOnly MbcType = iota
+	Mbc1    MbcType = iota
+	Mbc2    MbcType = iota
+)
+
 type Cartridge struct {
-	memory [maxMem]byte
-	len    int
+	memory  [maxMem]byte
+	len     int
+	mbcType MbcType
 }
 
 func New(path string) (*Cartridge, error) {
@@ -43,11 +52,17 @@ func New(path string) (*Cartridge, error) {
 		return nil, err
 	}
 
+	c.setCartridgeType()
+
 	return c, nil
 }
 
 func (c *Cartridge) Length() int {
 	return c.len
+}
+
+func (c *Cartridge) MbcType() MbcType {
+	return c.mbcType
 }
 
 func (c *Cartridge) PrintLogo(w io.StringWriter) {
@@ -129,5 +144,16 @@ func (c *Cartridge) drawLogo(lg []byte, matrix *[8][12]string, startRow int) {
 		if i%2 != 0 {
 			col++
 		}
+	}
+}
+
+func (c *Cartridge) setCartridgeType() {
+	switch c.memory[0x147] {
+	case 0x0:
+		c.mbcType = RomOnly
+	case 0x1, 0x2, 0x3:
+		c.mbcType = Mbc1
+	case 0x5, 0x6:
+		c.mbcType = Mbc2
 	}
 }
