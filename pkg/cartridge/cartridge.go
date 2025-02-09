@@ -27,9 +27,9 @@ const (
 )
 
 type Cartridge struct {
-	Memory  [maxMem]byte
-	len     int
-	mbcType MbcType
+	Memory [maxMem]byte
+	len    int
+	Mbc    MbcType
 
 	CurrentROMBank int
 
@@ -67,10 +67,6 @@ func New(path string) (*Cartridge, error) {
 
 func (c *Cartridge) Length() int {
 	return c.len
-}
-
-func (c *Cartridge) MbcType() MbcType {
-	return c.mbcType
 }
 
 func (c *Cartridge) PrintLogo(w io.StringWriter) {
@@ -158,10 +154,10 @@ func (c *Cartridge) drawLogo(lg []byte, matrix *[8][12]string, startRow int) {
 func (c *Cartridge) setCartridgeType() {
 	switch c.Memory[0x147] {
 	case 0x0:
-		c.mbcType = RomOnly
+		c.Mbc = RomOnly
 	case 0x1, 0x2, 0x3:
-		c.mbcType = Mbc1
+		c.Mbc = Mbc1
 	case 0x5, 0x6:
-		c.mbcType = Mbc2
+		c.Mbc = Mbc2
 	}
 }

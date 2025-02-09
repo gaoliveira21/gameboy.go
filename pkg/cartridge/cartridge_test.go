@@ -82,7 +82,7 @@ func TestMbcTypeRomOnly(t *testing.T) {
 	path := createFakeGbFile(t.TempDir(), rom)
 	c, _ := cartridge.New(path)
 
-	assert.Equal(t, cartridge.RomOnly, c.MbcType())
+	assert.Equal(t, cartridge.RomOnly, c.Mbc)
 }
 
 func FuzzMbcTypeMbc1(f *testing.F) {
@@ -96,7 +96,7 @@ func FuzzMbcTypeMbc1(f *testing.F) {
 		path := createFakeGbFile(t.TempDir(), rom)
 		c, _ := cartridge.New(path)
 
-		assert.Equal(t, cartridge.Mbc1, c.MbcType())
+		assert.Equal(t, cartridge.Mbc1, c.Mbc)
 	})
 }
 
@@ -110,6 +110,6 @@ func FuzzMbcTypeMbc2(f *testing.F) {
 		path := createFakeGbFile(t.TempDir(), rom)
 		c, _ := cartridge.New(path)
 
-		assert.Equal(t, cartridge.Mbc2, c.MbcType())
+		assert.Equal(t, cartridge.Mbc2, c.Mbc)
 	})
 }
