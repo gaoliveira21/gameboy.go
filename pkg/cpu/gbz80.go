@@ -1,5 +1,7 @@
 package cpu
 
+import "github.com/gaoliveira21/gameboy.go/pkg/memory"
+
 type GBZ80 struct {
 	// Registers
 	a, b, c, d, e, h, l uint8
@@ -7,7 +9,7 @@ type GBZ80 struct {
 
 	sp, pc uint16
 
-	mem *memory
+	mem *memory.Memory
 }
 
 func NewGBZ80() *GBZ80 {
@@ -24,7 +26,7 @@ func NewGBZ80() *GBZ80 {
 		},
 		pc:  0x100,
 		sp:  0xFFFE,
-		mem: &memory{},
+		mem: memory.NewMemory(),
 	}
 
 	g.boot()
