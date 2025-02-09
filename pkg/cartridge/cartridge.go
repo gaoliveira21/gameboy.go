@@ -27,9 +27,14 @@ const (
 )
 
 type Cartridge struct {
-	memory  [maxMem]byte
+	Memory  [maxMem]byte
 	len     int
 	mbcType MbcType
+
+	CurrentROMBank int
+
+	RamBanks       []byte
+	CurrentRamBank int
 }
 
 func New(path string) (*Cartridge, error) {
@@ -39,11 +44,14 @@ func New(path string) (*Cartridge, error) {
 	}
 
 	c := &Cartridge{
-		len: len(rom),
+		len:            len(rom),
+		CurrentROMBank: 1,
+		RamBanks:       make([]byte, 0x8000),
+		CurrentRamBank: 0,
 	}
 
 	for i, v := range rom {
-		c.memory[i] = v
+		c.Memory[i] = v
 	}
 
 	err = c.validate()
@@ -89,10 +97,10 @@ func (c *Cartridge) Title() string {
 	title := []byte{}
 
 	for i := start; i < end; i++ {
-		if c.memory[i] == 0x0 {
+		if c.Memory[i] == 0x0 {
 			break
 		}
-		title = append(title, c.memory[i])
+		title = append(title, c.Memory[i])
 	}
 
 	return string(title)
@@ -112,7 +120,7 @@ func (c *Cartridge) getNintendoLogo() []byte {
 	start := 0x104
 	end := 0x133
 
-	cartridgeLogo := c.memory[start : end+1]
+	cartridgeLogo := c.Memory[start : end+1]
 
 	return cartridgeLogo
 }
@@ -148,7 +156,7 @@ func (c *Cartridge) drawLogo(lg []byte, matrix *[8][12]string, startRow int) {
 }
 
 func (c *Cartridge) setCartridgeType() {
-	switch c.memory[0x147] {
+	switch c.Memory[0x147] {
 	case 0x0:
 		c.mbcType = RomOnly
 	case 0x1, 0x2, 0x3:

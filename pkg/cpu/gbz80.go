@@ -12,7 +12,7 @@ type GBZ80 struct {
 	mem *memory.Memory
 }
 
-func NewGBZ80() *GBZ80 {
+func NewGBZ80(m *memory.Memory) *GBZ80 {
 	g := &GBZ80{
 		a: 0x01,
 		b: 0x00,
@@ -26,7 +26,7 @@ func NewGBZ80() *GBZ80 {
 		},
 		pc:  0x100,
 		sp:  0xFFFE,
-		mem: memory.NewMemory(),
+		mem: m,
 	}
 
 	g.boot()

@@ -8,13 +8,15 @@ import (
 	"github.com/gaoliveira21/gameboy.go/pkg/cartridge"
 	"github.com/gaoliveira21/gameboy.go/pkg/cpu"
 	"github.com/gaoliveira21/gameboy.go/pkg/graphics"
+	"github.com/gaoliveira21/gameboy.go/pkg/memory"
 	"github.com/gaoliveira21/gameboy.go/pkg/timer"
 )
 
 const maxCycles = 69905
 
-func Run() {
-	cpu := cpu.NewGBZ80()
+func Run(c *cartridge.Cartridge) {
+	memory := memory.NewMemory(c)
+	cpu := cpu.NewGBZ80(memory)
 	var cycles uint = 0
 
 	for cycles < maxCycles {
