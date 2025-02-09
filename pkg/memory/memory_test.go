@@ -3,19 +3,20 @@ package memory_test
 import (
 	"testing"
 
+	"github.com/gaoliveira21/gameboy.go/pkg/cartridge"
 	"github.com/gaoliveira21/gameboy.go/pkg/memory"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestMemory(t *testing.T) {
-	m := memory.NewMemory(nil)
+	m := memory.NewMemory(cartridge.CreateValidCartridgeForTest(t.TempDir()))
 	m.Write(0x8000, 0x99)
 
 	assert.EqualValues(t, 0x99, m.Read(0x8000), "Error reading/writing value on memory")
 }
 
 func TestEchoRAM(t *testing.T) {
-	m := memory.NewMemory(nil)
+	m := memory.NewMemory(cartridge.CreateValidCartridgeForTest(t.TempDir()))
 	m.Write(0xE000, 0x99)
 	m.Write(0xE002, 0x88)
 	m.Write(0xFDFF, 0x77)
@@ -29,7 +30,7 @@ func TestEchoRAM(t *testing.T) {
 }
 
 func TestNotUsableRAM(t *testing.T) {
-	m := memory.NewMemory(nil)
+	m := memory.NewMemory(cartridge.CreateValidCartridgeForTest(t.TempDir()))
 	m.Write(0xFEA0, 0x99)
 	m.Write(0xFEA1, 0x88)
 	m.Write(0xFEFF, 0x77)

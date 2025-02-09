@@ -8,7 +8,14 @@ type Memory struct {
 }
 
 func NewMemory(c *cartridge.Cartridge) *Memory {
+	mem := [0x10000]byte{}
+
+	for i := 0; i < 0x8000; i++ {
+		mem[i] = c.Memory[i]
+	}
+
 	return &Memory{
+		mem:       mem,
 		cartridge: c,
 	}
 }

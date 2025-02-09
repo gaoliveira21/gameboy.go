@@ -3,12 +3,13 @@ package cpu
 import (
 	"testing"
 
+	"github.com/gaoliveira21/gameboy.go/pkg/cartridge"
 	"github.com/gaoliveira21/gameboy.go/pkg/memory"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewGBZ80(t *testing.T) {
-	gbz := NewGBZ80(memory.NewMemory(nil))
+	gbz := NewGBZ80(memory.NewMemory(cartridge.CreateValidCartridgeForTest(t.TempDir())))
 
 	assert.EqualValues(t, 0x01, gbz.a, "NewGBZ80 dit not start register A correctly")
 	assert.EqualValues(t, 0x00, gbz.b, "NewGBZ80 dit not start register B correctly")
