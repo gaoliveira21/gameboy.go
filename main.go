@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 
 	"github.com/gaoliveira21/gameboy.go/pkg/cartridge"
 	"github.com/gaoliveira21/gameboy.go/pkg/cpu"
@@ -36,5 +37,10 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("%d bytes read", c.Length())
+	c.PrintLogo(os.Stdout)
+	os.Stdout.WriteString("ROM Loaded successfully\n")
+	os.Stdout.WriteString("_______________________\n")
+	os.Stdout.WriteString("[Title]=")
+	c.PrintTitle(os.Stdout)
+	os.Stdout.WriteString(fmt.Sprintf("[Size]=%d bytes\n", c.Length()))
 }
