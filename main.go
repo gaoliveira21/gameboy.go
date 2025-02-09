@@ -38,9 +38,8 @@ func main() {
 	}
 
 	c.PrintLogo(os.Stdout)
-	os.Stdout.WriteString("ROM Loaded successfully\n")
+	os.Stdout.WriteString("ROM Loaded successfully!!\n")
 	os.Stdout.WriteString("_______________________\n")
-	os.Stdout.WriteString("[Title]=")
-	c.PrintTitle(os.Stdout)
+	os.Stdout.WriteString(fmt.Sprintf("[Title]=%s\n", c.Title()))
 	os.Stdout.WriteString(fmt.Sprintf("[Size]=%d bytes\n", c.Length()))
 }

@@ -10,13 +10,13 @@ import (
 
 const maxMem uint = 0x200000
 
-var logo = []byte{
+var OfficialNintendoLogo = []byte{
 	0xCE, 0xED, 0x66, 0x66, 0xCC, 0x0D, 0x00, 0x0B, 0x03, 0x73, 0x00, 0x83, 0x00, 0x0C, 0x00, 0x0D,
 	0x00, 0x08, 0x11, 0x1F, 0x88, 0x89, 0x00, 0x0E, 0xDC, 0xCC, 0x6E, 0xE6, 0xDD, 0xDD, 0xD9, 0x99,
 	0xBB, 0xBB, 0x67, 0x63, 0x6E, 0x0E, 0xEC, 0xCC, 0xDD, 0xDC, 0x99, 0x9F, 0xBB, 0xB9, 0x33, 0x3E}
 
-var CartridgeLogoDoesNotMatch = errors.New("cartridge::%s: Nintendo logo in this cartridge does not match the original nintendo logo")
-var CartridgeFileNotFound = errors.New("cartridge::%s: Error opening file %s")
+var CartridgeLogoDoesNotMatch = errors.New("cartridge::New: Nintendo logo in this cartridge does not match the original nintendo logo")
+var CartridgeFileNotFound = errors.New("cartridge::New: Error opening file")
 
 type Cartridge struct {
 	memory [maxMem]byte
@@ -26,7 +26,7 @@ type Cartridge struct {
 func New(path string) (*Cartridge, error) {
 	rom, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf(CartridgeFileNotFound.Error(), "New", err.Error())
+		return nil, CartridgeFileNotFound
 	}
 
 	c := &Cartridge{
@@ -52,8 +52,8 @@ func (c *Cartridge) Length() int {
 
 func (c *Cartridge) PrintLogo(w io.StringWriter) {
 	matrix := [8][12]string{}
-	halfTop := logo[:24]
-	halfBottom := logo[24:]
+	halfTop := OfficialNintendoLogo[:24]
+	halfBottom := OfficialNintendoLogo[24:]
 
 	c.drawLogo(halfTop, &matrix, 0)
 	c.drawLogo(halfBottom, &matrix, 4)
@@ -68,20 +68,29 @@ func (c *Cartridge) PrintLogo(w io.StringWriter) {
 	w.WriteString("\n\n")
 }
 
-func (c *Cartridge) PrintTitle(w io.Writer) {
-	title := c.memory[0x0134:0x0144]
-	w.Write(title)
-	w.Write([]byte{'\n'})
+func (c *Cartridge) Title() string {
+	start := 0x0134
+	end := 0x0144
+	title := []byte{}
+
+	for i := start; i < end; i++ {
+		if c.memory[i] == 0x0 {
+			break
+		}
+		title = append(title, c.memory[i])
+	}
+
+	return string(title)
 }
 
 func (c *Cartridge) validate() error {
 	cartridgeLogo := c.getNintendoLogo()
 
-	if slices.Equal(cartridgeLogo, logo) {
+	if slices.Equal(cartridgeLogo, OfficialNintendoLogo) {
 		return nil
 	}
 
-	return fmt.Errorf(CartridgeLogoDoesNotMatch.Error(), "Validate")
+	return CartridgeLogoDoesNotMatch
 }
 
 func (c *Cartridge) getNintendoLogo() []byte {
