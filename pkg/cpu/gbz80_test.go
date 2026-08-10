@@ -264,3 +264,16 @@ func Test_LD_A_DE(t *testing.T) {
 	assertMemory(t, gbz, addr, gbz.a)
 	assertRegister(t, expected, gbz.a, "A")
 }
+
+func Test_LD_E_n8(t *testing.T) {
+	gbz := createGBZWithOpcode(0x1E)
+	pc := gbz.pc
+	expected := byte(0x99)
+	gbz.mem.Write(pc+1, expected)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 8)
+	assertPC(t, gbz, pc+2)
+	assertRegister(t, expected, gbz.e, "E")
+}
