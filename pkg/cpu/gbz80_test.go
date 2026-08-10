@@ -141,3 +141,16 @@ func Test_LD_BC_A(t *testing.T) {
 	assertPC(t, gbz, pc+1)
 	assertMemory(t, gbz, addr, gbz.a)
 }
+
+func Test_LD_B_n8(t *testing.T) {
+	gbz := createGBZWithOpcode(0x06)
+	pc := gbz.pc
+	expected := byte(0x99)
+	gbz.mem.Write(pc+1, expected)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 8)
+	assertPC(t, gbz, pc+2)
+	assert.Equal(t, expected, gbz.b, "Expected register B %02x, but got %02x", expected, gbz.b)
+}
