@@ -91,6 +91,23 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x2D: {g._TODO, "DEC L", 1},
 		0x2E: {g._LD_L_n8, "LD L, n8", 2},
 		0x2F: {g._TODO, "CPL", 1},
+
+		0x30: {g._TODO, "JR NC, e8", 2},
+		0x31: {g._LD_SP_n16, "LD SP, n16", 3},
+		0x32: {g._TODO, "LD [HL-], A", 1},
+		0x33: {g._TODO, " INC SP", 1},
+		0x34: {g._TODO, "INC [HL]", 1},
+		0x35: {g._TODO, "DEC [HL]", 1},
+		0x36: {g._TODO, "LD [HL], n8", 2},
+		0x37: {g._TODO, "SCF", 1},
+		0x38: {g._TODO, "JR C, e8", 2},
+		0x39: {g._TODO, "ADD HL, SP", 1},
+		0x3A: {g._TODO, "LD A, [HL-]", 1},
+		0x3B: {g._TODO, "DEC SP", 1},
+		0x3C: {g._TODO, "INC A", 1},
+		0x3D: {g._TODO, "DEC A", 1},
+		0x3E: {g._TODO, "LD A, n8", 2},
+		0x3F: {g._TODO, "CCF", 1},
 	}
 
 	g.boot()
@@ -260,4 +277,15 @@ func (gbz *GBZ80) _LD_A_HLI() uint {
 func (gbz *GBZ80) _LD_L_n8() uint {
 	gbz.ldr8n8(&gbz.l)
 	return 8
+}
+
+func (gbz *GBZ80) _LD_SP_n16() uint {
+	lb := gbz.mem.Read(gbz.pc)
+	gbz.pc++
+
+	hb := gbz.mem.Read(gbz.pc)
+	gbz.pc++
+
+	gbz.sp = (uint16(hb) << 8) | uint16(lb)
+	return 12
 }
