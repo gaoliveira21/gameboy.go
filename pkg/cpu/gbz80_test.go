@@ -129,7 +129,7 @@ func Test_LD_BC_n16(t *testing.T) {
 	assertCycles(t, gbz, 12)
 	assertPC(t, gbz, pc+3)
 	assertRegister(t, lb, gbz.c, "C")
-	assertRegister(t, hb, gbz.b, "C")
+	assertRegister(t, hb, gbz.b, "B")
 }
 
 func Test_LD_BC_A(t *testing.T) {
@@ -201,4 +201,21 @@ func Test_LD_C_n8(t *testing.T) {
 	assertCycles(t, gbz, 8)
 	assertPC(t, gbz, pc+2)
 	assertRegister(t, expected, gbz.c, "C")
+}
+
+func Test_LD_DE_n16(t *testing.T) {
+	gbz := createGBZWithOpcode(0x11)
+	pc := gbz.pc
+	lb := byte(0x20)
+	hb := byte(0x80)
+
+	gbz.mem.Write(pc+1, lb)
+	gbz.mem.Write(pc+2, hb)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 12)
+	assertPC(t, gbz, pc+3)
+	assertRegister(t, lb, gbz.e, "E")
+	assertRegister(t, hb, gbz.d, "D")
 }

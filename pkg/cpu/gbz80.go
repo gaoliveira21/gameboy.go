@@ -57,6 +57,23 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x0D: {g._TODO, "DEC C", 1},
 		0x0E: {g._LD_C_n8, "LD C, n8", 2},
 		0x0F: {g._TODO, "RRCA", 1},
+
+		0x10: {g._TODO, "STOP n8", 2},
+		0x11: {g._LD_DE_n16, "LD DE, n16", 3},
+		0x12: {g._TODO, "LD [DE], A", 1},
+		0x13: {g._TODO, "INC DE", 1},
+		0x14: {g._TODO, "INC D", 1},
+		0x15: {g._TODO, "DEC D", 1},
+		0x16: {g._TODO, "LD D, n8", 2},
+		0x17: {g._TODO, "RLA", 1},
+		0x18: {g._TODO, "JR e8", 2},
+		0x19: {g._TODO, "ADD HL, DE", 1},
+		0x1A: {g._TODO, "LD A, [DE]", 1},
+		0x1B: {g._TODO, "DEC DE", 1},
+		0x1C: {g._TODO, "INC E", 1},
+		0x1D: {g._TODO, "DEC E", 1},
+		0x1E: {g._TODO, "LD E, n8", 2},
+		0x1F: {g._TODO, "RRA", 1},
 	}
 
 	g.boot()
@@ -201,4 +218,16 @@ func (gbz *GBZ80) _LD_C_n8() uint {
 	gbz.c = n
 
 	return 8
+}
+
+func (gbz *GBZ80) _LD_DE_n16() uint {
+	lb := gbz.mem.Read(gbz.pc)
+	gbz.pc++
+
+	hb := gbz.mem.Read(gbz.pc)
+	gbz.pc++
+
+	gbz.d, gbz.e = hb, lb
+
+	return 12
 }
