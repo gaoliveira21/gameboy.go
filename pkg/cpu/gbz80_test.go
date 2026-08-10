@@ -154,6 +154,7 @@ func TestLdR8N8(t *testing.T) {
 		{"_LD_E_n8", 0x1E, &gbz.e, "E"},
 		{"_LD_H_n8", 0x26, &gbz.h, "H"},
 		{"_LD_L_n8", 0x2E, &gbz.l, "L"},
+		{"_LD_A_n8", 0x3E, &gbz.a, "A"},
 	}
 
 	for _, c := range cases {
@@ -225,6 +226,7 @@ func TestLdRpR8(t *testing.T) {
 		{"_LD_BC_A", 0x02, &gbz.b, &gbz.c, &gbz.a, 0},
 		{"_LD_DE_A", 0x12, &gbz.d, &gbz.e, &gbz.a, 0},
 		{"_LD_HLI_A", 0x22, &gbz.h, &gbz.l, &gbz.a, 1},
+		{"_LD_HLD_A", 0x32, &gbz.h, &gbz.l, &gbz.a, -1},
 	}
 
 	for _, c := range cases {
@@ -262,6 +264,7 @@ func TestLdR8Rp(t *testing.T) {
 		{"_LD_A_BC", 0x0A, &gbz.b, &gbz.c, &gbz.a, "A", 0},
 		{"_LD_A_DE", 0x1A, &gbz.d, &gbz.e, &gbz.a, "A", 0},
 		{"_LD_A_HLI", 0x2A, &gbz.h, &gbz.l, &gbz.a, "A", 1},
+		{"_LD_A_HLD", 0x3A, &gbz.h, &gbz.l, &gbz.a, "A", -1},
 	}
 
 	for _, c := range cases {
@@ -317,4 +320,22 @@ func Test_LD_SP_n16(t *testing.T) {
 	assertCycles(t, gbz, 12)
 	assertPC(t, gbz, pc+3)
 	assertSP(t, expected, gbz.sp)
+}
+
+func Test_LD_HL_n8(t *testing.T) {
+	gbz := createGBZ()
+	gbz.h = 0xC0
+	gbz.l = 0x00
+	pc := gbz.pc
+
+	opcode := byte(0x36)
+	expected := byte(0x99)
+	gbz.mem.Write(pc, opcode)
+	gbz.mem.Write(pc+1, expected)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 12)
+	assertPC(t, gbz, pc+2)
+	assertMemory(t, gbz, 0xC000, expected)
 }

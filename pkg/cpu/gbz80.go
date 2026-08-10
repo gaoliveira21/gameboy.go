@@ -94,19 +94,19 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 
 		0x30: {g._TODO, "JR NC, e8", 2},
 		0x31: {g._LD_SP_n16, "LD SP, n16", 3},
-		0x32: {g._TODO, "LD [HL-], A", 1},
+		0x32: {g._LD_HLD_A, "LD [HL-], A", 1},
 		0x33: {g._TODO, " INC SP", 1},
 		0x34: {g._TODO, "INC [HL]", 1},
 		0x35: {g._TODO, "DEC [HL]", 1},
-		0x36: {g._TODO, "LD [HL], n8", 2},
+		0x36: {g._LD_HL_n8, "LD [HL], n8", 2},
 		0x37: {g._TODO, "SCF", 1},
 		0x38: {g._TODO, "JR C, e8", 2},
 		0x39: {g._TODO, "ADD HL, SP", 1},
-		0x3A: {g._TODO, "LD A, [HL-]", 1},
+		0x3A: {g._LD_A_HLD, "LD A, [HL-]", 1},
 		0x3B: {g._TODO, "DEC SP", 1},
 		0x3C: {g._TODO, "INC A", 1},
 		0x3D: {g._TODO, "DEC A", 1},
-		0x3E: {g._TODO, "LD A, n8", 2},
+		0x3E: {g._LD_A_n8, "LD A, n8", 2},
 		0x3F: {g._TODO, "CCF", 1},
 	}
 
@@ -288,4 +288,29 @@ func (gbz *GBZ80) _LD_SP_n16() uint {
 
 	gbz.sp = (uint16(hb) << 8) | uint16(lb)
 	return 12
+}
+
+func (gbz *GBZ80) _LD_HLD_A() uint {
+	gbz.ldrpr8(&gbz.h, &gbz.l, &gbz.a, -1)
+	return 8
+}
+
+func (gbz *GBZ80) _LD_HL_n8() uint {
+	n := gbz.mem.Read(gbz.pc)
+	gbz.pc++
+
+	addr := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	gbz.mem.Write(addr, n)
+
+	return 12
+}
+
+func (gbz *GBZ80) _LD_A_HLD() uint {
+	gbz.ldr8rp(&gbz.a, &gbz.h, &gbz.l, -1)
+	return 8
+}
+
+func (gbz *GBZ80) _LD_A_n8() uint {
+	gbz.ldr8n8(&gbz.a)
+	return 8
 }
