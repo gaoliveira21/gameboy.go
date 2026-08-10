@@ -219,3 +219,18 @@ func Test_LD_DE_n16(t *testing.T) {
 	assertRegister(t, lb, gbz.e, "E")
 	assertRegister(t, hb, gbz.d, "D")
 }
+
+func Test_LD_DE_A(t *testing.T) {
+	gbz := createGBZWithOpcode(0x02)
+	gbz.d = 0x20
+	gbz.e = 0x80
+	gbz.a = 0x99
+	pc := gbz.pc
+	addr := (uint16(gbz.b) << 8) | uint16(gbz.c)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 8)
+	assertPC(t, gbz, pc+1)
+	assertMemory(t, gbz, addr, gbz.a)
+}
