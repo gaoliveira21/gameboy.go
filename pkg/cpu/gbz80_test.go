@@ -37,6 +37,12 @@ func assertPC(t *testing.T, gbz *GBZ80, expected uint16) {
 	assert.Equal(t, expected, gbz.pc, "Expected PC %04x, but got %04x", expected, gbz.pc)
 }
 
+func assertMemory(t *testing.T, gbz *GBZ80, addr uint16, expected byte) {
+	t.Helper()
+	got := gbz.mem.Read(addr)
+	assert.Equal(t, got, expected, "Expected value %02x to be written in memory at %04x, but got %02x", expected, addr, got)
+}
+
 func TestNewGBZ80(t *testing.T) {
 	gbz := createGBZ()
 
@@ -119,4 +125,19 @@ func Test_LD_BC_n16(t *testing.T) {
 	assertPC(t, gbz, pc+3)
 	assert.Equal(t, lb, gbz.c, "Expected register C %02x, but got %02x", lb)
 	assert.Equal(t, hb, gbz.b, "Expected register C %02x, but got %02x", hb)
+}
+
+func Test_LD_BC_A(t *testing.T) {
+	gbz := createGBZWithOpcode(0x02)
+	gbz.b = 0x20
+	gbz.c = 0x80
+	gbz.a = 0x99
+	pc := gbz.pc
+	addr := (uint16(gbz.b) << 8) | uint16(gbz.c)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 8)
+	assertPC(t, gbz, pc+1)
+	assertMemory(t, gbz, addr, gbz.a)
 }
