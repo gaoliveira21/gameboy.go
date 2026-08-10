@@ -179,6 +179,7 @@ func TestLdRpn16(t *testing.T) {
 	}{
 		{"_LD_BC_n16", 0x01, &gbz.b, "B", &gbz.c, "C"},
 		{"_LD_DE_n16", 0x11, &gbz.d, "D", &gbz.e, "E"},
+		{"_LD_HL_n16", 0x21, &gbz.h, "H", &gbz.l, "L"},
 	}
 
 	for _, c := range cases {
