@@ -20,6 +20,25 @@ func createGBZ() *GBZ80 {
 	return NewGBZ80(&Memory{})
 }
 
+func resetGBZ(gbz *GBZ80) *GBZ80 {
+	gbz.a = 0x01
+	gbz.b = 0x00
+	gbz.c = 0x13
+	gbz.d = 0x00
+	gbz.e = 0xd8
+	gbz.h = 0x01
+	gbz.l = 0x4d
+	gbz.flags = &Flags{
+		value: 0xb0,
+	}
+	gbz.pc = 0x100
+	gbz.sp = 0xFFFE
+	gbz.mem = &Memory{}
+	gbz.cycles = 0
+
+	return gbz
+}
+
 func createGBZWithOpcode(opcode uint8) *GBZ80 {
 	gbz := createGBZ()
 	gbz.mem.Write(gbz.pc, byte(opcode))
@@ -115,6 +134,38 @@ func Test_NOP(t *testing.T) {
 	assertPC(t, gbz, pc+1)
 }
 
+func TestLdR8N8Operations(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		Operation       string
+		Opcode          uint8
+		Register        *uint8
+		RegisterInitial string
+	}{
+		{"_LD_B_n8", 0x06, &gbz.b, "B"},
+		{"_LD_C_n8", 0x0E, &gbz.c, "C"},
+		{"_LD_D_n8", 0x16, &gbz.d, "D"},
+		{"_LD_E_n8", 0x1E, &gbz.e, "E"},
+	}
+
+	for _, c := range cases {
+		t.Run(c.Operation, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, byte(c.Opcode))
+			pc := gbz.pc
+			expected := byte(0x99)
+			gbz.mem.Write(pc+1, expected)
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, expected, *c.Register, c.RegisterInitial)
+			resetGBZ(gbz)
+		})
+	}
+}
+
 func Test_LD_BC_n16(t *testing.T) {
 	gbz := createGBZWithOpcode(0x01)
 	pc := gbz.pc
@@ -147,19 +198,6 @@ func Test_LD_BC_A(t *testing.T) {
 	assertMemory(t, gbz, addr, gbz.a)
 }
 
-func Test_LD_B_n8(t *testing.T) {
-	gbz := createGBZWithOpcode(0x06)
-	pc := gbz.pc
-	expected := byte(0x99)
-	gbz.mem.Write(pc+1, expected)
-
-	gbz.Run()
-
-	assertCycles(t, gbz, 8)
-	assertPC(t, gbz, pc+2)
-	assertRegister(t, expected, gbz.b, "B")
-}
-
 func Test_LD_n16_SP(t *testing.T) {
 	gbz := createGBZWithOpcode(0x08)
 	gbz.sp = 0x8020
@@ -188,19 +226,6 @@ func Test_LD_A_BC(t *testing.T) {
 	assertPC(t, gbz, pc+1)
 	assertMemory(t, gbz, addr, gbz.a)
 	assertRegister(t, expected, gbz.a, "A")
-}
-
-func Test_LD_C_n8(t *testing.T) {
-	gbz := createGBZWithOpcode(0x0E)
-	pc := gbz.pc
-	expected := byte(0x99)
-	gbz.mem.Write(pc+1, expected)
-
-	gbz.Run()
-
-	assertCycles(t, gbz, 8)
-	assertPC(t, gbz, pc+2)
-	assertRegister(t, expected, gbz.c, "C")
 }
 
 func Test_LD_DE_n16(t *testing.T) {
@@ -235,19 +260,6 @@ func Test_LD_DE_A(t *testing.T) {
 	assertMemory(t, gbz, addr, gbz.a)
 }
 
-func Test_LD_D_n8(t *testing.T) {
-	gbz := createGBZWithOpcode(0x16)
-	pc := gbz.pc
-	expected := byte(0x99)
-	gbz.mem.Write(pc+1, expected)
-
-	gbz.Run()
-
-	assertCycles(t, gbz, 8)
-	assertPC(t, gbz, pc+2)
-	assertRegister(t, expected, gbz.d, "D")
-}
-
 func Test_LD_A_DE(t *testing.T) {
 	gbz := createGBZWithOpcode(0x1A)
 	gbz.d = 0x20
@@ -263,17 +275,4 @@ func Test_LD_A_DE(t *testing.T) {
 	assertPC(t, gbz, pc+1)
 	assertMemory(t, gbz, addr, gbz.a)
 	assertRegister(t, expected, gbz.a, "A")
-}
-
-func Test_LD_E_n8(t *testing.T) {
-	gbz := createGBZWithOpcode(0x1E)
-	pc := gbz.pc
-	expected := byte(0x99)
-	gbz.mem.Write(pc+1, expected)
-
-	gbz.Run()
-
-	assertCycles(t, gbz, 8)
-	assertPC(t, gbz, pc+2)
-	assertRegister(t, expected, gbz.e, "E")
 }
