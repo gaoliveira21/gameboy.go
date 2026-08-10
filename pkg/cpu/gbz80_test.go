@@ -221,16 +221,29 @@ func Test_LD_DE_n16(t *testing.T) {
 }
 
 func Test_LD_DE_A(t *testing.T) {
-	gbz := createGBZWithOpcode(0x02)
+	gbz := createGBZWithOpcode(0x12)
 	gbz.d = 0x20
 	gbz.e = 0x80
 	gbz.a = 0x99
 	pc := gbz.pc
-	addr := (uint16(gbz.b) << 8) | uint16(gbz.c)
+	addr := (uint16(gbz.d) << 8) | uint16(gbz.e)
 
 	gbz.Run()
 
 	assertCycles(t, gbz, 8)
 	assertPC(t, gbz, pc+1)
 	assertMemory(t, gbz, addr, gbz.a)
+}
+
+func Test_LD_D_n8(t *testing.T) {
+	gbz := createGBZWithOpcode(0x16)
+	pc := gbz.pc
+	expected := byte(0x99)
+	gbz.mem.Write(pc+1, expected)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 8)
+	assertPC(t, gbz, pc+2)
+	assertRegister(t, expected, gbz.d, "D")
 }

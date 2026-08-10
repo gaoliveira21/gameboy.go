@@ -64,7 +64,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x13: {g._TODO, "INC DE", 1},
 		0x14: {g._TODO, "INC D", 1},
 		0x15: {g._TODO, "DEC D", 1},
-		0x16: {g._TODO, "LD D, n8", 2},
+		0x16: {g._LD_D_n8, "LD D, n8", 2},
 		0x17: {g._TODO, "RLA", 1},
 		0x18: {g._TODO, "JR e8", 2},
 		0x19: {g._TODO, "ADD HL, DE", 1},
@@ -238,6 +238,15 @@ func (gbz *GBZ80) _LD_DE_A() uint {
 
 	addr := (hb << 8) | lb
 	gbz.mem.Write(addr, gbz.a)
+
+	return 8
+}
+
+func (gbz *GBZ80) _LD_D_n8() uint {
+	n := gbz.mem.Read(gbz.pc)
+	gbz.pc++
+
+	gbz.d = n
 
 	return 8
 }
