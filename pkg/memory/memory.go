@@ -1,6 +1,13 @@
 package memory
 
-import "github.com/gaoliveira21/gameboy.go/pkg/cartridge"
+import (
+	"github.com/gaoliveira21/gameboy.go/pkg/cartridge"
+)
+
+type MemReadWriter interface {
+	Read(addr uint16) byte
+	Write(addr uint16, b byte)
+}
 
 type Memory struct {
 	mem       [0x10000]byte

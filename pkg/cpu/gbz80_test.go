@@ -3,13 +3,42 @@ package cpu
 import (
 	"testing"
 
-	"github.com/gaoliveira21/gameboy.go/pkg/cartridge"
-	"github.com/gaoliveira21/gameboy.go/pkg/memory"
 	"github.com/stretchr/testify/assert"
 )
 
+type Memory [0x10000]byte
+
+func (m *Memory) Read(addr uint16) byte {
+	return m[addr]
+}
+
+func (m *Memory) Write(addr uint16, b byte) {
+	m[addr] = b
+}
+
+func createGBZ() *GBZ80 {
+	return NewGBZ80(&Memory{})
+}
+
+func createGBZWithOpcode(opcode uint8) *GBZ80 {
+	gbz := createGBZ()
+	gbz.mem.Write(gbz.pc, byte(opcode))
+
+	return gbz
+}
+
+func assertCycles(t *testing.T, gbz *GBZ80, expected uint) {
+	t.Helper()
+	assert.Equal(t, expected, gbz.cycles, "Expected cycles %d, but got %d", expected, gbz.cycles)
+}
+
+func assertPC(t *testing.T, gbz *GBZ80, expected uint16) {
+	t.Helper()
+	assert.Equal(t, expected, gbz.pc, "Expected PC %04x, but got %04x", expected, gbz.pc)
+}
+
 func TestNewGBZ80(t *testing.T) {
-	gbz := NewGBZ80(memory.NewMemory(cartridge.CreateValidCartridgeForTest(t.TempDir())))
+	gbz := createGBZ()
 
 	assert.EqualValues(t, 0x01, gbz.a, "NewGBZ80 dit not start register A correctly")
 	assert.EqualValues(t, 0x00, gbz.b, "NewGBZ80 dit not start register B correctly")
@@ -63,4 +92,31 @@ func TestNewGBZ80(t *testing.T) {
 	assert.EqualValues(t, 0x00, gbz.mem.Read(0xFF4A), "NewGBZ80 dit not boot memory correctly at 0xFF4A")
 	assert.EqualValues(t, 0x00, gbz.mem.Read(0xFF4B), "NewGBZ80 dit not boot memory correctly at 0xFF4B")
 	assert.EqualValues(t, 0x00, gbz.mem.Read(0xFFFF), "NewGBZ80 dit not boot memory correctly at 0xFFFF")
+}
+
+func Test_NOP(t *testing.T) {
+	gbz := createGBZWithOpcode(0x00)
+	pc := gbz.pc
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 4)
+	assertPC(t, gbz, pc+1)
+}
+
+func Test_LD_BC_n16(t *testing.T) {
+	gbz := createGBZWithOpcode(0x01)
+	pc := gbz.pc
+	lb := byte(0x20)
+	hb := byte(0x80)
+
+	gbz.mem.Write(pc+1, lb)
+	gbz.mem.Write(pc+2, hb)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 12)
+	assertPC(t, gbz, pc+3)
+	assert.Equal(t, lb, gbz.c, "Expected register C %02x, but got %02x", lb)
+	assert.Equal(t, hb, gbz.b, "Expected register C %02x, but got %02x", hb)
 }

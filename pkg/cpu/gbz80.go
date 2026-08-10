@@ -1,6 +1,14 @@
 package cpu
 
-import "github.com/gaoliveira21/gameboy.go/pkg/memory"
+import (
+	"github.com/gaoliveira21/gameboy.go/pkg/memory"
+)
+
+type instruction struct {
+	operation func() uint
+	Mnemonic  string
+	Size      uint16
+}
 
 type GBZ80 struct {
 	// Registers
@@ -9,10 +17,13 @@ type GBZ80 struct {
 
 	sp, pc uint16
 
-	mem *memory.Memory
+	cycles uint
+
+	mem            memory.MemReadWriter
+	instructionSet [256]*instruction
 }
 
-func NewGBZ80(m *memory.Memory) *GBZ80 {
+func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 	g := &GBZ80{
 		a: 0x01,
 		b: 0x00,
@@ -29,17 +40,51 @@ func NewGBZ80(m *memory.Memory) *GBZ80 {
 		mem: m,
 	}
 
+	g.instructionSet = [256]*instruction{
+		0x00: {g._NOP, "NOP", 1},
+		0x01: {g._LD_BC_n16, "LD BC, n16", 3},
+		0x02: {g._TODO, "LD [BC], A", 1},
+		0x03: {g._TODO, "INC BC", 1},
+		0x04: {g._TODO, "INC B", 1},
+		0x05: {g._TODO, "DEC B", 1},
+		0x06: {g._TODO, "LD B, n8", 2},
+		0x07: {g._TODO, "RLCA", 1},
+		0x08: {g._TODO, "LD [a16], SP", 3},
+		0x09: {g._TODO, "ADD HL, BC", 1},
+		0x0A: {g._TODO, "LD A, [BC]", 1},
+		0x0B: {g._TODO, "DEC BC", 1},
+		0x0C: {g._TODO, "INC C", 1},
+		0x0D: {g._TODO, "DEC C", 1},
+		0x0E: {g._TODO, "LD C, n8", 2},
+		0x0F: {g._TODO, "RRCA", 1},
+	}
+
 	g.boot()
 
 	return g
 }
 
-func (gbz *GBZ80) Run() uint {
-	return 0
-}
-
 func (gbz *GBZ80) Interrupt() {
 	return
+}
+
+func (gbz *GBZ80) Run() uint {
+	opcode := gbz.fetch()
+	cycles := gbz.exec(opcode)
+	gbz.cycles += cycles
+
+	return cycles
+}
+
+func (gbz *GBZ80) fetch() byte {
+	opcode := gbz.mem.Read(gbz.pc)
+	gbz.pc++
+	return opcode
+}
+
+func (gbz *GBZ80) exec(opcode byte) uint {
+	instruction := gbz.instructionSet[opcode]
+	return instruction.operation()
 }
 
 func (gbz *GBZ80) boot() {
@@ -85,4 +130,24 @@ func (gbz *GBZ80) boot() {
 	gbz.mem.Write(0xFF4A, 0x00)
 	gbz.mem.Write(0xFF4B, 0x00)
 	gbz.mem.Write(0xFFFF, 0x00)
+}
+
+func (gbz *GBZ80) _TODO() uint {
+	panic("Instruction not implemented")
+}
+
+func (gbz *GBZ80) _NOP() uint {
+	return 4
+}
+
+func (gbz *GBZ80) _LD_BC_n16() uint {
+	lb := gbz.mem.Read(gbz.pc)
+	gbz.pc++
+
+	hb := gbz.mem.Read(gbz.pc)
+	gbz.pc++
+
+	gbz.b, gbz.c = hb, lb
+
+	return 12
 }
