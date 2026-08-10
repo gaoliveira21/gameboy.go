@@ -157,34 +157,51 @@ func (gbz *GBZ80) _NOP() uint {
 	return 4
 }
 
-func (gbz *GBZ80) _LD_BC_n16() uint {
+func (gbz *GBZ80) ldr8n8(r *uint8) {
+	n := gbz.mem.Read(gbz.pc)
+	gbz.pc++
+
+	*r = n
+}
+
+func (gbz *GBZ80) ldrpn16(rh, rl *uint8) {
 	lb := gbz.mem.Read(gbz.pc)
 	gbz.pc++
 
 	hb := gbz.mem.Read(gbz.pc)
 	gbz.pc++
 
-	gbz.b, gbz.c = hb, lb
+	*rh, *rl = hb, lb
+}
 
+func (gbz *GBZ80) ldrpr8(rh, rl, rt *uint8) {
+	hb := uint16(*rh)
+	lb := uint16(*rl)
+
+	addr := (hb << 8) | lb
+	gbz.mem.Write(addr, *rt)
+}
+
+func (gbz *GBZ80) ldr8rp(rt, rh, rl *uint8) {
+	hb := uint16(*rh)
+	lb := uint16(*rl)
+
+	addr := (hb << 8) | lb
+	*rt = gbz.mem.Read(addr)
+}
+
+func (gbz *GBZ80) _LD_BC_n16() uint {
+	gbz.ldrpn16(&gbz.b, &gbz.c)
 	return 12
 }
 
 func (gbz *GBZ80) _LD_BC_A() uint {
-	hb := uint16(gbz.b)
-	lb := uint16(gbz.c)
-
-	addr := (hb << 8) | lb
-	gbz.mem.Write(addr, gbz.a)
-
+	gbz.ldrpr8(&gbz.b, &gbz.c, &gbz.a)
 	return 8
 }
 
 func (gbz *GBZ80) _LD_B_n8() uint {
-	n := gbz.mem.Read(gbz.pc)
-	gbz.pc++
-
-	gbz.b = n
-
+	gbz.ldr8n8(&gbz.b)
 	return 8
 }
 
@@ -202,51 +219,26 @@ func (gbz *GBZ80) _LD_n16_SP() uint {
 }
 
 func (gbz *GBZ80) _LD_A_BC() uint {
-	hb := uint16(gbz.b)
-	lb := uint16(gbz.c)
-
-	addr := (hb << 8) | lb
-	gbz.a = gbz.mem.Read(addr)
-
+	gbz.ldr8rp(&gbz.a, &gbz.b, &gbz.c)
 	return 8
 }
 
 func (gbz *GBZ80) _LD_C_n8() uint {
-	n := gbz.mem.Read(gbz.pc)
-	gbz.pc++
-
-	gbz.c = n
-
+	gbz.ldr8n8(&gbz.c)
 	return 8
 }
 
 func (gbz *GBZ80) _LD_DE_n16() uint {
-	lb := gbz.mem.Read(gbz.pc)
-	gbz.pc++
-
-	hb := gbz.mem.Read(gbz.pc)
-	gbz.pc++
-
-	gbz.d, gbz.e = hb, lb
-
+	gbz.ldrpn16(&gbz.d, &gbz.e)
 	return 12
 }
 
 func (gbz *GBZ80) _LD_DE_A() uint {
-	hb := uint16(gbz.d)
-	lb := uint16(gbz.e)
-
-	addr := (hb << 8) | lb
-	gbz.mem.Write(addr, gbz.a)
-
+	gbz.ldrpr8(&gbz.d, &gbz.e, &gbz.a)
 	return 8
 }
 
 func (gbz *GBZ80) _LD_D_n8() uint {
-	n := gbz.mem.Read(gbz.pc)
-	gbz.pc++
-
-	gbz.d = n
-
+	gbz.ldr8n8(&gbz.d)
 	return 8
 }
