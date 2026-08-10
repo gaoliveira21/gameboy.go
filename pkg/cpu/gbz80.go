@@ -209,11 +209,11 @@ func (gbz *GBZ80) _LD_n16_SP() uint {
 	hb := byte(gbz.sp >> 8)
 	lb := byte(gbz.sp & 0xFF)
 
-	gbz.mem.Write(gbz.pc, lb)
-	gbz.pc++
+	addr := uint16(gbz.mem.Read(gbz.pc)) | (uint16(gbz.mem.Read(gbz.pc+1)) << 8)
+	gbz.pc += 2
 
-	gbz.mem.Write(gbz.pc, hb)
-	gbz.pc++
+	gbz.mem.Write(addr, lb)
+	gbz.mem.Write(addr+1, hb)
 
 	return 20
 }

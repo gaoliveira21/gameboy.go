@@ -275,14 +275,19 @@ func TestLdR8Rp(t *testing.T) {
 }
 
 func Test_LD_n16_SP(t *testing.T) {
-	gbz := createGBZWithOpcode(0x08)
+	gbz := createGBZ()
 	gbz.sp = 0x8020
 	pc := gbz.pc
+
+	targetAddr := uint16(0xC000)
+	gbz.mem.Write(pc, 0x08)
+	gbz.mem.Write(pc+1, byte(targetAddr))
+	gbz.mem.Write(pc+2, byte(targetAddr>>8))
 
 	gbz.Run()
 
 	assertCycles(t, gbz, 20)
 	assertPC(t, gbz, pc+3)
-	assertMemory(t, gbz, pc+1, byte(gbz.sp&0xFF))
-	assertMemory(t, gbz, pc+2, byte(gbz.sp>>8))
+	assertMemory(t, gbz, targetAddr, byte(gbz.sp&0xFF))
+	assertMemory(t, gbz, targetAddr+1, byte(gbz.sp>>8))
 }
