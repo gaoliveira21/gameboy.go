@@ -17,18 +17,18 @@ func (gbz *GBZ80) ldrpn16(rh, rl *uint8) {
 	*rh, *rl = hb, lb
 }
 
-func (gbz *GBZ80) ldrpr8(rh, rl, rt *uint8) {
+func (gbz *GBZ80) ldrpr8(rh, rl, rt *uint8, inc int) {
 	hb := uint16(*rh)
 	lb := uint16(*rl)
 
-	addr := (hb << 8) | lb
-	gbz.mem.Write(addr, *rt)
+	addr := int((hb<<8)|lb) + inc
+	gbz.mem.Write(uint16(addr), *rt)
 }
 
-func (gbz *GBZ80) ldr8rp(rt, rh, rl *uint8) {
+func (gbz *GBZ80) ldr8rp(rt, rh, rl *uint8, inc int) {
 	hb := uint16(*rh)
 	lb := uint16(*rl)
 
-	addr := (hb << 8) | lb
-	*rt = gbz.mem.Read(addr)
+	addr := int((hb<<8)|lb) + inc
+	*rt = gbz.mem.Read(uint16(addr))
 }

@@ -134,7 +134,7 @@ func Test_NOP(t *testing.T) {
 	assertPC(t, gbz, pc+1)
 }
 
-func TestLdR8N8Operations(t *testing.T) {
+func TestLdR8N8(t *testing.T) {
 	gbz := createGBZ()
 
 	cases := []struct {
@@ -147,6 +147,8 @@ func TestLdR8N8Operations(t *testing.T) {
 		{"_LD_C_n8", 0x0E, &gbz.c, "C"},
 		{"_LD_D_n8", 0x16, &gbz.d, "D"},
 		{"_LD_E_n8", 0x1E, &gbz.e, "E"},
+		{"_LD_H_n8", 0x26, &gbz.h, "H"},
+		{"_LD_L_n8", 0x2E, &gbz.l, "L"},
 	}
 
 	for _, c := range cases {
@@ -213,9 +215,11 @@ func TestLdRpR8(t *testing.T) {
 		Register1      *uint8
 		Register2      *uint8
 		RegisterTarget *uint8
+		Inc            int
 	}{
-		{"_LD_BC_A", 0x02, &gbz.b, &gbz.c, &gbz.a},
-		{"_LD_DE_A", 0x12, &gbz.d, &gbz.e, &gbz.a},
+		{"_LD_BC_A", 0x02, &gbz.b, &gbz.c, &gbz.a, 0},
+		{"_LD_DE_A", 0x12, &gbz.d, &gbz.e, &gbz.a, 0},
+		{"_LD_HLI_A", 0x22, &gbz.h, &gbz.l, &gbz.a, 1},
 	}
 
 	for _, c := range cases {
@@ -225,13 +229,13 @@ func TestLdRpR8(t *testing.T) {
 			*c.Register2 = 0x80
 			*c.RegisterTarget = 0x99
 			pc := gbz.pc
-			addr := (uint16(*c.Register1) << 8) | uint16(*c.Register2)
+			addr := int((uint16(*c.Register1)<<8)|uint16(*c.Register2)) + c.Inc
 
 			gbz.Run()
 
 			assertCycles(t, gbz, 8)
 			assertPC(t, gbz, pc+1)
-			assertMemory(t, gbz, addr, *c.RegisterTarget)
+			assertMemory(t, gbz, uint16(addr), *c.RegisterTarget)
 
 			resetGBZ(gbz)
 		})
@@ -248,9 +252,11 @@ func TestLdR8Rp(t *testing.T) {
 		Register2             *uint8
 		RegisterTarget        *uint8
 		RegisterTargetInitial string
+		Inc                   int
 	}{
-		{"_LD_A_BC", 0x0A, &gbz.b, &gbz.c, &gbz.a, "A"},
-		{"_LD_A_DE", 0x1A, &gbz.d, &gbz.e, &gbz.a, "A"},
+		{"_LD_A_BC", 0x0A, &gbz.b, &gbz.c, &gbz.a, "A", 0},
+		{"_LD_A_DE", 0x1A, &gbz.d, &gbz.e, &gbz.a, "A", 0},
+		{"_LD_A_HLI", 0x2A, &gbz.h, &gbz.l, &gbz.a, "A", 1},
 	}
 
 	for _, c := range cases {
@@ -259,15 +265,15 @@ func TestLdR8Rp(t *testing.T) {
 			*c.Register1 = 0x20
 			*c.Register2 = 0x80
 			pc := gbz.pc
-			addr := (uint16(*c.Register1) << 8) | uint16(*c.Register2)
+			addr := int((uint16(*c.Register1)<<8)|uint16(*c.Register2)) + c.Inc
 			expected := byte(0x99)
-			gbz.mem.Write(addr, expected)
+			gbz.mem.Write(uint16(addr), expected)
 
 			gbz.Run()
 
 			assertCycles(t, gbz, 8)
 			assertPC(t, gbz, pc+1)
-			assertMemory(t, gbz, addr, *c.RegisterTarget)
+			assertMemory(t, gbz, uint16(addr), *c.RegisterTarget)
 			assertRegister(t, expected, *c.RegisterTarget, c.RegisterTargetInitial)
 
 			resetGBZ(gbz)

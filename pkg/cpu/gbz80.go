@@ -77,19 +77,19 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 
 		0x20: {g._TODO, "JR NZ, e8", 2},
 		0x21: {g._LD_HL_n16, "LD HL, n16 ", 3},
-		0x22: {g._TODO, "LD [HL+], A", 1},
+		0x22: {g._LD_HLI_A, "LD [HL+], A", 1},
 		0x23: {g._TODO, "INC HL", 1},
 		0x24: {g._TODO, "INC H", 1},
 		0x25: {g._TODO, "DEC H", 1},
-		0x26: {g._TODO, "LD H, n8", 2},
+		0x26: {g._LD_H_n8, "LD H, n8", 2},
 		0x27: {g._TODO, "DAA", 1},
 		0x28: {g._TODO, "JR Z, e8", 2},
 		0x29: {g._TODO, "ADD HL, HL", 1},
-		0x2A: {g._TODO, "LD A, [HL+]", 1},
+		0x2A: {g._LD_A_HLI, "LD A, [HL+]", 1},
 		0x2B: {g._TODO, "DEC HL", 1},
 		0x2C: {g._TODO, "INC L", 1},
 		0x2D: {g._TODO, "DEC L", 1},
-		0x2E: {g._TODO, "LD L, n8", 2},
+		0x2E: {g._LD_L_n8, "LD L, n8", 2},
 		0x2F: {g._TODO, "CPL", 1},
 	}
 
@@ -180,7 +180,7 @@ func (gbz *GBZ80) _LD_BC_n16() uint {
 }
 
 func (gbz *GBZ80) _LD_BC_A() uint {
-	gbz.ldrpr8(&gbz.b, &gbz.c, &gbz.a)
+	gbz.ldrpr8(&gbz.b, &gbz.c, &gbz.a, 0)
 	return 8
 }
 
@@ -203,7 +203,7 @@ func (gbz *GBZ80) _LD_n16_SP() uint {
 }
 
 func (gbz *GBZ80) _LD_A_BC() uint {
-	gbz.ldr8rp(&gbz.a, &gbz.b, &gbz.c)
+	gbz.ldr8rp(&gbz.a, &gbz.b, &gbz.c, 0)
 	return 8
 }
 
@@ -218,7 +218,7 @@ func (gbz *GBZ80) _LD_DE_n16() uint {
 }
 
 func (gbz *GBZ80) _LD_DE_A() uint {
-	gbz.ldrpr8(&gbz.d, &gbz.e, &gbz.a)
+	gbz.ldrpr8(&gbz.d, &gbz.e, &gbz.a, 0)
 	return 8
 }
 
@@ -228,7 +228,7 @@ func (gbz *GBZ80) _LD_D_n8() uint {
 }
 
 func (gbz *GBZ80) _LD_A_DE() uint {
-	gbz.ldr8rp(&gbz.a, &gbz.d, &gbz.e)
+	gbz.ldr8rp(&gbz.a, &gbz.d, &gbz.e, 0)
 	return 8
 }
 
@@ -240,4 +240,24 @@ func (gbz *GBZ80) _LD_E_n8() uint {
 func (gbz *GBZ80) _LD_HL_n16() uint {
 	gbz.ldrpn16(&gbz.h, &gbz.l)
 	return 12
+}
+
+func (gbz *GBZ80) _LD_HLI_A() uint {
+	gbz.ldrpr8(&gbz.h, &gbz.l, &gbz.a, 1)
+	return 8
+}
+
+func (gbz *GBZ80) _LD_H_n8() uint {
+	gbz.ldr8n8(&gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _LD_A_HLI() uint {
+	gbz.ldr8rp(&gbz.a, &gbz.h, &gbz.l, 1)
+	return 8
+}
+
+func (gbz *GBZ80) _LD_L_n8() uint {
+	gbz.ldr8n8(&gbz.l)
+	return 8
 }
