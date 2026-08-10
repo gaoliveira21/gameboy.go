@@ -247,3 +247,20 @@ func Test_LD_D_n8(t *testing.T) {
 	assertPC(t, gbz, pc+2)
 	assertRegister(t, expected, gbz.d, "D")
 }
+
+func Test_LD_A_DE(t *testing.T) {
+	gbz := createGBZWithOpcode(0x1A)
+	gbz.d = 0x20
+	gbz.e = 0x80
+	pc := gbz.pc
+	addr := (uint16(gbz.d) << 8) | uint16(gbz.e)
+	expected := byte(0x99)
+	gbz.mem.Write(addr, expected)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 8)
+	assertPC(t, gbz, pc+1)
+	assertMemory(t, gbz, addr, gbz.a)
+	assertRegister(t, expected, gbz.a, "A")
+}
