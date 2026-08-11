@@ -142,6 +142,23 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x5D: {g._LD_E_L, "LD E, L", 1},
 		0x5E: {g._LD_E_HL, "LD E, [HL]", 1},
 		0x5F: {g._LD_E_A, "LD E, A", 1},
+
+		0x60: {g._LD_H_B, "LD H, B", 1},
+		0x61: {g._LD_H_C, "LD H, C", 1},
+		0x62: {g._LD_H_D, "LD H, D", 1},
+		0x63: {g._LD_H_E, "LD H, E", 1},
+		0x64: {g._LD_H_H, "LD H, H", 1},
+		0x65: {g._LD_H_L, "LD H, L", 1},
+		0x66: {g._LD_H_HL, "LD H, [HL]", 1},
+		0x67: {g._LD_H_A, "LD H, A", 1},
+		0x68: {g._LD_L_B, "LD L, B", 1},
+		0x69: {g._LD_L_C, "LD L, C", 1},
+		0x6A: {g._LD_L_D, "LD L, D", 1},
+		0x6B: {g._LD_L_E, "LD L, E", 1},
+		0x6C: {g._LD_L_H, "LD L, H", 1},
+		0x6D: {g._LD_L_L, "LD L, L", 1},
+		0x6E: {g._LD_L_HL, "LD L, [HL]", 1},
+		0x6F: {g._LD_L_A, "LD L, A", 1},
 	}
 
 	g.boot()
@@ -506,5 +523,85 @@ func (gbz *GBZ80) _LD_E_HL() uint {
 
 func (gbz *GBZ80) _LD_E_A() uint {
 	gbz.ldr8r8(&gbz.e, &gbz.a)
+	return 4
+}
+
+func (gbz *GBZ80) _LD_H_B() uint {
+	gbz.ldr8r8(&gbz.h, &gbz.b)
+	return 4
+}
+
+func (gbz *GBZ80) _LD_H_C() uint {
+	gbz.ldr8r8(&gbz.h, &gbz.c)
+	return 4
+}
+
+func (gbz *GBZ80) _LD_H_D() uint {
+	gbz.ldr8r8(&gbz.h, &gbz.d)
+	return 4
+}
+
+func (gbz *GBZ80) _LD_H_E() uint {
+	gbz.ldr8r8(&gbz.h, &gbz.e)
+	return 4
+}
+
+func (gbz *GBZ80) _LD_H_H() uint {
+	gbz.ldr8r8(&gbz.h, &gbz.h)
+	return 4
+}
+
+func (gbz *GBZ80) _LD_H_L() uint {
+	gbz.ldr8r8(&gbz.h, &gbz.l)
+	return 4
+}
+
+func (gbz *GBZ80) _LD_H_HL() uint {
+	gbz.ldr8rp(&gbz.h, &gbz.h, &gbz.l, 0)
+	return 8
+}
+
+func (gbz *GBZ80) _LD_H_A() uint {
+	gbz.ldr8r8(&gbz.h, &gbz.a)
+	return 4
+}
+
+func (gbz *GBZ80) _LD_L_B() uint {
+	gbz.ldr8r8(&gbz.l, &gbz.b)
+	return 4
+}
+
+func (gbz *GBZ80) _LD_L_C() uint {
+	gbz.ldr8r8(&gbz.l, &gbz.c)
+	return 4
+}
+
+func (gbz *GBZ80) _LD_L_D() uint {
+	gbz.ldr8r8(&gbz.l, &gbz.d)
+	return 4
+}
+
+func (gbz *GBZ80) _LD_L_E() uint {
+	gbz.ldr8r8(&gbz.l, &gbz.e)
+	return 4
+}
+
+func (gbz *GBZ80) _LD_L_H() uint {
+	gbz.ldr8r8(&gbz.l, &gbz.h)
+	return 4
+}
+
+func (gbz *GBZ80) _LD_L_L() uint {
+	gbz.ldr8r8(&gbz.l, &gbz.l)
+	return 4
+}
+
+func (gbz *GBZ80) _LD_L_HL() uint {
+	gbz.ldr8rp(&gbz.l, &gbz.h, &gbz.l, 0)
+	return 8
+}
+
+func (gbz *GBZ80) _LD_L_A() uint {
+	gbz.ldr8r8(&gbz.l, &gbz.a)
 	return 4
 }
