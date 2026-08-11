@@ -19,6 +19,8 @@ type GBZ80 struct {
 
 	cycles uint
 
+	interruptEnabled bool
+
 	mem            memory.MemReadWriter
 	instructionSet [256]*instruction
 }
@@ -49,7 +51,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x05: {g._TODO, "DEC B", 1},
 		0x06: {g._LD_B_n8, "LD B, n8", 2},
 		0x07: {g._TODO, "RLCA", 1},
-		0x08: {g._LD_n16_SP, "LD [n16], SP", 3},
+		0x08: {g._LD_a16_SP, "LD [a16], SP", 3},
 		0x09: {g._TODO, "ADD HL, BC", 1},
 		0x0A: {g._LD_A_BC, "LD A, [BC]", 1},
 		0x0B: {g._TODO, "DEC BC", 1},
@@ -176,6 +178,142 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x7D: {g._LD_A_L, "LD A, L", 1},
 		0x7E: {g._LD_A_HL, "LD A, [HL]", 1},
 		0x7F: {g._LD_A_A, "LD A, A", 1},
+
+		0x80: {g._TODO, "ADD A, B", 1},
+		0x81: {g._TODO, "ADD A, C", 1},
+		0x82: {g._TODO, "ADD A, D", 1},
+		0x83: {g._TODO, "ADD A, E", 1},
+		0x84: {g._TODO, "ADD A, H", 1},
+		0x85: {g._TODO, "ADD A, L", 1},
+		0x86: {g._TODO, "ADD A, [HL]", 1},
+		0x87: {g._TODO, "ADD A, A", 1},
+		0x88: {g._TODO, "ADC A, B", 1},
+		0x89: {g._TODO, "ADC A, C", 1},
+		0x8A: {g._TODO, "ADC A, D", 1},
+		0x8B: {g._TODO, "ADC A, E", 1},
+		0x8C: {g._TODO, "ADC A, H", 1},
+		0x8D: {g._TODO, "ADC A, L", 1},
+		0x8E: {g._TODO, "ADC A, [HL]", 1},
+		0x8F: {g._TODO, "ADC A, A", 1},
+
+		0x90: {g._TODO, "SUB A, B", 1},
+		0x91: {g._TODO, "SUB A, C", 1},
+		0x92: {g._TODO, "SUB A, D", 1},
+		0x93: {g._TODO, "SUB A, E", 1},
+		0x94: {g._TODO, "SUB A, H", 1},
+		0x95: {g._TODO, "SUB A, L", 1},
+		0x96: {g._TODO, "SUB A, [HL]", 1},
+		0x97: {g._TODO, "SUB A, A", 1},
+		0x98: {g._TODO, "SBC A, B", 1},
+		0x99: {g._TODO, "SBC A, C", 1},
+		0x9A: {g._TODO, "SBC A, D", 1},
+		0x9B: {g._TODO, "SBC A, E", 1},
+		0x9C: {g._TODO, "SBC A, H", 1},
+		0x9D: {g._TODO, "SBC A, L", 1},
+		0x9E: {g._TODO, "SBC A, [HL]", 1},
+		0x9F: {g._TODO, "SBC A, A", 1},
+
+		0xA0: {g._TODO, "AND A, B", 1},
+		0xA1: {g._TODO, "AND A, C", 1},
+		0xA2: {g._TODO, "AND A, D", 1},
+		0xA3: {g._TODO, "AND A, E", 1},
+		0xA4: {g._TODO, "AND A, H", 1},
+		0xA5: {g._TODO, "AND A, L", 1},
+		0xA6: {g._TODO, "AND A, [HL]", 1},
+		0xA7: {g._TODO, "AND A, A", 1},
+		0xA8: {g._TODO, "XOR A, B", 1},
+		0xA9: {g._TODO, "XOR A, C", 1},
+		0xAA: {g._TODO, "XOR A, D", 1},
+		0xAB: {g._TODO, "XOR A, E", 1},
+		0xAC: {g._TODO, "XOR A, H", 1},
+		0xAD: {g._TODO, "XOR A, L", 1},
+		0xAE: {g._TODO, "XOR A, [HL]", 1},
+		0xAF: {g._TODO, "XOR A, A", 1},
+
+		0xB0: {g._TODO, "OR A, B", 1},
+		0xB1: {g._TODO, "OR A, C", 1},
+		0xB2: {g._TODO, "OR A, D", 1},
+		0xB3: {g._TODO, "OR A, E", 1},
+		0xB4: {g._TODO, "OR A, H", 1},
+		0xB5: {g._TODO, "OR A, L", 1},
+		0xB6: {g._TODO, "OR A, [HL]", 1},
+		0xB7: {g._TODO, "OR A, A", 1},
+		0xB8: {g._TODO, "CP A, B", 1},
+		0xB9: {g._TODO, "CP A, C", 1},
+		0xBA: {g._TODO, "CP A, D", 1},
+		0xBB: {g._TODO, "CP A, E", 1},
+		0xBC: {g._TODO, "CP A, H", 1},
+		0xBD: {g._TODO, "CP A, L", 1},
+		0xBE: {g._TODO, "CP A, [HL]", 1},
+		0xBF: {g._TODO, "CP A, A", 1},
+
+		0xC0: {g._TODO, "RET NZ", 1},
+		0xC1: {g._TODO, "POP BC", 1},
+		0xC2: {g._TODO, "JP NZ, a16", 3},
+		0xC3: {g._TODO, "JP a16", 3},
+		0xC4: {g._TODO, "CALL NZ, a16", 3},
+		0xC5: {g._TODO, "PUSH BC", 1},
+		0xC6: {g._TODO, "ADD A, n8", 2},
+		0xC7: {g._TODO, "RST $00", 1},
+		0xC8: {g._TODO, "RET Z", 1},
+		0xC9: {g._TODO, "RET", 1},
+		0xCA: {g._TODO, "JP Z, a16", 3},
+		0xCB: {g._TODO, "PREFIX", 1},
+		0xCC: {g._TODO, "CALL Z, a16", 3},
+		0xCD: {g._TODO, "CALL a16", 3},
+		0xCE: {g._TODO, "ADC A, n8", 2},
+		0xCF: {g._TODO, "RST $08", 1},
+
+		0xD0: {g._TODO, "RET NC", 1},
+		0xD1: {g._TODO, "POP DE", 1},
+		0xD2: {g._TODO, "JP NC, a16", 3},
+		0xD3: {g._ILLEGAL, "ILLEGAL_D3", 1},
+		0xD4: {g._TODO, "CALL NC, a16", 3},
+		0xD5: {g._TODO, "PUSH DE", 1},
+		0xD6: {g._TODO, "SUB A, n8", 2},
+		0xD7: {g._TODO, "RST $10", 1},
+		0xD8: {g._TODO, "RET C", 1},
+		0xD9: {g._TODO, "RETI", 1},
+		0xDA: {g._TODO, "JP C, a16", 3},
+		0xDB: {g._ILLEGAL, "ILLEGAL_DB", 1},
+		0xDC: {g._TODO, "CALL C, a16", 3},
+		0xDD: {g._ILLEGAL, "ILLEGAL_DD", 1},
+		0xDE: {g._TODO, "SBC A, n8", 2},
+		0xDF: {g._TODO, "RST $18", 1},
+
+		0xE0: {g._TODO, "LDH [a8], A", 2},
+		0xE1: {g._TODO, "POP HL", 1},
+		0xE2: {g._TODO, "LDH [C], A", 1},
+		0xE3: {g._ILLEGAL, "ILLEGAL_E3", 1},
+		0xE4: {g._ILLEGAL, "ILLEGAL_E4", 1},
+		0xE5: {g._TODO, "PUSH HL", 1},
+		0xE6: {g._TODO, "AND A, n8", 2},
+		0xE7: {g._TODO, "RST $20", 1},
+		0xE8: {g._TODO, "ADD SP, e8", 2},
+		0xE9: {g._TODO, "JP HL", 1},
+		0xEA: {g._TODO, "LD [a16], A", 3},
+		0xEB: {g._ILLEGAL, "ILLEGAL_EB", 1},
+		0xEC: {g._ILLEGAL, "ILLEGAL_EC", 1},
+		0xED: {g._ILLEGAL, "ILLEGAL_ED", 1},
+		0xEE: {g._TODO, "XOR A, n8", 2},
+		0xEF: {g._TODO, "RST $28", 1},
+
+		0xF0: {g._TODO, "LDH A, [a8]", 2},
+		0xF1: {g._TODO, "POP AF", 1},
+		0xF2: {g._TODO, "LDH A, [C]", 1},
+		0xF3: {g._DI, "DI", 1},
+		0xF4: {g._NOP, "NOP", 1},
+		0xF5: {g._TODO, "PUSH AF", 1},
+		0xF6: {g._TODO, "OR A, n8", 2},
+		0xF7: {g._TODO, "RST $30", 1},
+		0xF8: {g._TODO, "LD HL, SP + e8", 2},
+		0xF9: {g._TODO, "LD SP, HL", 1},
+		0xFA: {g._TODO, "LD A, [a16]", 3},
+		0xFB: {g._EI, "EI", 1},
+		0xFC: {g._NOP, "NOP", 1},
+		0xFD: {g._ILLEGAL, "ILLEGAL_FD", 1},
+		0xFE: {g._TODO, "CP A, n8", 2},
+		0xFF: {g._TODO, "RST $38", 1},
 	}
 
 	g.boot()
@@ -259,6 +397,20 @@ func (gbz *GBZ80) _NOP() uint {
 	return 4
 }
 
+func (gbz *GBZ80) _ILLEGAL() uint {
+	panic("Illegal instruction executed")
+}
+
+func (gbz *GBZ80) _DI() uint {
+	gbz.interruptEnabled = false
+	return 4
+}
+
+func (gbz *GBZ80) _EI() uint {
+	gbz.interruptEnabled = true
+	return 4
+}
+
 func (gbz *GBZ80) _LD_BC_n16() uint {
 	gbz.ldrpn16(&gbz.b, &gbz.c)
 	return 12
@@ -274,7 +426,7 @@ func (gbz *GBZ80) _LD_B_n8() uint {
 	return 8
 }
 
-func (gbz *GBZ80) _LD_n16_SP() uint {
+func (gbz *GBZ80) _LD_a16_SP() uint {
 	hb := byte(gbz.sp >> 8)
 	lb := byte(gbz.sp & 0xFF)
 

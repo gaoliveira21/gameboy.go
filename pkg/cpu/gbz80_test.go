@@ -35,6 +35,7 @@ func resetGBZ(gbz *GBZ80) *GBZ80 {
 	gbz.sp = 0xFFFE
 	gbz.mem = &Memory{}
 	gbz.cycles = 0
+	gbz.interruptEnabled = false
 
 	return gbz
 }
@@ -302,7 +303,7 @@ func TestLdR8Rp(t *testing.T) {
 	}
 }
 
-func Test_LD_n16_SP(t *testing.T) {
+func Test_LD_a16_SP(t *testing.T) {
 	gbz := createGBZ()
 	gbz.sp = 0x8020
 	pc := gbz.pc
@@ -430,4 +431,28 @@ func Test_LdR8R8(t *testing.T) {
 			resetGBZ(gbz)
 		})
 	}
+}
+
+func Test_DI(t *testing.T) {
+	gbz := createGBZWithOpcode(0xF3)
+	gbz.interruptEnabled = true
+	pc := gbz.pc
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 4)
+	assertPC(t, gbz, pc+1)
+	assert.Equal(t, false, gbz.interruptEnabled, "DI should disable interrupts")
+}
+
+func Test_EI(t *testing.T) {
+	gbz := createGBZWithOpcode(0xFB)
+	gbz.interruptEnabled = false
+	pc := gbz.pc
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 4)
+	assertPC(t, gbz, pc+1)
+	assert.Equal(t, true, gbz.interruptEnabled, "EI should enable interrupts")
 }
