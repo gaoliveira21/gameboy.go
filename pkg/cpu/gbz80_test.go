@@ -265,6 +265,8 @@ func TestLdR8Rp(t *testing.T) {
 		{"_LD_A_DE", 0x1A, &gbz.d, &gbz.e, &gbz.a, "A", 0},
 		{"_LD_A_HLI", 0x2A, &gbz.h, &gbz.l, &gbz.a, "A", 1},
 		{"_LD_A_HLD", 0x3A, &gbz.h, &gbz.l, &gbz.a, "A", -1},
+		{"_LD_B_HL", 0x46, &gbz.h, &gbz.l, &gbz.b, "B", 0},
+		{"_LD_C_HL", 0x4E, &gbz.h, &gbz.l, &gbz.c, "C", 0},
 	}
 
 	for _, c := range cases {
@@ -338,4 +340,48 @@ func Test_LD_HL_n8(t *testing.T) {
 	assertCycles(t, gbz, 12)
 	assertPC(t, gbz, pc+2)
 	assertMemory(t, gbz, 0xC000, expected)
+}
+
+func Test_LdR8R8(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		Operation          string
+		Opcode             uint8
+		RegisterDst        *uint8
+		RegisterDstInitial string
+		RegisterSrc        *uint8
+	}{
+		{"_LD_B_B", 0x40, &gbz.b, "B", &gbz.b},
+		{"_LD_B_C", 0x41, &gbz.b, "B", &gbz.c},
+		{"_LD_B_D", 0x42, &gbz.b, "B", &gbz.d},
+		{"_LD_B_E", 0x43, &gbz.b, "B", &gbz.e},
+		{"_LD_B_H", 0x44, &gbz.b, "B", &gbz.h},
+		{"_LD_B_L", 0x45, &gbz.b, "B", &gbz.l},
+		{"_LD_B_A", 0x47, &gbz.b, "B", &gbz.a},
+		{"_LD_C_B", 0x48, &gbz.c, "C", &gbz.b},
+		{"_LD_C_C", 0x49, &gbz.c, "C", &gbz.c},
+		{"_LD_C_D", 0x4A, &gbz.c, "C", &gbz.d},
+		{"_LD_C_E", 0x4B, &gbz.c, "C", &gbz.e},
+		{"_LD_C_H", 0x4C, &gbz.c, "C", &gbz.h},
+		{"_LD_C_L", 0x4D, &gbz.c, "C", &gbz.l},
+		{"_LD_C_A", 0x4F, &gbz.c, "C", &gbz.a},
+	}
+
+	for _, c := range cases {
+		t.Run(c.Operation, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, byte(c.Opcode))
+			*c.RegisterDst = 0x0
+			*c.RegisterSrc = 0x99
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 4)
+			assertPC(t, gbz, pc+1)
+			assertRegister(t, *c.RegisterSrc, *c.RegisterDst, c.RegisterDstInitial)
+
+			resetGBZ(gbz)
+		})
+	}
 }

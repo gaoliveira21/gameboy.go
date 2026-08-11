@@ -32,3 +32,7 @@ func (gbz *GBZ80) ldr8rp(rt, rh, rl *uint8, inc int) {
 	addr := int((hb<<8)|lb) + inc
 	*rt = gbz.mem.Read(uint16(addr))
 }
+
+func (gbz *GBZ80) ldr8r8(rdst, rsrc *uint8) {
+	*rdst = *rsrc
+}
