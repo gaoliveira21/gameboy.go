@@ -196,22 +196,22 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x8E: {g._ADC_A_HLX, "ADC A, [HL]", 1},
 		0x8F: {g._ADC_A_A, "ADC A, A", 1},
 
-		0x90: {g._TODO, "SUB A, B", 1},
-		0x91: {g._TODO, "SUB A, C", 1},
-		0x92: {g._TODO, "SUB A, D", 1},
-		0x93: {g._TODO, "SUB A, E", 1},
-		0x94: {g._TODO, "SUB A, H", 1},
-		0x95: {g._TODO, "SUB A, L", 1},
-		0x96: {g._TODO, "SUB A, [HL]", 1},
-		0x97: {g._TODO, "SUB A, A", 1},
-		0x98: {g._TODO, "SBC A, B", 1},
-		0x99: {g._TODO, "SBC A, C", 1},
-		0x9A: {g._TODO, "SBC A, D", 1},
-		0x9B: {g._TODO, "SBC A, E", 1},
-		0x9C: {g._TODO, "SBC A, H", 1},
-		0x9D: {g._TODO, "SBC A, L", 1},
-		0x9E: {g._TODO, "SBC A, [HL]", 1},
-		0x9F: {g._TODO, "SBC A, A", 1},
+		0x90: {g._SUB_A_B, "SUB A, B", 1},
+		0x91: {g._SUB_A_C, "SUB A, C", 1},
+		0x92: {g._SUB_A_D, "SUB A, D", 1},
+		0x93: {g._SUB_A_E, "SUB A, E", 1},
+		0x94: {g._SUB_A_H, "SUB A, H", 1},
+		0x95: {g._SUB_A_L, "SUB A, L", 1},
+		0x96: {g._SUB_A_HLX, "SUB A, [HL]", 1},
+		0x97: {g._SUB_A_A, "SUB A, A", 1},
+		0x98: {g._SBC_A_B, "SBC A, B", 1},
+		0x99: {g._SBC_A_C, "SBC A, C", 1},
+		0x9A: {g._SBC_A_D, "SBC A, D", 1},
+		0x9B: {g._SBC_A_E, "SBC A, E", 1},
+		0x9C: {g._SBC_A_H, "SBC A, H", 1},
+		0x9D: {g._SBC_A_L, "SBC A, L", 1},
+		0x9E: {g._SBC_A_HLX, "SBC A, [HL]", 1},
+		0x9F: {g._SBC_A_A, "SBC A, A", 1},
 
 		0xA0: {g._TODO, "AND A, B", 1},
 		0xA1: {g._TODO, "AND A, C", 1},
@@ -270,7 +270,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xD3: {g._ILLEGAL, "ILLEGAL_D3", 1},
 		0xD4: {g._TODO, "CALL NC, a16", 3},
 		0xD5: {g._TODO, "PUSH DE", 1},
-		0xD6: {g._TODO, "SUB A, n8", 2},
+		0xD6: {g._SUB_A_N8, "SUB A, n8", 2},
 		0xD7: {g._TODO, "RST $10", 1},
 		0xD8: {g._TODO, "RET C", 1},
 		0xD9: {g._TODO, "RETI", 1},
@@ -278,7 +278,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xDB: {g._ILLEGAL, "ILLEGAL_DB", 1},
 		0xDC: {g._TODO, "CALL C, a16", 3},
 		0xDD: {g._ILLEGAL, "ILLEGAL_DD", 1},
-		0xDE: {g._TODO, "SBC A, n8", 2},
+		0xDE: {g._SBC_A_N8, "SBC A, n8", 2},
 		0xDF: {g._TODO, "RST $18", 1},
 
 		0xE0: {g._TODO, "LDH [a8], A", 2},
@@ -1072,6 +1072,100 @@ func (gbz *GBZ80) _ADC_A_A() uint {
 
 func (gbz *GBZ80) _ADC_A_N8() uint {
 	gbz.adc(gbz.mem.Read(gbz.pc))
+	gbz.pc++
+	return 8
+}
+
+func (gbz *GBZ80) _SUB_A_B() uint {
+	gbz.sub(gbz.b, 0)
+	return 4
+}
+
+func (gbz *GBZ80) _SUB_A_C() uint {
+	gbz.sub(gbz.c, 0)
+	return 4
+}
+
+func (gbz *GBZ80) _SUB_A_D() uint {
+	gbz.sub(gbz.d, 0)
+	return 4
+}
+
+func (gbz *GBZ80) _SUB_A_E() uint {
+	gbz.sub(gbz.e, 0)
+	return 4
+}
+
+func (gbz *GBZ80) _SUB_A_H() uint {
+	gbz.sub(gbz.h, 0)
+	return 4
+}
+
+func (gbz *GBZ80) _SUB_A_L() uint {
+	gbz.sub(gbz.l, 0)
+	return 4
+}
+
+func (gbz *GBZ80) _SUB_A_HLX() uint {
+	addr := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	gbz.sub(gbz.mem.Read(addr), 0)
+	return 8
+}
+
+func (gbz *GBZ80) _SUB_A_A() uint {
+	gbz.sub(gbz.a, 0)
+	return 4
+}
+
+func (gbz *GBZ80) _SUB_A_N8() uint {
+	gbz.sub(gbz.mem.Read(gbz.pc), 0)
+	gbz.pc++
+	return 8
+}
+
+func (gbz *GBZ80) _SBC_A_B() uint {
+	gbz.sbc(gbz.b)
+	return 4
+}
+
+func (gbz *GBZ80) _SBC_A_C() uint {
+	gbz.sbc(gbz.c)
+	return 4
+}
+
+func (gbz *GBZ80) _SBC_A_D() uint {
+	gbz.sbc(gbz.d)
+	return 4
+}
+
+func (gbz *GBZ80) _SBC_A_E() uint {
+	gbz.sbc(gbz.e)
+	return 4
+}
+
+func (gbz *GBZ80) _SBC_A_H() uint {
+	gbz.sbc(gbz.h)
+	return 4
+}
+
+func (gbz *GBZ80) _SBC_A_L() uint {
+	gbz.sbc(gbz.l)
+	return 4
+}
+
+func (gbz *GBZ80) _SBC_A_HLX() uint {
+	addr := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	gbz.sbc(gbz.mem.Read(addr))
+	return 8
+}
+
+func (gbz *GBZ80) _SBC_A_A() uint {
+	gbz.sbc(gbz.a)
+	return 4
+}
+
+func (gbz *GBZ80) _SBC_A_N8() uint {
+	gbz.sbc(gbz.mem.Read(gbz.pc))
 	gbz.pc++
 	return 8
 }

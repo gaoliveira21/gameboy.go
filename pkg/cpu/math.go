@@ -54,3 +54,24 @@ func (gbz *GBZ80) adc(v byte) {
 
 	gbz.add(v, cv)
 }
+
+func (gbz *GBZ80) sub(v byte, carry uint16) {
+	r := uint16(gbz.a) - uint16(v) - carry
+
+	gbz.flags.Set(Carry, r>>8 > 0)
+	gbz.flags.Set(HalfCarry, ((gbz.a^uint8(r)^v)&0x10) > 0)
+
+	gbz.a = uint8(r & 0xFF)
+
+	gbz.flags.Set(Sub, true)
+	gbz.flags.Set(Zero, gbz.a == 0)
+}
+
+func (gbz *GBZ80) sbc(v byte) {
+	cv := uint16(0)
+	if gbz.flags.Get(Carry) {
+		cv = 1
+	}
+
+	gbz.sub(v, cv)
+}
