@@ -33,3 +33,24 @@ func (gbz *GBZ80) decr8(r *uint8) {
 	gbz.flags.Set(Sub, true)
 	gbz.flags.Set(HalfCarry, orig&0x0F == 0)
 }
+
+func (gbz *GBZ80) add(v byte, carry uint16) {
+	r := uint16(gbz.a) + uint16(v) + carry
+
+	gbz.flags.Set(Carry, r > 0xFF)
+	gbz.flags.Set(HalfCarry, ((gbz.a^uint8(r)^v)&0x10) > 0)
+
+	gbz.a = uint8(r & 0xFF)
+
+	gbz.flags.Set(Sub, false)
+	gbz.flags.Set(Zero, gbz.a == 0)
+}
+
+func (gbz *GBZ80) adc(v byte) {
+	cv := uint16(0)
+	if gbz.flags.Get(Carry) {
+		cv = 1
+	}
+
+	gbz.add(v, cv)
+}

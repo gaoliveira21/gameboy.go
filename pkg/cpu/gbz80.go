@@ -179,22 +179,22 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x7E: {g._LD_A_HL, "LD A, [HL]", 1},
 		0x7F: {g._LD_A_A, "LD A, A", 1},
 
-		0x80: {g._TODO, "ADD A, B", 1},
-		0x81: {g._TODO, "ADD A, C", 1},
-		0x82: {g._TODO, "ADD A, D", 1},
-		0x83: {g._TODO, "ADD A, E", 1},
-		0x84: {g._TODO, "ADD A, H", 1},
-		0x85: {g._TODO, "ADD A, L", 1},
-		0x86: {g._TODO, "ADD A, [HL]", 1},
-		0x87: {g._TODO, "ADD A, A", 1},
-		0x88: {g._TODO, "ADC A, B", 1},
-		0x89: {g._TODO, "ADC A, C", 1},
-		0x8A: {g._TODO, "ADC A, D", 1},
-		0x8B: {g._TODO, "ADC A, E", 1},
-		0x8C: {g._TODO, "ADC A, H", 1},
-		0x8D: {g._TODO, "ADC A, L", 1},
-		0x8E: {g._TODO, "ADC A, [HL]", 1},
-		0x8F: {g._TODO, "ADC A, A", 1},
+		0x80: {g._ADD_A_B, "ADD A, B", 1},
+		0x81: {g._ADD_A_C, "ADD A, C", 1},
+		0x82: {g._ADD_A_D, "ADD A, D", 1},
+		0x83: {g._ADD_A_E, "ADD A, E", 1},
+		0x84: {g._ADD_A_H, "ADD A, H", 1},
+		0x85: {g._ADD_A_L, "ADD A, L", 1},
+		0x86: {g._ADD_A_HLX, "ADD A, [HL]", 1},
+		0x87: {g._ADD_A_A, "ADD A, A", 1},
+		0x88: {g._ADC_A_B, "ADC A, B", 1},
+		0x89: {g._ADC_A_C, "ADC A, C", 1},
+		0x8A: {g._ADC_A_D, "ADC A, D", 1},
+		0x8B: {g._ADC_A_E, "ADC A, E", 1},
+		0x8C: {g._ADC_A_H, "ADC A, H", 1},
+		0x8D: {g._ADC_A_L, "ADC A, L", 1},
+		0x8E: {g._ADC_A_HLX, "ADC A, [HL]", 1},
+		0x8F: {g._ADC_A_A, "ADC A, A", 1},
 
 		0x90: {g._TODO, "SUB A, B", 1},
 		0x91: {g._TODO, "SUB A, C", 1},
@@ -261,7 +261,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xCB: {g._TODO, "PREFIX", 1},
 		0xCC: {g._TODO, "CALL Z, a16", 3},
 		0xCD: {g._TODO, "CALL a16", 3},
-		0xCE: {g._TODO, "ADC A, n8", 2},
+		0xCE: {g._ADC_A_N8, "ADC A, n8", 2},
 		0xCF: {g._TODO, "RST $08", 1},
 
 		0xD0: {g._TODO, "RET NC", 1},
@@ -985,5 +985,93 @@ func (gbz *GBZ80) _DEC_HLX() uint {
 
 func (gbz *GBZ80) _DEC_SP() uint {
 	gbz.sp--
+	return 8
+}
+
+func (gbz *GBZ80) _ADD_A_B() uint {
+	gbz.add(gbz.b, 0)
+	return 4
+}
+
+func (gbz *GBZ80) _ADD_A_C() uint {
+	gbz.add(gbz.c, 0)
+	return 4
+}
+
+func (gbz *GBZ80) _ADD_A_D() uint {
+	gbz.add(gbz.d, 0)
+	return 4
+}
+
+func (gbz *GBZ80) _ADD_A_E() uint {
+	gbz.add(gbz.e, 0)
+	return 4
+}
+
+func (gbz *GBZ80) _ADD_A_H() uint {
+	gbz.add(gbz.h, 0)
+	return 4
+}
+
+func (gbz *GBZ80) _ADD_A_L() uint {
+	gbz.add(gbz.l, 0)
+	return 4
+}
+
+func (gbz *GBZ80) _ADD_A_HLX() uint {
+	addr := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	gbz.add(gbz.mem.Read(addr), 0)
+	return 8
+}
+
+func (gbz *GBZ80) _ADD_A_A() uint {
+	gbz.add(gbz.a, 0)
+	return 4
+}
+
+func (gbz *GBZ80) _ADC_A_B() uint {
+	gbz.adc(gbz.b)
+	return 4
+}
+
+func (gbz *GBZ80) _ADC_A_C() uint {
+	gbz.adc(gbz.c)
+	return 4
+}
+
+func (gbz *GBZ80) _ADC_A_D() uint {
+	gbz.adc(gbz.d)
+	return 4
+}
+
+func (gbz *GBZ80) _ADC_A_E() uint {
+	gbz.adc(gbz.e)
+	return 4
+}
+
+func (gbz *GBZ80) _ADC_A_H() uint {
+	gbz.adc(gbz.h)
+	return 4
+}
+
+func (gbz *GBZ80) _ADC_A_L() uint {
+	gbz.adc(gbz.l)
+	return 4
+}
+
+func (gbz *GBZ80) _ADC_A_HLX() uint {
+	addr := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	gbz.adc(gbz.mem.Read(addr))
+	return 8
+}
+
+func (gbz *GBZ80) _ADC_A_A() uint {
+	gbz.adc(gbz.a)
+	return 4
+}
+
+func (gbz *GBZ80) _ADC_A_N8() uint {
+	gbz.adc(gbz.mem.Read(gbz.pc))
+	gbz.pc++
 	return 8
 }
