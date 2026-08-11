@@ -456,3 +456,38 @@ func Test_EI(t *testing.T) {
 	assertPC(t, gbz, pc+1)
 	assert.Equal(t, true, gbz.interruptEnabled, "EI should enable interrupts")
 }
+
+func Test_INCR16(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		Operation        string
+		Opcode           uint8
+		Register1        *uint8
+		Register1Initial string
+		Register2        *uint8
+		Register2Initial string
+	}{
+		{"_INC_BC", 0x03, &gbz.b, "B", &gbz.c, "C"},
+		{"_INC_DE", 0x13, &gbz.d, "D", &gbz.e, "E"},
+		{"_INC_HL", 0x23, &gbz.h, "H", &gbz.l, "L"},
+	}
+
+	for _, c := range cases {
+		t.Run(c.Operation, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, byte(c.Opcode))
+			*c.Register1 = 0x20
+			*c.Register2 = 0x80
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+1)
+			assertRegister(t, 0x20, *c.Register1, c.Register1Initial)
+			assertRegister(t, 0x81, *c.Register2, c.Register2Initial)
+
+			resetGBZ(gbz)
+		})
+	}
+}
