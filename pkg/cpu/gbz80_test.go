@@ -551,3 +551,40 @@ func Test_INCR8(t *testing.T) {
 		})
 	}
 }
+
+func Test_INC_HLX(t *testing.T) {
+	cases := []struct {
+		name           string
+		hl             uint16
+		memValue       byte
+		wantValue      byte
+		wantZero       bool
+		wantHalfCarry  bool
+	}{
+		{"NoFlags", 0xC000, 0x01, 0x02, false, false},
+		{"Zero", 0xC000, 0xFF, 0x00, true, true},
+		{"HalfCarry_0x0F", 0xC000, 0x0F, 0x10, false, true},
+		{"HalfCarry_0x1F", 0xC000, 0x1F, 0x20, false, true},
+		{"HalfCarry_0xFF", 0xC000, 0xFF, 0x00, true, true},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.h = byte(c.hl >> 8)
+			gbz.l = byte(c.hl & 0xFF)
+			gbz.mem.Write(c.hl, c.memValue)
+			gbz.mem.Write(gbz.pc, 0x34)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 12)
+			assertPC(t, gbz, pc+1)
+			assert.Equal(t, c.wantValue, gbz.mem.Read(c.hl), "Memory value mismatch")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, c.wantHalfCarry, gbz.flags.Get(HalfCarry), "HalfCarry flag mismatch")
+		})
+	}
+}

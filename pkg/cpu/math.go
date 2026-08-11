@@ -9,9 +9,10 @@ func (gbz *GBZ80) incr16(rh, rl *uint8) {
 }
 
 func (gbz *GBZ80) incr8(r *uint8) {
+	orig := *r
 	*r++
 
 	gbz.flags.Set(Zero, *r == 0)
 	gbz.flags.Set(Sub, false)
-	gbz.flags.Set(HalfCarry, *r&0x0F == 0)
+	gbz.flags.Set(HalfCarry, orig&0x0F == 0x0F)
 }
