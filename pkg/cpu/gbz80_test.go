@@ -227,6 +227,13 @@ func TestLdRpR8(t *testing.T) {
 		{"_LD_DE_A", 0x12, &gbz.d, &gbz.e, &gbz.a, 0},
 		{"_LD_HLI_A", 0x22, &gbz.h, &gbz.l, &gbz.a, 1},
 		{"_LD_HLD_A", 0x32, &gbz.h, &gbz.l, &gbz.a, -1},
+		{"_LD_HL_B", 0x70, &gbz.h, &gbz.l, &gbz.b, 0},
+		{"_LD_HL_C", 0x71, &gbz.h, &gbz.l, &gbz.c, 0},
+		{"_LD_HL_D", 0x72, &gbz.h, &gbz.l, &gbz.d, 0},
+		{"_LD_HL_E", 0x73, &gbz.h, &gbz.l, &gbz.e, 0},
+		{"_LD_HL_H", 0x74, &gbz.h, &gbz.l, &gbz.h, 0},
+		{"_LD_HL_L", 0x75, &gbz.h, &gbz.l, &gbz.l, 0},
+		{"_LD_HL_A", 0x77, &gbz.h, &gbz.l, &gbz.a, 0},
 	}
 
 	for _, c := range cases {
@@ -398,6 +405,13 @@ func Test_LdR8R8(t *testing.T) {
 		{"_LD_L_H", 0x6C, &gbz.l, "L", &gbz.h},
 		{"_LD_L_L", 0x6D, &gbz.l, "L", &gbz.l},
 		{"_LD_L_A", 0x6F, &gbz.l, "L", &gbz.a},
+		{"_LD_A_B", 0x78, &gbz.a, "A", &gbz.b},
+		{"_LD_A_C", 0x79, &gbz.a, "A", &gbz.c},
+		{"_LD_A_D", 0x7A, &gbz.a, "A", &gbz.d},
+		{"_LD_A_E", 0x7B, &gbz.a, "A", &gbz.e},
+		{"_LD_A_H", 0x7C, &gbz.a, "A", &gbz.h},
+		{"_LD_A_L", 0x7D, &gbz.a, "A", &gbz.l},
+		{"_LD_A_A", 0x7F, &gbz.a, "A", &gbz.a},
 	}
 
 	for _, c := range cases {
