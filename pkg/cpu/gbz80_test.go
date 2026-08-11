@@ -503,3 +503,51 @@ func Test_INC_SP(t *testing.T) {
 	assertPC(t, gbz, pc+1)
 	assertSP(t, sp+1, gbz.sp)
 }
+
+func Test_INCR8(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		Operation       string
+		Opcode          uint8
+		Register        *uint8
+		RegisterInitial string
+		InitialValue    byte
+		WantValue       byte
+		WantZero        bool
+		WantSub         bool
+		WantHalfCarry   bool
+	}{
+		{"_INC_B", 0x04, &gbz.b, "B", 0x00, 0x01, false, false, false},
+		{"_INC_C", 0x0C, &gbz.c, "C", 0x00, 0x01, false, false, false},
+		{"_INC_D", 0x14, &gbz.d, "D", 0x00, 0x01, false, false, false},
+		{"_INC_E", 0x1C, &gbz.e, "E", 0x00, 0x01, false, false, false},
+		{"_INC_H", 0x24, &gbz.h, "H", 0x00, 0x01, false, false, false},
+		{"_INC_L", 0x2C, &gbz.l, "L", 0x00, 0x01, false, false, false},
+		{"_INC_A", 0x3C, &gbz.a, "A", 0x00, 0x01, false, false, false},
+		{"_INC_A_Zero", 0x3C, &gbz.a, "A", 0xFF, 0x00, true, false, true},
+		{"_INC_A_HalfCarry_0x0F", 0x3C, &gbz.a, "A", 0x0F, 0x10, false, false, true},
+		{"_INC_A_HalfCarry_0x1F", 0x3C, &gbz.a, "A", 0x1F, 0x20, false, false, true},
+		{"_INC_A_HalfCarry_0x7F", 0x3C, &gbz.a, "A", 0x7F, 0x80, false, false, true},
+		{"_INC_A_NoFlags", 0x3C, &gbz.a, "A", 0x01, 0x02, false, false, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.Operation, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, byte(c.Opcode))
+			*c.Register = c.InitialValue
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 4)
+			assertPC(t, gbz, pc+1)
+			assertRegister(t, c.WantValue, *c.Register, c.RegisterInitial)
+			assert.Equal(t, c.WantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, c.WantSub, gbz.flags.Get(Sub), "Sub flag mismatch")
+			assert.Equal(t, c.WantHalfCarry, gbz.flags.Get(HalfCarry), "HalfCarry flag mismatch")
+
+			resetGBZ(gbz)
+		})
+	}
+}
