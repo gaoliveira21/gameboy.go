@@ -75,3 +75,39 @@ func (gbz *GBZ80) sbc(v byte) {
 
 	gbz.sub(v, cv)
 }
+
+func (gbz *GBZ80) and(v byte) {
+	gbz.a &= v
+
+	gbz.flags.Set(Zero, gbz.a == 0)
+	gbz.flags.Set(Sub, false)
+	gbz.flags.Set(HalfCarry, true)
+	gbz.flags.Set(Carry, false)
+}
+
+func (gbz *GBZ80) xor(v byte) {
+	gbz.a ^= v
+
+	gbz.flags.Set(Zero, gbz.a == 0)
+	gbz.flags.Set(Sub, false)
+	gbz.flags.Set(HalfCarry, false)
+	gbz.flags.Set(Carry, false)
+}
+
+func (gbz *GBZ80) or(v byte) {
+	gbz.a |= v
+
+	gbz.flags.Set(Zero, gbz.a == 0)
+	gbz.flags.Set(Sub, false)
+	gbz.flags.Set(HalfCarry, false)
+	gbz.flags.Set(Carry, false)
+}
+
+func (gbz *GBZ80) cp(v byte) {
+	r := uint16(gbz.a) - uint16(v)
+
+	gbz.flags.Set(Carry, r>>8 > 0)
+	gbz.flags.Set(HalfCarry, ((gbz.a^uint8(r)^v)&0x10) > 0)
+	gbz.flags.Set(Zero, uint8(r) == 0)
+	gbz.flags.Set(Sub, true)
+}

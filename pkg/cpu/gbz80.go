@@ -213,39 +213,39 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x9E: {g._SBC_A_HLX, "SBC A, [HL]", 1},
 		0x9F: {g._SBC_A_A, "SBC A, A", 1},
 
-		0xA0: {g._TODO, "AND A, B", 1},
-		0xA1: {g._TODO, "AND A, C", 1},
-		0xA2: {g._TODO, "AND A, D", 1},
-		0xA3: {g._TODO, "AND A, E", 1},
-		0xA4: {g._TODO, "AND A, H", 1},
-		0xA5: {g._TODO, "AND A, L", 1},
-		0xA6: {g._TODO, "AND A, [HL]", 1},
-		0xA7: {g._TODO, "AND A, A", 1},
-		0xA8: {g._TODO, "XOR A, B", 1},
-		0xA9: {g._TODO, "XOR A, C", 1},
-		0xAA: {g._TODO, "XOR A, D", 1},
-		0xAB: {g._TODO, "XOR A, E", 1},
-		0xAC: {g._TODO, "XOR A, H", 1},
-		0xAD: {g._TODO, "XOR A, L", 1},
-		0xAE: {g._TODO, "XOR A, [HL]", 1},
-		0xAF: {g._TODO, "XOR A, A", 1},
+		0xA0: {g._AND_A_B, "AND A, B", 1},
+		0xA1: {g._AND_A_C, "AND A, C", 1},
+		0xA2: {g._AND_A_D, "AND A, D", 1},
+		0xA3: {g._AND_A_E, "AND A, E", 1},
+		0xA4: {g._AND_A_H, "AND A, H", 1},
+		0xA5: {g._AND_A_L, "AND A, L", 1},
+		0xA6: {g._AND_A_HLX, "AND A, [HL]", 1},
+		0xA7: {g._AND_A_A, "AND A, A", 1},
+		0xA8: {g._XOR_A_B, "XOR A, B", 1},
+		0xA9: {g._XOR_A_C, "XOR A, C", 1},
+		0xAA: {g._XOR_A_D, "XOR A, D", 1},
+		0xAB: {g._XOR_A_E, "XOR A, E", 1},
+		0xAC: {g._XOR_A_H, "XOR A, H", 1},
+		0xAD: {g._XOR_A_L, "XOR A, L", 1},
+		0xAE: {g._XOR_A_HLX, "XOR A, [HL]", 1},
+		0xAF: {g._XOR_A_A, "XOR A, A", 1},
 
-		0xB0: {g._TODO, "OR A, B", 1},
-		0xB1: {g._TODO, "OR A, C", 1},
-		0xB2: {g._TODO, "OR A, D", 1},
-		0xB3: {g._TODO, "OR A, E", 1},
-		0xB4: {g._TODO, "OR A, H", 1},
-		0xB5: {g._TODO, "OR A, L", 1},
-		0xB6: {g._TODO, "OR A, [HL]", 1},
-		0xB7: {g._TODO, "OR A, A", 1},
-		0xB8: {g._TODO, "CP A, B", 1},
-		0xB9: {g._TODO, "CP A, C", 1},
-		0xBA: {g._TODO, "CP A, D", 1},
-		0xBB: {g._TODO, "CP A, E", 1},
-		0xBC: {g._TODO, "CP A, H", 1},
-		0xBD: {g._TODO, "CP A, L", 1},
-		0xBE: {g._TODO, "CP A, [HL]", 1},
-		0xBF: {g._TODO, "CP A, A", 1},
+		0xB0: {g._OR_A_B, "OR A, B", 1},
+		0xB1: {g._OR_A_C, "OR A, C", 1},
+		0xB2: {g._OR_A_D, "OR A, D", 1},
+		0xB3: {g._OR_A_E, "OR A, E", 1},
+		0xB4: {g._OR_A_H, "OR A, H", 1},
+		0xB5: {g._OR_A_L, "OR A, L", 1},
+		0xB6: {g._OR_A_HLX, "OR A, [HL]", 1},
+		0xB7: {g._OR_A_A, "OR A, A", 1},
+		0xB8: {g._CP_A_B, "CP A, B", 1},
+		0xB9: {g._CP_A_C, "CP A, C", 1},
+		0xBA: {g._CP_A_D, "CP A, D", 1},
+		0xBB: {g._CP_A_E, "CP A, E", 1},
+		0xBC: {g._CP_A_H, "CP A, H", 1},
+		0xBD: {g._CP_A_L, "CP A, L", 1},
+		0xBE: {g._CP_A_HLX, "CP A, [HL]", 1},
+		0xBF: {g._CP_A_A, "CP A, A", 1},
 
 		0xC0: {g._TODO, "RET NZ", 1},
 		0xC1: {g._TODO, "POP BC", 1},
@@ -287,7 +287,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xE3: {g._ILLEGAL, "ILLEGAL_E3", 1},
 		0xE4: {g._ILLEGAL, "ILLEGAL_E4", 1},
 		0xE5: {g._TODO, "PUSH HL", 1},
-		0xE6: {g._TODO, "AND A, n8", 2},
+		0xE6: {g._AND_A_N8, "AND A, n8", 2},
 		0xE7: {g._TODO, "RST $20", 1},
 		0xE8: {g._TODO, "ADD SP, e8", 2},
 		0xE9: {g._TODO, "JP HL", 1},
@@ -295,7 +295,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xEB: {g._ILLEGAL, "ILLEGAL_EB", 1},
 		0xEC: {g._ILLEGAL, "ILLEGAL_EC", 1},
 		0xED: {g._ILLEGAL, "ILLEGAL_ED", 1},
-		0xEE: {g._TODO, "XOR A, n8", 2},
+		0xEE: {g._XOR_A_N8, "XOR A, n8", 2},
 		0xEF: {g._TODO, "RST $28", 1},
 
 		0xF0: {g._TODO, "LDH A, [a8]", 2},
@@ -304,7 +304,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xF3: {g._DI, "DI", 1},
 		0xF4: {g._NOP, "NOP", 1},
 		0xF5: {g._TODO, "PUSH AF", 1},
-		0xF6: {g._TODO, "OR A, n8", 2},
+		0xF6: {g._OR_A_N8, "OR A, n8", 2},
 		0xF7: {g._TODO, "RST $30", 1},
 		0xF8: {g._TODO, "LD HL, SP + e8", 2},
 		0xF9: {g._TODO, "LD SP, HL", 1},
@@ -312,7 +312,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xFB: {g._EI, "EI", 1},
 		0xFC: {g._NOP, "NOP", 1},
 		0xFD: {g._ILLEGAL, "ILLEGAL_FD", 1},
-		0xFE: {g._TODO, "CP A, n8", 2},
+		0xFE: {g._CP_A_N8, "CP A, n8", 2},
 		0xFF: {g._TODO, "RST $38", 1},
 	}
 
@@ -1166,6 +1166,194 @@ func (gbz *GBZ80) _SBC_A_A() uint {
 
 func (gbz *GBZ80) _SBC_A_N8() uint {
 	gbz.sbc(gbz.mem.Read(gbz.pc))
+	gbz.pc++
+	return 8
+}
+
+func (gbz *GBZ80) _AND_A_B() uint {
+	gbz.and(gbz.b)
+	return 4
+}
+
+func (gbz *GBZ80) _XOR_A_B() uint {
+	gbz.xor(gbz.b)
+	return 4
+}
+
+func (gbz *GBZ80) _OR_A_B() uint {
+	gbz.or(gbz.b)
+	return 4
+}
+
+func (gbz *GBZ80) _AND_A_C() uint {
+	gbz.and(gbz.c)
+	return 4
+}
+
+func (gbz *GBZ80) _AND_A_D() uint {
+	gbz.and(gbz.d)
+	return 4
+}
+
+func (gbz *GBZ80) _AND_A_E() uint {
+	gbz.and(gbz.e)
+	return 4
+}
+
+func (gbz *GBZ80) _AND_A_H() uint {
+	gbz.and(gbz.h)
+	return 4
+}
+
+func (gbz *GBZ80) _AND_A_L() uint {
+	gbz.and(gbz.l)
+	return 4
+}
+
+func (gbz *GBZ80) _AND_A_HLX() uint {
+	addr := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	gbz.and(gbz.mem.Read(addr))
+	return 8
+}
+
+func (gbz *GBZ80) _AND_A_A() uint {
+	gbz.and(gbz.a)
+	return 4
+}
+
+func (gbz *GBZ80) _AND_A_N8() uint {
+	gbz.and(gbz.mem.Read(gbz.pc))
+	gbz.pc++
+	return 8
+}
+
+func (gbz *GBZ80) _XOR_A_C() uint {
+	gbz.xor(gbz.c)
+	return 4
+}
+
+func (gbz *GBZ80) _XOR_A_D() uint {
+	gbz.xor(gbz.d)
+	return 4
+}
+
+func (gbz *GBZ80) _XOR_A_E() uint {
+	gbz.xor(gbz.e)
+	return 4
+}
+
+func (gbz *GBZ80) _XOR_A_H() uint {
+	gbz.xor(gbz.h)
+	return 4
+}
+
+func (gbz *GBZ80) _XOR_A_L() uint {
+	gbz.xor(gbz.l)
+	return 4
+}
+
+func (gbz *GBZ80) _XOR_A_HLX() uint {
+	addr := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	gbz.xor(gbz.mem.Read(addr))
+	return 8
+}
+
+func (gbz *GBZ80) _XOR_A_A() uint {
+	gbz.xor(gbz.a)
+	return 4
+}
+
+func (gbz *GBZ80) _XOR_A_N8() uint {
+	gbz.xor(gbz.mem.Read(gbz.pc))
+	gbz.pc++
+	return 8
+}
+
+func (gbz *GBZ80) _OR_A_C() uint {
+	gbz.or(gbz.c)
+	return 4
+}
+
+func (gbz *GBZ80) _OR_A_D() uint {
+	gbz.or(gbz.d)
+	return 4
+}
+
+func (gbz *GBZ80) _OR_A_E() uint {
+	gbz.or(gbz.e)
+	return 4
+}
+
+func (gbz *GBZ80) _OR_A_H() uint {
+	gbz.or(gbz.h)
+	return 4
+}
+
+func (gbz *GBZ80) _OR_A_L() uint {
+	gbz.or(gbz.l)
+	return 4
+}
+
+func (gbz *GBZ80) _OR_A_HLX() uint {
+	addr := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	gbz.or(gbz.mem.Read(addr))
+	return 8
+}
+
+func (gbz *GBZ80) _OR_A_A() uint {
+	gbz.or(gbz.a)
+	return 4
+}
+
+func (gbz *GBZ80) _OR_A_N8() uint {
+	gbz.or(gbz.mem.Read(gbz.pc))
+	gbz.pc++
+	return 8
+}
+
+func (gbz *GBZ80) _CP_A_B() uint {
+	gbz.cp(gbz.b)
+	return 4
+}
+
+func (gbz *GBZ80) _CP_A_C() uint {
+	gbz.cp(gbz.c)
+	return 4
+}
+
+func (gbz *GBZ80) _CP_A_D() uint {
+	gbz.cp(gbz.d)
+	return 4
+}
+
+func (gbz *GBZ80) _CP_A_E() uint {
+	gbz.cp(gbz.e)
+	return 4
+}
+
+func (gbz *GBZ80) _CP_A_H() uint {
+	gbz.cp(gbz.h)
+	return 4
+}
+
+func (gbz *GBZ80) _CP_A_L() uint {
+	gbz.cp(gbz.l)
+	return 4
+}
+
+func (gbz *GBZ80) _CP_A_HLX() uint {
+	addr := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	gbz.cp(gbz.mem.Read(addr))
+	return 8
+}
+
+func (gbz *GBZ80) _CP_A_A() uint {
+	gbz.cp(gbz.a)
+	return 4
+}
+
+func (gbz *GBZ80) _CP_A_N8() uint {
+	gbz.cp(gbz.mem.Read(gbz.pc))
 	gbz.pc++
 	return 8
 }
