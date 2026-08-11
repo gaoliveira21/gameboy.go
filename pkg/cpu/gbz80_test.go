@@ -554,12 +554,12 @@ func Test_INCR8(t *testing.T) {
 
 func Test_INC_HLX(t *testing.T) {
 	cases := []struct {
-		name           string
-		hl             uint16
-		memValue       byte
-		wantValue      byte
-		wantZero       bool
-		wantHalfCarry  bool
+		name          string
+		hl            uint16
+		memValue      byte
+		wantValue     byte
+		wantZero      bool
+		wantHalfCarry bool
 	}{
 		{"NoFlags", 0xC000, 0x01, 0x02, false, false},
 		{"Zero", 0xC000, 0xFF, 0x00, true, true},
@@ -584,6 +584,136 @@ func Test_INC_HLX(t *testing.T) {
 			assert.Equal(t, c.wantValue, gbz.mem.Read(c.hl), "Memory value mismatch")
 			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
 			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, c.wantHalfCarry, gbz.flags.Get(HalfCarry), "HalfCarry flag mismatch")
+		})
+	}
+}
+
+func Test_DECR16(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		Operation        string
+		Opcode           uint8
+		Register1        *uint8
+		Register1Initial string
+		Register2        *uint8
+		Register2Initial string
+	}{
+		{"_DEC_BC", 0x0B, &gbz.b, "B", &gbz.c, "C"},
+		{"_DEC_DE", 0x1B, &gbz.d, "D", &gbz.e, "E"},
+		{"_DEC_HL", 0x2B, &gbz.h, "H", &gbz.l, "L"},
+	}
+
+	for _, c := range cases {
+		t.Run(c.Operation, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, byte(c.Opcode))
+			*c.Register1 = 0x20
+			*c.Register2 = 0x80
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+1)
+			assertRegister(t, 0x20, *c.Register1, c.Register1Initial)
+			assertRegister(t, 0x7F, *c.Register2, c.Register2Initial)
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_DEC_SP(t *testing.T) {
+	gbz := createGBZWithOpcode(0x3B)
+	pc := gbz.pc
+	sp := gbz.sp
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 8)
+	assertPC(t, gbz, pc+1)
+	assertSP(t, sp-1, gbz.sp)
+}
+
+func Test_DECR8(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		Operation       string
+		Opcode          uint8
+		Register        *uint8
+		RegisterInitial string
+		InitialValue    byte
+		WantValue       byte
+		WantZero        bool
+		WantSub         bool
+		WantHalfCarry   bool
+	}{
+		{"_DEC_B", 0x05, &gbz.b, "B", 0x01, 0x00, true, true, false},
+		{"_DEC_C", 0x0D, &gbz.c, "C", 0x01, 0x00, true, true, false},
+		{"_DEC_D", 0x15, &gbz.d, "D", 0x01, 0x00, true, true, false},
+		{"_DEC_E", 0x1D, &gbz.e, "E", 0x01, 0x00, true, true, false},
+		{"_DEC_H", 0x25, &gbz.h, "H", 0x01, 0x00, true, true, false},
+		{"_DEC_L", 0x2D, &gbz.l, "L", 0x01, 0x00, true, true, false},
+		{"_DEC_A", 0x3D, &gbz.a, "A", 0x01, 0x00, true, true, false},
+		{"_DEC_A_Zero", 0x3D, &gbz.a, "A", 0x00, 0xFF, false, true, true},
+		{"_DEC_A_HalfCarry_0x00", 0x3D, &gbz.a, "A", 0x00, 0xFF, false, true, true},
+		{"_DEC_A_HalfCarry_0x10", 0x3D, &gbz.a, "A", 0x10, 0x0F, false, true, true},
+		{"_DEC_A_NoFlags", 0x3D, &gbz.a, "A", 0x02, 0x01, false, true, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.Operation, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, byte(c.Opcode))
+			*c.Register = c.InitialValue
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 4)
+			assertPC(t, gbz, pc+1)
+			assertRegister(t, c.WantValue, *c.Register, c.RegisterInitial)
+			assert.Equal(t, c.WantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, c.WantSub, gbz.flags.Get(Sub), "Sub flag mismatch")
+			assert.Equal(t, c.WantHalfCarry, gbz.flags.Get(HalfCarry), "HalfCarry flag mismatch")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_DEC_HLX(t *testing.T) {
+	cases := []struct {
+		name          string
+		hl            uint16
+		memValue      byte
+		wantValue     byte
+		wantZero      bool
+		wantHalfCarry bool
+	}{
+		{"NoFlags", 0xC000, 0x02, 0x01, false, false},
+		{"Zero", 0xC000, 0x01, 0x00, true, false},
+		{"HalfCarry_0x00", 0xC000, 0x00, 0xFF, false, true},
+		{"HalfCarry_0x10", 0xC000, 0x10, 0x0F, false, true},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.h = byte(c.hl >> 8)
+			gbz.l = byte(c.hl & 0xFF)
+			gbz.mem.Write(c.hl, c.memValue)
+			gbz.mem.Write(gbz.pc, 0x35)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 12)
+			assertPC(t, gbz, pc+1)
+			assert.Equal(t, c.wantValue, gbz.mem.Read(c.hl), "Memory value mismatch")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, true, gbz.flags.Get(Sub), "Sub flag should be true")
 			assert.Equal(t, c.wantHalfCarry, gbz.flags.Get(HalfCarry), "HalfCarry flag mismatch")
 		})
 	}

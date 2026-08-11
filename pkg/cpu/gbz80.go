@@ -48,15 +48,15 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x02: {g._LD_BC_A, "LD [BC], A", 1},
 		0x03: {g._INC_BC, "INC BC", 1},
 		0x04: {g._INC_B, "INC B", 1},
-		0x05: {g._TODO, "DEC B", 1},
+		0x05: {g._DEC_B, "DEC B", 1},
 		0x06: {g._LD_B_n8, "LD B, n8", 2},
 		0x07: {g._TODO, "RLCA", 1},
 		0x08: {g._LD_a16_SP, "LD [a16], SP", 3},
 		0x09: {g._TODO, "ADD HL, BC", 1},
 		0x0A: {g._LD_A_BC, "LD A, [BC]", 1},
-		0x0B: {g._TODO, "DEC BC", 1},
+		0x0B: {g._DEC_BC, "DEC BC", 1},
 		0x0C: {g._INC_C, "INC C", 1},
-		0x0D: {g._TODO, "DEC C", 1},
+		0x0D: {g._DEC_C, "DEC C", 1},
 		0x0E: {g._LD_C_n8, "LD C, n8", 2},
 		0x0F: {g._TODO, "RRCA", 1},
 
@@ -65,15 +65,15 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x12: {g._LD_DE_A, "LD [DE], A", 1},
 		0x13: {g._INC_DE, "INC DE", 1},
 		0x14: {g._INC_D, "INC D", 1},
-		0x15: {g._TODO, "DEC D", 1},
+		0x15: {g._DEC_D, "DEC D", 1},
 		0x16: {g._LD_D_n8, "LD D, n8", 2},
 		0x17: {g._TODO, "RLA", 1},
 		0x18: {g._TODO, "JR e8", 2},
 		0x19: {g._TODO, "ADD HL, DE", 1},
 		0x1A: {g._LD_A_DE, "LD A, [DE]", 1},
-		0x1B: {g._TODO, "DEC DE", 1},
+		0x1B: {g._DEC_DE, "DEC DE", 1},
 		0x1C: {g._INC_E, "INC E", 1},
-		0x1D: {g._TODO, "DEC E", 1},
+		0x1D: {g._DEC_E, "DEC E", 1},
 		0x1E: {g._LD_E_n8, "LD E, n8", 2},
 		0x1F: {g._TODO, "RRA", 1},
 
@@ -82,15 +82,15 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x22: {g._LD_HLI_A, "LD [HL+], A", 1},
 		0x23: {g._INC_HL, "INC HL", 1},
 		0x24: {g._INC_H, "INC H", 1},
-		0x25: {g._TODO, "DEC H", 1},
+		0x25: {g._DEC_H, "DEC H", 1},
 		0x26: {g._LD_H_n8, "LD H, n8", 2},
 		0x27: {g._TODO, "DAA", 1},
 		0x28: {g._TODO, "JR Z, e8", 2},
 		0x29: {g._TODO, "ADD HL, HL", 1},
 		0x2A: {g._LD_A_HLI, "LD A, [HL+]", 1},
-		0x2B: {g._TODO, "DEC HL", 1},
+		0x2B: {g._DEC_HL, "DEC HL", 1},
 		0x2C: {g._INC_L, "INC L", 1},
-		0x2D: {g._TODO, "DEC L", 1},
+		0x2D: {g._DEC_L, "DEC L", 1},
 		0x2E: {g._LD_L_n8, "LD L, n8", 2},
 		0x2F: {g._TODO, "CPL", 1},
 
@@ -99,15 +99,15 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x32: {g._LD_HLD_A, "LD [HL-], A", 1},
 		0x33: {g._INC_SP, "INC SP", 1},
 		0x34: {g._INC_HLX, "INC [HL]", 1},
-		0x35: {g._TODO, "DEC [HL]", 1},
+		0x35: {g._DEC_HLX, "DEC [HL]", 1},
 		0x36: {g._LD_HL_n8, "LD [HL], n8", 2},
 		0x37: {g._TODO, "SCF", 1},
 		0x38: {g._TODO, "JR C, e8", 2},
 		0x39: {g._TODO, "ADD HL, SP", 1},
 		0x3A: {g._LD_A_HLD, "LD A, [HL-]", 1},
-		0x3B: {g._TODO, "DEC SP", 1},
+		0x3B: {g._DEC_SP, "DEC SP", 1},
 		0x3C: {g._INC_A, "INC A", 1},
-		0x3D: {g._TODO, "DEC A", 1},
+		0x3D: {g._DEC_A, "DEC A", 1},
 		0x3E: {g._LD_A_n8, "LD A, n8", 2},
 		0x3F: {g._TODO, "CCF", 1},
 
@@ -917,4 +917,73 @@ func (gbz *GBZ80) _INC_HLX() uint {
 	gbz.flags.Set(HalfCarry, orig&0x0F == 0x0F)
 
 	return 12
+}
+
+func (gbz *GBZ80) _DEC_BC() uint {
+	gbz.decr16(&gbz.b, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _DEC_DE() uint {
+	gbz.decr16(&gbz.d, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _DEC_HL() uint {
+	gbz.decr16(&gbz.h, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _DEC_B() uint {
+	gbz.decr8(&gbz.b)
+	return 4
+}
+
+func (gbz *GBZ80) _DEC_C() uint {
+	gbz.decr8(&gbz.c)
+	return 4
+}
+
+func (gbz *GBZ80) _DEC_D() uint {
+	gbz.decr8(&gbz.d)
+	return 4
+}
+
+func (gbz *GBZ80) _DEC_E() uint {
+	gbz.decr8(&gbz.e)
+	return 4
+}
+
+func (gbz *GBZ80) _DEC_H() uint {
+	gbz.decr8(&gbz.h)
+	return 4
+}
+
+func (gbz *GBZ80) _DEC_L() uint {
+	gbz.decr8(&gbz.l)
+	return 4
+}
+
+func (gbz *GBZ80) _DEC_A() uint {
+	gbz.decr8(&gbz.a)
+	return 4
+}
+
+func (gbz *GBZ80) _DEC_HLX() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	orig := b
+	b--
+	gbz.mem.Write(hl, b)
+
+	gbz.flags.Set(Zero, b == 0)
+	gbz.flags.Set(Sub, true)
+	gbz.flags.Set(HalfCarry, orig&0x0F == 0)
+
+	return 12
+}
+
+func (gbz *GBZ80) _DEC_SP() uint {
+	gbz.sp--
+	return 8
 }
