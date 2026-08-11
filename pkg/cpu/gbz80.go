@@ -52,7 +52,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x06: {g._LD_B_n8, "LD B, n8", 2},
 		0x07: {g._TODO, "RLCA", 1},
 		0x08: {g._LD_a16_SP, "LD [a16], SP", 3},
-		0x09: {g._TODO, "ADD HL, BC", 1},
+		0x09: {g._ADD_HL_BC, "ADD HL, BC", 1},
 		0x0A: {g._LD_A_BC, "LD A, [BC]", 1},
 		0x0B: {g._DEC_BC, "DEC BC", 1},
 		0x0C: {g._INC_C, "INC C", 1},
@@ -69,7 +69,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x16: {g._LD_D_n8, "LD D, n8", 2},
 		0x17: {g._TODO, "RLA", 1},
 		0x18: {g._TODO, "JR e8", 2},
-		0x19: {g._TODO, "ADD HL, DE", 1},
+		0x19: {g._ADD_HL_DE, "ADD HL, DE", 1},
 		0x1A: {g._LD_A_DE, "LD A, [DE]", 1},
 		0x1B: {g._DEC_DE, "DEC DE", 1},
 		0x1C: {g._INC_E, "INC E", 1},
@@ -86,7 +86,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x26: {g._LD_H_n8, "LD H, n8", 2},
 		0x27: {g._TODO, "DAA", 1},
 		0x28: {g._TODO, "JR Z, e8", 2},
-		0x29: {g._TODO, "ADD HL, HL", 1},
+		0x29: {g._ADD_HL_HL, "ADD HL, HL", 1},
 		0x2A: {g._LD_A_HLI, "LD A, [HL+]", 1},
 		0x2B: {g._DEC_HL, "DEC HL", 1},
 		0x2C: {g._INC_L, "INC L", 1},
@@ -103,7 +103,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x36: {g._LD_HL_n8, "LD [HL], n8", 2},
 		0x37: {g._TODO, "SCF", 1},
 		0x38: {g._TODO, "JR C, e8", 2},
-		0x39: {g._TODO, "ADD HL, SP", 1},
+		0x39: {g._ADD_HL_SP, "ADD HL, SP", 1},
 		0x3A: {g._LD_A_HLD, "LD A, [HL-]", 1},
 		0x3B: {g._DEC_SP, "DEC SP", 1},
 		0x3C: {g._INC_A, "INC A", 1},
@@ -1027,6 +1027,68 @@ func (gbz *GBZ80) _ADD_A_HLX() uint {
 func (gbz *GBZ80) _ADD_A_A() uint {
 	gbz.add(gbz.a, 0)
 	return 4
+}
+
+func (gbz *GBZ80) _ADD_HL_BC() uint {
+	bc := (uint16(gbz.b) << 8) | uint16(gbz.c)
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+
+	r := uint32(hl) + uint32(bc)
+
+	gbz.h = uint8(r >> 8)
+	gbz.l = uint8(r & 0xFF)
+
+	gbz.flags.Set(Carry, r > 0xFFFF)
+	gbz.flags.Set(HalfCarry, (uint32(hl)^uint32(bc)^r)&0x1000 > 0)
+	gbz.flags.Set(Sub, false)
+
+	return 8
+}
+
+func (gbz *GBZ80) _ADD_HL_DE() uint {
+	de := (uint16(gbz.d) << 8) | uint16(gbz.e)
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+
+	r := uint32(hl) + uint32(de)
+
+	gbz.h = uint8(r >> 8)
+	gbz.l = uint8(r & 0xFF)
+
+	gbz.flags.Set(Carry, r > 0xFFFF)
+	gbz.flags.Set(HalfCarry, (uint32(hl)^uint32(de)^r)&0x1000 > 0)
+	gbz.flags.Set(Sub, false)
+
+	return 8
+}
+
+func (gbz *GBZ80) _ADD_HL_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+
+	r := uint32(hl) * 2
+
+	gbz.h = uint8(r >> 8)
+	gbz.l = uint8(r & 0xFF)
+
+	gbz.flags.Set(Carry, r > 0xFFFF)
+	gbz.flags.Set(HalfCarry, r&0x1000 > 0)
+	gbz.flags.Set(Sub, false)
+
+	return 8
+}
+
+func (gbz *GBZ80) _ADD_HL_SP() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+
+	r := uint32(hl) + uint32(gbz.sp)
+
+	gbz.h = uint8(r >> 8)
+	gbz.l = uint8(r & 0xFF)
+
+	gbz.flags.Set(Carry, r > 0xFFFF)
+	gbz.flags.Set(HalfCarry, (uint32(hl)^uint32(gbz.sp)^r)&0x1000 > 0)
+	gbz.flags.Set(Sub, false)
+
+	return 8
 }
 
 func (gbz *GBZ80) _ADC_A_B() uint {

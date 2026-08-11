@@ -1751,3 +1751,146 @@ func Test_CP_A_N8(t *testing.T) {
 		})
 	}
 }
+
+func Test_ADD_HL_BC(t *testing.T) {
+	cases := []struct {
+		name          string
+		opcode        uint8
+		b, c          uint8
+		h, l          uint8
+		wantH, wantL  uint8
+		wantCarry     bool
+		wantHalfCarry bool
+	}{
+		{"NoFlags", 0x09, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, false, false},
+		{"Carry", 0x09, 0xFF, 0xFF, 0x00, 0x01, 0x00, 0x00, true, true},
+		{"CarryHalfCarry", 0x09, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, true, true},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.b, gbz.c = c.b, c.c
+			gbz.h, gbz.l = c.h, c.l
+			gbz.mem.Write(gbz.pc, c.opcode)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+1)
+			assertRegister(t, c.wantH, gbz.h, "H")
+			assertRegister(t, c.wantL, gbz.l, "L")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, c.wantHalfCarry, gbz.flags.Get(HalfCarry), "HalfCarry flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+		})
+	}
+}
+
+func Test_ADD_HL_DE(t *testing.T) {
+	cases := []struct {
+		name          string
+		opcode        uint8
+		d, e          uint8
+		h, l          uint8
+		wantH, wantL  uint8
+		wantCarry     bool
+		wantHalfCarry bool
+	}{
+		{"NoFlags", 0x19, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, false, false},
+		{"Carry", 0x19, 0xFF, 0xFF, 0x00, 0x01, 0x00, 0x00, true, true},
+		{"CarryHalfCarry", 0x19, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, true, true},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.d, gbz.e = c.d, c.e
+			gbz.h, gbz.l = c.h, c.l
+			gbz.mem.Write(gbz.pc, c.opcode)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+1)
+			assertRegister(t, c.wantH, gbz.h, "H")
+			assertRegister(t, c.wantL, gbz.l, "L")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, c.wantHalfCarry, gbz.flags.Get(HalfCarry), "HalfCarry flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+		})
+	}
+}
+
+func Test_ADD_HL_HL(t *testing.T) {
+	cases := []struct {
+		name          string
+		h, l          uint8
+		wantH, wantL  uint8
+		wantCarry     bool
+		wantHalfCarry bool
+	}{
+		{"NoFlags", 0x00, 0x00, 0x00, 0x00, false, false},
+		{"HalfCarry_0x0800", 0x08, 0x00, 0x10, 0x00, false, true},
+		{"Carry", 0x80, 0x00, 0x00, 0x00, true, false},
+		{"CarryHalfCarry", 0xFF, 0xFF, 0xFF, 0xFE, true, true},
+		{"HalfCarry_0x0FFF", 0x0F, 0xFF, 0x1F, 0xFE, false, true},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.h, gbz.l = c.h, c.l
+			gbz.mem.Write(gbz.pc, 0x29)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+1)
+			assertRegister(t, c.wantH, gbz.h, "H")
+			assertRegister(t, c.wantL, gbz.l, "L")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, c.wantHalfCarry, gbz.flags.Get(HalfCarry), "HalfCarry flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+		})
+	}
+}
+
+func Test_ADD_HL_SP(t *testing.T) {
+	cases := []struct {
+		name          string
+		sp            uint16
+		h, l          uint8
+		wantH, wantL  uint8
+		wantCarry     bool
+		wantHalfCarry bool
+	}{
+		{"NoFlags", 0x0001, 0x00, 0x00, 0x00, 0x01, false, false},
+		{"Carry", 0xFFFF, 0x00, 0x01, 0x00, 0x00, true, true},
+		{"CarryHalfCarry", 0xFFFF, 0xFF, 0xFF, 0xFF, 0xFE, true, true},
+		{"HalfCarry_0x0FFF", 0x0001, 0x0F, 0xFF, 0x10, 0x00, false, true},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.sp = c.sp
+			gbz.h, gbz.l = c.h, c.l
+			gbz.mem.Write(gbz.pc, 0x39)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+1)
+			assertRegister(t, c.wantH, gbz.h, "H")
+			assertRegister(t, c.wantL, gbz.l, "L")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, c.wantHalfCarry, gbz.flags.Get(HalfCarry), "HalfCarry flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+		})
+	}
+}
