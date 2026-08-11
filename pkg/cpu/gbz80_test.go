@@ -491,3 +491,15 @@ func Test_INCR16(t *testing.T) {
 		})
 	}
 }
+
+func Test_INC_SP(t *testing.T) {
+	gbz := createGBZWithOpcode(0x33)
+	pc := gbz.pc
+	sp := gbz.sp
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 8)
+	assertPC(t, gbz, pc+1)
+	assertSP(t, sp+1, gbz.sp)
+}

@@ -97,7 +97,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x30: {g._TODO, "JR NC, e8", 2},
 		0x31: {g._LD_SP_n16, "LD SP, n16", 3},
 		0x32: {g._LD_HLD_A, "LD [HL-], A", 1},
-		0x33: {g._TODO, "INC SP", 1},
+		0x33: {g._INC_SP, "INC SP", 1},
 		0x34: {g._TODO, "INC [HL]", 1},
 		0x35: {g._TODO, "DEC [HL]", 1},
 		0x36: {g._LD_HL_n8, "LD [HL], n8", 2},
@@ -862,5 +862,10 @@ func (gbz *GBZ80) _INC_DE() uint {
 
 func (gbz *GBZ80) _INC_HL() uint {
 	gbz.incr16(&gbz.h, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _INC_SP() uint {
+	gbz.sp++
 	return 8
 }
