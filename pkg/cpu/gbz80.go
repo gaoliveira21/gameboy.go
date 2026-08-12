@@ -281,9 +281,9 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xDE: {g._SBC_A_N8, "SBC A, n8", 2},
 		0xDF: {g._RST_18, "RST $18", 1},
 
-		0xE0: {g._TODO, "LDH [a8], A", 2},
+		0xE0: {g._LDH_A8_A, "LDH [a8], A", 2},
 		0xE1: {g._TODO, "POP HL", 1},
-		0xE2: {g._TODO, "LDH [C], A", 1},
+		0xE2: {g._LDH_C_A, "LDH [C], A", 1},
 		0xE3: {g._ILLEGAL, "ILLEGAL_E3", 1},
 		0xE4: {g._ILLEGAL, "ILLEGAL_E4", 1},
 		0xE5: {g._TODO, "PUSH HL", 1},
@@ -291,16 +291,16 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xE7: {g._RST_20, "RST $20", 1},
 		0xE8: {g._TODO, "ADD SP, e8", 2},
 		0xE9: {g._JP_HL, "JP HL", 1},
-		0xEA: {g._TODO, "LD [a16], A", 3},
+		0xEA: {g._LD_A16_A, "LD [a16], A", 3},
 		0xEB: {g._ILLEGAL, "ILLEGAL_EB", 1},
 		0xEC: {g._ILLEGAL, "ILLEGAL_EC", 1},
 		0xED: {g._ILLEGAL, "ILLEGAL_ED", 1},
 		0xEE: {g._XOR_A_N8, "XOR A, n8", 2},
 		0xEF: {g._RST_28, "RST $28", 1},
 
-		0xF0: {g._TODO, "LDH A, [a8]", 2},
+		0xF0: {g._LDH_A_A8, "LDH A, [a8]", 2},
 		0xF1: {g._TODO, "POP AF", 1},
-		0xF2: {g._TODO, "LDH A, [C]", 1},
+		0xF2: {g._LDH_A_C, "LDH A, [C]", 1},
 		0xF3: {g._DI, "DI", 1},
 		0xF4: {g._NOP, "NOP", 1},
 		0xF5: {g._TODO, "PUSH AF", 1},
@@ -308,7 +308,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xF7: {g._RST_30, "RST $30", 1},
 		0xF8: {g._TODO, "LD HL, SP + e8", 2},
 		0xF9: {g._TODO, "LD SP, HL", 1},
-		0xFA: {g._TODO, "LD A, [a16]", 3},
+		0xFA: {g._LD_A_A16, "LD A, [a16]", 3},
 		0xFB: {g._EI, "EI", 1},
 		0xFC: {g._NOP, "NOP", 1},
 		0xFD: {g._ILLEGAL, "ILLEGAL_FD", 1},
@@ -848,6 +848,57 @@ func (gbz *GBZ80) _LD_A_HL() uint {
 func (gbz *GBZ80) _LD_A_A() uint {
 	gbz.ldr8r8(&gbz.a, &gbz.a)
 	return 4
+}
+
+func (gbz *GBZ80) _LDH_A8_A() uint {
+	a8 := gbz.mem.Read(gbz.pc)
+	gbz.pc++
+
+	gbz.mem.Write(0xFF00+uint16(a8), gbz.a)
+	return 12
+}
+
+func (gbz *GBZ80) _LDH_A_A8() uint {
+	a8 := gbz.mem.Read(gbz.pc)
+	gbz.pc++
+
+	addr := 0xFF00 + uint16(a8)
+	gbz.a = gbz.mem.Read(addr)
+
+	return 12
+}
+
+func (gbz *GBZ80) _LDH_C_A() uint {
+	gbz.mem.Write(0xFF00+uint16(gbz.c), gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _LDH_A_C() uint {
+	addr := 0xFF00 + uint16(gbz.c)
+	gbz.a = gbz.mem.Read(addr)
+	return 8
+}
+
+func (gbz *GBZ80) _LD_A16_A() uint {
+	lb := gbz.mem.Read(gbz.pc)
+	hb := gbz.mem.Read(gbz.pc + 1)
+	gbz.pc += 2
+
+	addr := (uint16(hb) << 8) | uint16(lb)
+	gbz.mem.Write(addr, gbz.a)
+
+	return 16
+}
+
+func (gbz *GBZ80) _LD_A_A16() uint {
+	lb := gbz.mem.Read(gbz.pc)
+	hb := gbz.mem.Read(gbz.pc + 1)
+	gbz.pc += 2
+
+	addr := (uint16(hb) << 8) | uint16(lb)
+	gbz.a = gbz.mem.Read(addr)
+
+	return 16
 }
 
 func (gbz *GBZ80) _INC_BC() uint {

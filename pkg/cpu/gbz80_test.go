@@ -2525,3 +2525,57 @@ func Test_RST(t *testing.T) {
 		})
 	}
 }
+
+func Test_LDH_A8_A(t *testing.T) {
+	gbz := createGBZ()
+	gbz.a = 0x42
+	offset := byte(0x10)
+	gbz.mem.Write(gbz.pc, 0xE0)
+	gbz.mem.Write(gbz.pc+1, offset)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 12)
+	assertPC(t, gbz, 0x102)
+	assertMemory(t, gbz, 0xFF00+uint16(offset), 0x42)
+}
+
+func Test_LDH_A_A8(t *testing.T) {
+	gbz := createGBZ()
+	offset := byte(0x10)
+	gbz.mem.Write(0xFF00+uint16(offset), 0x42)
+	gbz.mem.Write(gbz.pc, 0xF0)
+	gbz.mem.Write(gbz.pc+1, offset)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 12)
+	assertPC(t, gbz, 0x102)
+	assertRegister(t, 0x42, gbz.a, "A")
+}
+
+func Test_LDH_C_A(t *testing.T) {
+	gbz := createGBZ()
+	gbz.a = 0x42
+	gbz.c = 0x10
+	gbz.mem.Write(gbz.pc, 0xE2)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 8)
+	assertPC(t, gbz, 0x101)
+	assertMemory(t, gbz, 0xFF00+uint16(gbz.c), 0x42)
+}
+
+func Test_LDH_A_C(t *testing.T) {
+	gbz := createGBZ()
+	gbz.c = 0x10
+	gbz.mem.Write(0xFF00+uint16(gbz.c), 0x42)
+	gbz.mem.Write(gbz.pc, 0xF2)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 8)
+	assertPC(t, gbz, 0x101)
+	assertRegister(t, 0x42, gbz.a, "A")
+}
