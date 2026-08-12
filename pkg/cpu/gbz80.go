@@ -247,7 +247,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xBE: {g._CP_A_HLX, "CP A, [HL]", 1},
 		0xBF: {g._CP_A_A, "CP A, A", 1},
 
-		0xC0: {g._TODO, "RET NZ", 1},
+		0xC0: {g._RET_NZ, "RET NZ", 1},
 		0xC1: {g._TODO, "POP BC", 1},
 		0xC2: {g._JP_NZ_A16, "JP NZ, a16", 3},
 		0xC3: {g._JP_A16, "JP a16", 3},
@@ -255,8 +255,8 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xC5: {g._TODO, "PUSH BC", 1},
 		0xC6: {g._TODO, "ADD A, n8", 2},
 		0xC7: {g._TODO, "RST $00", 1},
-		0xC8: {g._TODO, "RET Z", 1},
-		0xC9: {g._TODO, "RET", 1},
+		0xC8: {g._RET_Z, "RET Z", 1},
+		0xC9: {g._RET, "RET", 1},
 		0xCA: {g._JP_Z_A16, "JP Z, a16", 3},
 		0xCB: {g._TODO, "PREFIX", 1},
 		0xCC: {g._TODO, "CALL Z, a16", 3},
@@ -264,7 +264,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xCE: {g._ADC_A_N8, "ADC A, n8", 2},
 		0xCF: {g._TODO, "RST $08", 1},
 
-		0xD0: {g._TODO, "RET NC", 1},
+		0xD0: {g._RET_NC, "RET NC", 1},
 		0xD1: {g._TODO, "POP DE", 1},
 		0xD2: {g._JP_NC_A16, "JP NC, a16", 3},
 		0xD3: {g._ILLEGAL, "ILLEGAL_D3", 1},
@@ -272,8 +272,8 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xD5: {g._TODO, "PUSH DE", 1},
 		0xD6: {g._SUB_A_N8, "SUB A, n8", 2},
 		0xD7: {g._TODO, "RST $10", 1},
-		0xD8: {g._TODO, "RET C", 1},
-		0xD9: {g._TODO, "RETI", 1},
+		0xD8: {g._RET_C, "RET C", 1},
+		0xD9: {g._RETI, "RETI", 1},
 		0xDA: {g._JP_C_A16, "JP C, a16", 3},
 		0xDB: {g._ILLEGAL, "ILLEGAL_DB", 1},
 		0xDC: {g._TODO, "CALL C, a16", 3},
@@ -1514,4 +1514,51 @@ func (gbz *GBZ80) _JP_HL() uint {
 	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
 	gbz.pc = hl
 	return 4
+}
+
+func (gbz *GBZ80) _RET() uint {
+	gbz.ret()
+	return 16
+}
+
+func (gbz *GBZ80) _RET_NZ() uint {
+	if !gbz.flags.Get(Zero) {
+		gbz.ret()
+		return 20
+	}
+
+	return 8
+}
+
+func (gbz *GBZ80) _RET_NC() uint {
+	if !gbz.flags.Get(Carry) {
+		gbz.ret()
+		return 20
+	}
+
+	return 8
+}
+
+func (gbz *GBZ80) _RET_Z() uint {
+	if gbz.flags.Get(Zero) {
+		gbz.ret()
+		return 20
+	}
+
+	return 8
+}
+
+func (gbz *GBZ80) _RET_C() uint {
+	if gbz.flags.Get(Carry) {
+		gbz.ret()
+		return 20
+	}
+
+	return 8
+}
+
+func (gbz *GBZ80) _RETI() uint {
+	gbz.ret()
+	gbz.interruptEnabled = true
+	return 16
 }

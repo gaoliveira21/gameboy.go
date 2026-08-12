@@ -12,3 +12,11 @@ func (gbz *GBZ80) jumpA16() {
 
 	gbz.pc = (uint16(hb) << 8) | uint16(lb)
 }
+
+func (gbz *GBZ80) ret() {
+	lb := gbz.mem.Read(gbz.sp)
+	hb := gbz.mem.Read(gbz.sp + 1)
+	gbz.sp += 2
+
+	gbz.pc = (uint16(hb) << 8) | uint16(lb)
+}

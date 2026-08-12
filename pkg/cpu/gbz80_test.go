@@ -2178,3 +2178,167 @@ func Test_JP_HL(t *testing.T) {
 	assertCycles(t, gbz, 4)
 	assertPC(t, gbz, 0x1234)
 }
+
+func Test_RET(t *testing.T) {
+	gbz := createGBZ()
+	returnAddr := uint16(0x1234)
+	gbz.sp = 0xFFFE
+	gbz.mem.Write(gbz.sp, byte(returnAddr))
+	gbz.mem.Write(gbz.sp+1, byte(returnAddr>>8))
+	gbz.mem.Write(gbz.pc, 0xC9)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 16)
+	assertPC(t, gbz, returnAddr)
+	assertSP(t, 0x0000, gbz.sp)
+}
+
+func Test_RET_NZ(t *testing.T) {
+	returnAddr := uint16(0x1234)
+
+	cases := []struct {
+		name       string
+		zeroFlag   bool
+		wantPC     uint16
+		wantCycles uint
+		wantSP     uint16
+	}{
+		{"ReturnWhenNotZero", false, returnAddr, 20, 0x0000},
+		{"NoReturnWhenZero", true, 0x0101, 8, 0xFFFE},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.flags.Set(Zero, c.zeroFlag)
+			gbz.sp = 0xFFFE
+			gbz.mem.Write(gbz.sp, byte(returnAddr))
+			gbz.mem.Write(gbz.sp+1, byte(returnAddr>>8))
+			gbz.mem.Write(gbz.pc, 0xC0)
+
+			gbz.Run()
+
+			assertCycles(t, gbz, c.wantCycles)
+			assertPC(t, gbz, c.wantPC)
+			assertSP(t, c.wantSP, gbz.sp)
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RET_Z(t *testing.T) {
+	returnAddr := uint16(0x1234)
+
+	cases := []struct {
+		name       string
+		zeroFlag   bool
+		wantPC     uint16
+		wantCycles uint
+		wantSP     uint16
+	}{
+		{"ReturnWhenZero", true, returnAddr, 20, 0x0000},
+		{"NoReturnWhenNotZero", false, 0x0101, 8, 0xFFFE},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.flags.Set(Zero, c.zeroFlag)
+			gbz.sp = 0xFFFE
+			gbz.mem.Write(gbz.sp, byte(returnAddr))
+			gbz.mem.Write(gbz.sp+1, byte(returnAddr>>8))
+			gbz.mem.Write(gbz.pc, 0xC8)
+
+			gbz.Run()
+
+			assertCycles(t, gbz, c.wantCycles)
+			assertPC(t, gbz, c.wantPC)
+			assertSP(t, c.wantSP, gbz.sp)
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RET_NC(t *testing.T) {
+	returnAddr := uint16(0x1234)
+
+	cases := []struct {
+		name       string
+		carryFlag  bool
+		wantPC     uint16
+		wantCycles uint
+		wantSP     uint16
+	}{
+		{"ReturnWhenNotCarry", false, returnAddr, 20, 0x0000},
+		{"NoReturnWhenCarry", true, 0x0101, 8, 0xFFFE},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.flags.Set(Carry, c.carryFlag)
+			gbz.sp = 0xFFFE
+			gbz.mem.Write(gbz.sp, byte(returnAddr))
+			gbz.mem.Write(gbz.sp+1, byte(returnAddr>>8))
+			gbz.mem.Write(gbz.pc, 0xD0)
+
+			gbz.Run()
+
+			assertCycles(t, gbz, c.wantCycles)
+			assertPC(t, gbz, c.wantPC)
+			assertSP(t, c.wantSP, gbz.sp)
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RET_C(t *testing.T) {
+	returnAddr := uint16(0x1234)
+
+	cases := []struct {
+		name       string
+		carryFlag  bool
+		wantPC     uint16
+		wantCycles uint
+		wantSP     uint16
+	}{
+		{"ReturnWhenCarry", true, returnAddr, 20, 0x0000},
+		{"NoReturnWhenNotCarry", false, 0x0101, 8, 0xFFFE},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.flags.Set(Carry, c.carryFlag)
+			gbz.sp = 0xFFFE
+			gbz.mem.Write(gbz.sp, byte(returnAddr))
+			gbz.mem.Write(gbz.sp+1, byte(returnAddr>>8))
+			gbz.mem.Write(gbz.pc, 0xD8)
+
+			gbz.Run()
+
+			assertCycles(t, gbz, c.wantCycles)
+			assertPC(t, gbz, c.wantPC)
+			assertSP(t, c.wantSP, gbz.sp)
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RETI(t *testing.T) {
+	gbz := createGBZ()
+	returnAddr := uint16(0x1234)
+	gbz.sp = 0xFFFE
+	gbz.interruptEnabled = false
+	gbz.mem.Write(gbz.sp, byte(returnAddr))
+	gbz.mem.Write(gbz.sp+1, byte(returnAddr>>8))
+	gbz.mem.Write(gbz.pc, 0xD9)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 16)
+	assertPC(t, gbz, returnAddr)
+	assertSP(t, 0x0000, gbz.sp)
+	assert.Equal(t, true, gbz.interruptEnabled, "RETI should enable interrupts")
+}
