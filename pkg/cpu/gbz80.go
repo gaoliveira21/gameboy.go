@@ -306,8 +306,8 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xF5: {g._TODO, "PUSH AF", 1},
 		0xF6: {g._OR_A_N8, "OR A, n8", 2},
 		0xF7: {g._RST_30, "RST $30", 1},
-		0xF8: {g._TODO, "LD HL, SP + e8", 2},
-		0xF9: {g._TODO, "LD SP, HL", 1},
+		0xF8: {g._LD_HL_SP_E8, "LD HL, SP + e8", 2},
+		0xF9: {g._LD_SP_HL, "LD SP, HL", 1},
 		0xFA: {g._LD_A_A16, "LD A, [a16]", 3},
 		0xFB: {g._EI, "EI", 1},
 		0xFC: {g._NOP, "NOP", 1},
@@ -899,6 +899,32 @@ func (gbz *GBZ80) _LD_A_A16() uint {
 	gbz.a = gbz.mem.Read(addr)
 
 	return 16
+}
+
+func (gbz *GBZ80) _LD_SP_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	gbz.sp = hl
+	return 8
+}
+
+func (gbz *GBZ80) _LD_HL_SP_E8() uint {
+	origSp := int32(gbz.sp)
+	e8 := int32(int8(gbz.mem.Read(gbz.pc)))
+	gbz.pc++
+
+	r := origSp + e8
+	tmpV := origSp ^ e8 ^ r
+
+	gbz.flags.Set(Zero, false)
+	gbz.flags.Set(Sub, false)
+	gbz.flags.Set(HalfCarry, (tmpV&0x10) == 0x10)
+	gbz.flags.Set(Carry, (tmpV&0x100) == 0x100)
+
+	rU16 := uint16(r)
+	gbz.h = uint8(rU16 >> 8)
+	gbz.l = uint8(rU16 & 0xFF)
+
+	return 12
 }
 
 func (gbz *GBZ80) _INC_BC() uint {

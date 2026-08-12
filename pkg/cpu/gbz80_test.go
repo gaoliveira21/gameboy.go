@@ -2579,3 +2579,52 @@ func Test_LDH_A_C(t *testing.T) {
 	assertPC(t, gbz, 0x101)
 	assertRegister(t, 0x42, gbz.a, "A")
 }
+
+func Test_LD_SP_HL(t *testing.T) {
+	gbz := createGBZ()
+	gbz.h = 0x12
+	gbz.l = 0x34
+	gbz.mem.Write(gbz.pc, 0xF9)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 8)
+	assertPC(t, gbz, 0x101)
+	assertSP(t, 0x1234, gbz.sp)
+}
+
+func Test_LD_HL_SP_E8(t *testing.T) {
+	cases := []struct {
+		name          string
+		sp            uint16
+		offset        int8
+		wantHL        uint16
+		wantCarry     bool
+		wantHalfCarry bool
+		cycles        uint
+	}{
+		{"NoFlags", 0x0001, 0x01, 0x0002, false, false, 12},
+		{"HalfCarryOnly", 0x000F, 0x01, 0x0010, false, true, 12},
+		{"CarryFromFFFF", 0xFFFF, 0x01, 0x0000, true, true, 12},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.sp = c.sp
+			gbz.mem.Write(gbz.pc, 0xF8)
+			gbz.mem.Write(gbz.pc+1, byte(c.offset))
+
+			gbz.Run()
+
+			assertCycles(t, gbz, c.cycles)
+			assertPC(t, gbz, 0x102)
+			assert.Equal(t, c.wantHL, (uint16(gbz.h)<<8)|uint16(gbz.l), "HL mismatch")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, c.wantHalfCarry, gbz.flags.Get(HalfCarry), "HalfCarry flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Zero), "Zero flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			resetGBZ(gbz)
+		})
+	}
+}
