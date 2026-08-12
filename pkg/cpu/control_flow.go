@@ -20,3 +20,18 @@ func (gbz *GBZ80) ret() {
 
 	gbz.pc = (uint16(hb) << 8) | uint16(lb)
 }
+
+func (gbz *GBZ80) call() {
+	lb := gbz.mem.Read(gbz.pc)
+	hb := gbz.mem.Read(gbz.pc + 1)
+	gbz.pc += 2
+
+	addr := (uint16(hb) << 8) | uint16(lb)
+
+	gbz.sp--
+	gbz.mem.Write(gbz.sp, byte(gbz.pc>>8))
+	gbz.sp--
+	gbz.mem.Write(gbz.sp, byte(gbz.pc&0xFF))
+
+	gbz.pc = addr
+}

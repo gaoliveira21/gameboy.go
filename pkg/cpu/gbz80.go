@@ -251,7 +251,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xC1: {g._TODO, "POP BC", 1},
 		0xC2: {g._JP_NZ_A16, "JP NZ, a16", 3},
 		0xC3: {g._JP_A16, "JP a16", 3},
-		0xC4: {g._TODO, "CALL NZ, a16", 3},
+		0xC4: {g._CALL_NZ, "CALL NZ, a16", 3},
 		0xC5: {g._TODO, "PUSH BC", 1},
 		0xC6: {g._TODO, "ADD A, n8", 2},
 		0xC7: {g._TODO, "RST $00", 1},
@@ -259,8 +259,8 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xC9: {g._RET, "RET", 1},
 		0xCA: {g._JP_Z_A16, "JP Z, a16", 3},
 		0xCB: {g._TODO, "PREFIX", 1},
-		0xCC: {g._TODO, "CALL Z, a16", 3},
-		0xCD: {g._TODO, "CALL a16", 3},
+		0xCC: {g._CALL_Z, "CALL Z, a16", 3},
+		0xCD: {g._CALL, "CALL a16", 3},
 		0xCE: {g._ADC_A_N8, "ADC A, n8", 2},
 		0xCF: {g._TODO, "RST $08", 1},
 
@@ -268,7 +268,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xD1: {g._TODO, "POP DE", 1},
 		0xD2: {g._JP_NC_A16, "JP NC, a16", 3},
 		0xD3: {g._ILLEGAL, "ILLEGAL_D3", 1},
-		0xD4: {g._TODO, "CALL NC, a16", 3},
+		0xD4: {g._CALL_NC, "CALL NC, a16", 3},
 		0xD5: {g._TODO, "PUSH DE", 1},
 		0xD6: {g._SUB_A_N8, "SUB A, n8", 2},
 		0xD7: {g._TODO, "RST $10", 1},
@@ -276,7 +276,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xD9: {g._RETI, "RETI", 1},
 		0xDA: {g._JP_C_A16, "JP C, a16", 3},
 		0xDB: {g._ILLEGAL, "ILLEGAL_DB", 1},
-		0xDC: {g._TODO, "CALL C, a16", 3},
+		0xDC: {g._CALL_C, "CALL C, a16", 3},
 		0xDD: {g._ILLEGAL, "ILLEGAL_DD", 1},
 		0xDE: {g._SBC_A_N8, "SBC A, n8", 2},
 		0xDF: {g._TODO, "RST $18", 1},
@@ -1561,4 +1561,49 @@ func (gbz *GBZ80) _RETI() uint {
 	gbz.ret()
 	gbz.interruptEnabled = true
 	return 16
+}
+
+func (gbz *GBZ80) _CALL() uint {
+	gbz.call()
+	return 24
+}
+
+func (gbz *GBZ80) _CALL_NZ() uint {
+	if !gbz.flags.Get(Zero) {
+		gbz.call()
+		return 24
+	}
+
+	gbz.pc += 2
+	return 12
+}
+
+func (gbz *GBZ80) _CALL_NC() uint {
+	if !gbz.flags.Get(Carry) {
+		gbz.call()
+		return 24
+	}
+
+	gbz.pc += 2
+	return 12
+}
+
+func (gbz *GBZ80) _CALL_Z() uint {
+	if gbz.flags.Get(Zero) {
+		gbz.call()
+		return 24
+	}
+
+	gbz.pc += 2
+	return 12
+}
+
+func (gbz *GBZ80) _CALL_C() uint {
+	if gbz.flags.Get(Carry) {
+		gbz.call()
+		return 24
+	}
+
+	gbz.pc += 2
+	return 12
 }

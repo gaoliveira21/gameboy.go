@@ -2342,3 +2342,152 @@ func Test_RETI(t *testing.T) {
 	assertSP(t, 0x0000, gbz.sp)
 	assert.Equal(t, true, gbz.interruptEnabled, "RETI should enable interrupts")
 }
+
+func Test_CALL(t *testing.T) {
+	gbz := createGBZ()
+	targetAddr := uint16(0x1234)
+	gbz.sp = 0xFFFE
+	gbz.mem.Write(gbz.pc, 0xCD)
+	gbz.mem.Write(gbz.pc+1, byte(targetAddr))
+	gbz.mem.Write(gbz.pc+2, byte(targetAddr>>8))
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 24)
+	assertPC(t, gbz, targetAddr)
+	assertSP(t, 0xFFFC, gbz.sp)
+	assertMemory(t, gbz, 0xFFFC, byte(0x103&0xFF))
+	assertMemory(t, gbz, 0xFFFD, byte(0x103>>8))
+}
+
+func Test_CALL_NZ(t *testing.T) {
+	targetAddr := uint16(0x1234)
+
+	cases := []struct {
+		name       string
+		zeroFlag   bool
+		wantPC     uint16
+		wantCycles uint
+		wantSP     uint16
+	}{
+		{"CallWhenNotZero", false, targetAddr, 24, 0xFFFC},
+		{"NoCallWhenZero", true, 0x0103, 12, 0xFFFE},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.flags.Set(Zero, c.zeroFlag)
+			gbz.sp = 0xFFFE
+			gbz.mem.Write(gbz.pc, 0xC4)
+			gbz.mem.Write(gbz.pc+1, byte(targetAddr))
+			gbz.mem.Write(gbz.pc+2, byte(targetAddr>>8))
+
+			gbz.Run()
+
+			assertCycles(t, gbz, c.wantCycles)
+			assertPC(t, gbz, c.wantPC)
+			assertSP(t, c.wantSP, gbz.sp)
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_CALL_Z(t *testing.T) {
+	targetAddr := uint16(0x1234)
+
+	cases := []struct {
+		name       string
+		zeroFlag   bool
+		wantPC     uint16
+		wantCycles uint
+		wantSP     uint16
+	}{
+		{"CallWhenZero", true, targetAddr, 24, 0xFFFC},
+		{"NoCallWhenNotZero", false, 0x0103, 12, 0xFFFE},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.flags.Set(Zero, c.zeroFlag)
+			gbz.sp = 0xFFFE
+			gbz.mem.Write(gbz.pc, 0xCC)
+			gbz.mem.Write(gbz.pc+1, byte(targetAddr))
+			gbz.mem.Write(gbz.pc+2, byte(targetAddr>>8))
+
+			gbz.Run()
+
+			assertCycles(t, gbz, c.wantCycles)
+			assertPC(t, gbz, c.wantPC)
+			assertSP(t, c.wantSP, gbz.sp)
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_CALL_NC(t *testing.T) {
+	targetAddr := uint16(0x1234)
+
+	cases := []struct {
+		name       string
+		carryFlag  bool
+		wantPC     uint16
+		wantCycles uint
+		wantSP     uint16
+	}{
+		{"CallWhenNotCarry", false, targetAddr, 24, 0xFFFC},
+		{"NoCallWhenCarry", true, 0x0103, 12, 0xFFFE},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.flags.Set(Carry, c.carryFlag)
+			gbz.sp = 0xFFFE
+			gbz.mem.Write(gbz.pc, 0xD4)
+			gbz.mem.Write(gbz.pc+1, byte(targetAddr))
+			gbz.mem.Write(gbz.pc+2, byte(targetAddr>>8))
+
+			gbz.Run()
+
+			assertCycles(t, gbz, c.wantCycles)
+			assertPC(t, gbz, c.wantPC)
+			assertSP(t, c.wantSP, gbz.sp)
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_CALL_C(t *testing.T) {
+	targetAddr := uint16(0x1234)
+
+	cases := []struct {
+		name       string
+		carryFlag  bool
+		wantPC     uint16
+		wantCycles uint
+		wantSP     uint16
+	}{
+		{"CallWhenCarry", true, targetAddr, 24, 0xFFFC},
+		{"NoCallWhenNotCarry", false, 0x0103, 12, 0xFFFE},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.flags.Set(Carry, c.carryFlag)
+			gbz.sp = 0xFFFE
+			gbz.mem.Write(gbz.pc, 0xDC)
+			gbz.mem.Write(gbz.pc+1, byte(targetAddr))
+			gbz.mem.Write(gbz.pc+2, byte(targetAddr>>8))
+
+			gbz.Run()
+
+			assertCycles(t, gbz, c.wantCycles)
+			assertPC(t, gbz, c.wantPC)
+			assertSP(t, c.wantSP, gbz.sp)
+			resetGBZ(gbz)
+		})
+	}
+}
