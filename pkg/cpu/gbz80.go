@@ -252,7 +252,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xC2: {g._JP_NZ_A16, "JP NZ, a16", 3},
 		0xC3: {g._JP_A16, "JP a16", 3},
 		0xC4: {g._CALL_NZ, "CALL NZ, a16", 3},
-		0xC5: {g._TODO, "PUSH BC", 1},
+		0xC5: {g._PUSH_BC, "PUSH BC", 1},
 		0xC6: {g._TODO, "ADD A, n8", 2},
 		0xC7: {g._RST_00, "RST $00", 1},
 		0xC8: {g._RET_Z, "RET Z", 1},
@@ -269,7 +269,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xD2: {g._JP_NC_A16, "JP NC, a16", 3},
 		0xD3: {g._ILLEGAL, "ILLEGAL_D3", 1},
 		0xD4: {g._CALL_NC, "CALL NC, a16", 3},
-		0xD5: {g._TODO, "PUSH DE", 1},
+		0xD5: {g._PUSH_DE, "PUSH DE", 1},
 		0xD6: {g._SUB_A_N8, "SUB A, n8", 2},
 		0xD7: {g._RST_10, "RST $10", 1},
 		0xD8: {g._RET_C, "RET C", 1},
@@ -286,7 +286,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xE2: {g._LDH_C_A, "LDH [C], A", 1},
 		0xE3: {g._ILLEGAL, "ILLEGAL_E3", 1},
 		0xE4: {g._ILLEGAL, "ILLEGAL_E4", 1},
-		0xE5: {g._TODO, "PUSH HL", 1},
+		0xE5: {g._PUSH_HL, "PUSH HL", 1},
 		0xE6: {g._AND_A_N8, "AND A, n8", 2},
 		0xE7: {g._RST_20, "RST $20", 1},
 		0xE8: {g._TODO, "ADD SP, e8", 2},
@@ -303,7 +303,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xF2: {g._LDH_A_C, "LDH A, [C]", 1},
 		0xF3: {g._DI, "DI", 1},
 		0xF4: {g._NOP, "NOP", 1},
-		0xF5: {g._TODO, "PUSH AF", 1},
+		0xF5: {g._PUSH_AF, "PUSH AF", 1},
 		0xF6: {g._OR_A_N8, "OR A, n8", 2},
 		0xF7: {g._RST_30, "RST $30", 1},
 		0xF8: {g._LD_HL_SP_E8, "LD HL, SP + e8", 2},
@@ -1752,12 +1752,27 @@ func (gbz *GBZ80) _POP_AF() uint {
 	v := ((uint16(hb) << 8) | uint16(lb)) & 0xFFF0
 
 	gbz.a = byte((v & 0xFF00) >> 8)
-	f := byte(v & 0xFF)
-
-	gbz.flags.Set(Zero, f&0x80 > 0)
-	gbz.flags.Set(Sub, f&0x40 > 0)
-	gbz.flags.Set(HalfCarry, f&0x20 > 0)
-	gbz.flags.Set(Carry, f&0x10 > 0)
+	gbz.flags.SetValue(byte(v & 0xFF))
 
 	return 12
+}
+
+func (gbz *GBZ80) _PUSH_BC() uint {
+	gbz.push(gbz.b, gbz.c)
+	return 16
+}
+
+func (gbz *GBZ80) _PUSH_DE() uint {
+	gbz.push(gbz.d, gbz.e)
+	return 16
+}
+
+func (gbz *GBZ80) _PUSH_HL() uint {
+	gbz.push(gbz.h, gbz.l)
+	return 16
+}
+
+func (gbz *GBZ80) _PUSH_AF() uint {
+	gbz.push(gbz.a, gbz.flags.Value())
+	return 16
 }

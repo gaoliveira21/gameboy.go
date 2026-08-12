@@ -2695,3 +2695,70 @@ func Test_POP_AF(t *testing.T) {
 	assert.Equal(t, false, gbz.flags.Get(Carry), "Carry flag mismatch")
 	assertSP(t, 0xFFFE, gbz.sp)
 }
+
+func Test_PUSH_BC(t *testing.T) {
+	gbz := createGBZ()
+	gbz.sp = 0xFFFE
+	gbz.b = 0x12
+	gbz.c = 0x34
+	gbz.mem.Write(gbz.pc, 0xC5)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 16)
+	assertPC(t, gbz, 0x101)
+	assert.Equal(t, uint8(0x34), gbz.mem.Read(gbz.sp), "Stack low byte mismatch")
+	assert.Equal(t, uint8(0x12), gbz.mem.Read(gbz.sp+1), "Stack high byte mismatch")
+	assertSP(t, 0xFFFC, gbz.sp)
+}
+
+func Test_PUSH_DE(t *testing.T) {
+	gbz := createGBZ()
+	gbz.sp = 0xFFFE
+	gbz.d = 0xAB
+	gbz.e = 0xCD
+	gbz.mem.Write(gbz.pc, 0xD5)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 16)
+	assertPC(t, gbz, 0x101)
+	assert.Equal(t, uint8(0xCD), gbz.mem.Read(gbz.sp), "Stack low byte mismatch")
+	assert.Equal(t, uint8(0xAB), gbz.mem.Read(gbz.sp+1), "Stack high byte mismatch")
+	assertSP(t, 0xFFFC, gbz.sp)
+}
+
+func Test_PUSH_HL(t *testing.T) {
+	gbz := createGBZ()
+	gbz.sp = 0xFFFE
+	gbz.h = 0xDE
+	gbz.l = 0xAD
+	gbz.mem.Write(gbz.pc, 0xE5)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 16)
+	assertPC(t, gbz, 0x101)
+	assert.Equal(t, uint8(0xAD), gbz.mem.Read(gbz.sp), "Stack low byte mismatch")
+	assert.Equal(t, uint8(0xDE), gbz.mem.Read(gbz.sp+1), "Stack high byte mismatch")
+	assertSP(t, 0xFFFC, gbz.sp)
+}
+
+func Test_PUSH_AF(t *testing.T) {
+	gbz := createGBZ()
+	gbz.sp = 0xFFFE
+	gbz.a = 0x12
+	gbz.flags.Set(Zero, true)
+	gbz.flags.Set(Sub, true)
+	gbz.flags.Set(HalfCarry, true)
+	gbz.flags.Set(Carry, true)
+	gbz.mem.Write(gbz.pc, 0xF5)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 16)
+	assertPC(t, gbz, 0x101)
+	assert.Equal(t, uint8(0xF0), gbz.mem.Read(gbz.sp), "Stack low byte (flags) mismatch")
+	assert.Equal(t, uint8(0x12), gbz.mem.Read(gbz.sp+1), "Stack high byte (A) mismatch")
+	assert.Equal(t, uint16(0xFFFC), gbz.sp, "SP mismatch")
+}

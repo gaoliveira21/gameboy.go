@@ -52,3 +52,10 @@ func (gbz *GBZ80) pop() (hb byte, lb byte) {
 
 	return hib, lob
 }
+
+func (gbz *GBZ80) push(hb byte, lb byte) {
+	gbz.sp--
+	gbz.mem.Write(gbz.sp, hb)
+	gbz.sp--
+	gbz.mem.Write(gbz.sp, lb)
+}
