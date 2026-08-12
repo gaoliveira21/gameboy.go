@@ -2762,3 +2762,78 @@ func Test_PUSH_AF(t *testing.T) {
 	assert.Equal(t, uint8(0x12), gbz.mem.Read(gbz.sp+1), "Stack high byte (A) mismatch")
 	assert.Equal(t, uint16(0xFFFC), gbz.sp, "SP mismatch")
 }
+
+func Test_RLCA(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name         string
+		initialA     byte
+		wantValue    byte
+		wantCarry    bool
+	}{
+		{"Rotate_0x00_NoCarry", 0x00, 0x00, false},
+		{"Rotate_0x01_NoCarry", 0x01, 0x02, false},
+		{"Rotate_0x7F_NoCarry", 0x7F, 0xFE, false},
+		{"Rotate_0x80_Carry", 0x80, 0x01, true},
+		{"Rotate_0x81_Carry", 0x81, 0x03, true},
+		{"Rotate_0xFF_Carry", 0xFF, 0xFF, true},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0x07)
+			gbz.a = c.initialA
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 4)
+			assertPC(t, gbz, pc+1)
+			assertRegister(t, c.wantValue, gbz.a, "A")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Zero), "Zero flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RRCA(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name         string
+		initialA     byte
+		wantValue    byte
+		wantCarry    bool
+	}{
+		{"Rotate_0x00_NoCarry", 0x00, 0x00, false},
+		{"Rotate_0x01_Carry", 0x01, 0x80, true},
+		{"Rotate_0x02_NoCarry", 0x02, 0x01, false},
+		{"Rotate_0x80_NoCarry", 0x80, 0x40, false},
+		{"Rotate_0xFF_Carry", 0xFF, 0xFF, true},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0x0F)
+			gbz.a = c.initialA
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 4)
+			assertPC(t, gbz, pc+1)
+			assertRegister(t, c.wantValue, gbz.a, "A")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Zero), "Zero flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
