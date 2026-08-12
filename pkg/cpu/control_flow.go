@@ -3,7 +3,8 @@ package cpu
 func (gbz *GBZ80) jumpE8() {
 	e8 := int8(gbz.mem.Read(gbz.pc))
 	gbz.pc++
-	gbz.pc = uint16(int16(gbz.pc) + int16(e8))
+	addr := int32(gbz.pc) + int32(e8)
+	gbz.pc = uint16(addr)
 }
 
 func (gbz *GBZ80) jumpA16() {
