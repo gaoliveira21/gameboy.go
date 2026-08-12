@@ -249,15 +249,15 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 
 		0xC0: {g._TODO, "RET NZ", 1},
 		0xC1: {g._TODO, "POP BC", 1},
-		0xC2: {g._TODO, "JP NZ, a16", 3},
-		0xC3: {g._TODO, "JP a16", 3},
+		0xC2: {g._JP_NZ_A16, "JP NZ, a16", 3},
+		0xC3: {g._JP_A16, "JP a16", 3},
 		0xC4: {g._TODO, "CALL NZ, a16", 3},
 		0xC5: {g._TODO, "PUSH BC", 1},
 		0xC6: {g._TODO, "ADD A, n8", 2},
 		0xC7: {g._TODO, "RST $00", 1},
 		0xC8: {g._TODO, "RET Z", 1},
 		0xC9: {g._TODO, "RET", 1},
-		0xCA: {g._TODO, "JP Z, a16", 3},
+		0xCA: {g._JP_Z_A16, "JP Z, a16", 3},
 		0xCB: {g._TODO, "PREFIX", 1},
 		0xCC: {g._TODO, "CALL Z, a16", 3},
 		0xCD: {g._TODO, "CALL a16", 3},
@@ -266,7 +266,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 
 		0xD0: {g._TODO, "RET NC", 1},
 		0xD1: {g._TODO, "POP DE", 1},
-		0xD2: {g._TODO, "JP NC, a16", 3},
+		0xD2: {g._JP_NC_A16, "JP NC, a16", 3},
 		0xD3: {g._ILLEGAL, "ILLEGAL_D3", 1},
 		0xD4: {g._TODO, "CALL NC, a16", 3},
 		0xD5: {g._TODO, "PUSH DE", 1},
@@ -274,7 +274,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xD7: {g._TODO, "RST $10", 1},
 		0xD8: {g._TODO, "RET C", 1},
 		0xD9: {g._TODO, "RETI", 1},
-		0xDA: {g._TODO, "JP C, a16", 3},
+		0xDA: {g._JP_C_A16, "JP C, a16", 3},
 		0xDB: {g._ILLEGAL, "ILLEGAL_DB", 1},
 		0xDC: {g._TODO, "CALL C, a16", 3},
 		0xDD: {g._ILLEGAL, "ILLEGAL_DD", 1},
@@ -290,7 +290,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xE6: {g._AND_A_N8, "AND A, n8", 2},
 		0xE7: {g._TODO, "RST $20", 1},
 		0xE8: {g._TODO, "ADD SP, e8", 2},
-		0xE9: {g._TODO, "JP HL", 1},
+		0xE9: {g._JP_HL, "JP HL", 1},
 		0xEA: {g._TODO, "LD [a16], A", 3},
 		0xEB: {g._ILLEGAL, "ILLEGAL_EB", 1},
 		0xEC: {g._ILLEGAL, "ILLEGAL_EC", 1},
@@ -1463,4 +1463,55 @@ func (gbz *GBZ80) _JR_C_E8() uint {
 
 	gbz.pc++
 	return 8
+}
+
+func (gbz *GBZ80) _JP_A16() uint {
+	gbz.jumpA16()
+	return 16
+}
+
+func (gbz *GBZ80) _JP_NZ_A16() uint {
+	if !gbz.flags.Get(Zero) {
+		gbz.jumpA16()
+		return 16
+	}
+
+	gbz.pc += 2
+	return 12
+}
+
+func (gbz *GBZ80) _JP_NC_A16() uint {
+	if !gbz.flags.Get(Carry) {
+		gbz.jumpA16()
+		return 16
+	}
+
+	gbz.pc += 2
+	return 12
+}
+
+func (gbz *GBZ80) _JP_Z_A16() uint {
+	if gbz.flags.Get(Zero) {
+		gbz.jumpA16()
+		return 16
+	}
+
+	gbz.pc += 2
+	return 12
+}
+
+func (gbz *GBZ80) _JP_C_A16() uint {
+	if gbz.flags.Get(Carry) {
+		gbz.jumpA16()
+		return 16
+	}
+
+	gbz.pc += 2
+	return 12
+}
+
+func (gbz *GBZ80) _JP_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	gbz.pc = hl
+	return 4
 }

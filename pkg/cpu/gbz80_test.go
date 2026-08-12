@@ -2037,3 +2037,144 @@ func Test_JR_C_E8(t *testing.T) {
 		})
 	}
 }
+
+func Test_JP_A16(t *testing.T) {
+	gbz := createGBZ()
+	targetAddr := uint16(0x1234)
+	gbz.mem.Write(gbz.pc, 0xC3)
+	gbz.mem.Write(gbz.pc+1, byte(targetAddr))
+	gbz.mem.Write(gbz.pc+2, byte(targetAddr>>8))
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 16)
+	assertPC(t, gbz, targetAddr)
+}
+
+func Test_JP_NZ_A16(t *testing.T) {
+	cases := []struct {
+		name       string
+		zeroFlag   bool
+		targetAddr uint16
+		wantPC     uint16
+		wantCycles uint
+	}{
+		{"JumpWhenNotZero", false, 0x1234, 0x1234, 16},
+		{"NoJumpWhenZero", true, 0x1234, 0x0103, 12},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.flags.Set(Zero, c.zeroFlag)
+			gbz.mem.Write(gbz.pc, 0xC2)
+			gbz.mem.Write(gbz.pc+1, byte(c.targetAddr))
+			gbz.mem.Write(gbz.pc+2, byte(c.targetAddr>>8))
+
+			gbz.Run()
+
+			assertCycles(t, gbz, c.wantCycles)
+			assertPC(t, gbz, c.wantPC)
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_JP_Z_A16(t *testing.T) {
+	cases := []struct {
+		name       string
+		zeroFlag   bool
+		targetAddr uint16
+		wantPC     uint16
+		wantCycles uint
+	}{
+		{"JumpWhenZero", true, 0x1234, 0x1234, 16},
+		{"NoJumpWhenNotZero", false, 0x1234, 0x0103, 12},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.flags.Set(Zero, c.zeroFlag)
+			gbz.mem.Write(gbz.pc, 0xCA)
+			gbz.mem.Write(gbz.pc+1, byte(c.targetAddr))
+			gbz.mem.Write(gbz.pc+2, byte(c.targetAddr>>8))
+
+			gbz.Run()
+
+			assertCycles(t, gbz, c.wantCycles)
+			assertPC(t, gbz, c.wantPC)
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_JP_NC_A16(t *testing.T) {
+	cases := []struct {
+		name       string
+		carryFlag  bool
+		targetAddr uint16
+		wantPC     uint16
+		wantCycles uint
+	}{
+		{"JumpWhenNotCarry", false, 0x1234, 0x1234, 16},
+		{"NoJumpWhenCarry", true, 0x1234, 0x0103, 12},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.flags.Set(Carry, c.carryFlag)
+			gbz.mem.Write(gbz.pc, 0xD2)
+			gbz.mem.Write(gbz.pc+1, byte(c.targetAddr))
+			gbz.mem.Write(gbz.pc+2, byte(c.targetAddr>>8))
+
+			gbz.Run()
+
+			assertCycles(t, gbz, c.wantCycles)
+			assertPC(t, gbz, c.wantPC)
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_JP_C_A16(t *testing.T) {
+	cases := []struct {
+		name       string
+		carryFlag  bool
+		targetAddr uint16
+		wantPC     uint16
+		wantCycles uint
+	}{
+		{"JumpWhenCarry", true, 0x1234, 0x1234, 16},
+		{"NoJumpWhenNotCarry", false, 0x1234, 0x0103, 12},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.flags.Set(Carry, c.carryFlag)
+			gbz.mem.Write(gbz.pc, 0xDA)
+			gbz.mem.Write(gbz.pc+1, byte(c.targetAddr))
+			gbz.mem.Write(gbz.pc+2, byte(c.targetAddr>>8))
+
+			gbz.Run()
+
+			assertCycles(t, gbz, c.wantCycles)
+			assertPC(t, gbz, c.wantPC)
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_JP_HL(t *testing.T) {
+	gbz := createGBZ()
+	gbz.h = 0x12
+	gbz.l = 0x34
+	gbz.mem.Write(gbz.pc, 0xE9)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 4)
+	assertPC(t, gbz, 0x1234)
+}
