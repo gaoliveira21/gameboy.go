@@ -248,7 +248,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xBF: {g._CP_A_A, "CP A, A", 1},
 
 		0xC0: {g._RET_NZ, "RET NZ", 1},
-		0xC1: {g._TODO, "POP BC", 1},
+		0xC1: {g._POP_BC, "POP BC", 1},
 		0xC2: {g._JP_NZ_A16, "JP NZ, a16", 3},
 		0xC3: {g._JP_A16, "JP a16", 3},
 		0xC4: {g._CALL_NZ, "CALL NZ, a16", 3},
@@ -265,7 +265,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xCF: {g._RST_08, "RST $08", 1},
 
 		0xD0: {g._RET_NC, "RET NC", 1},
-		0xD1: {g._TODO, "POP DE", 1},
+		0xD1: {g._POP_DE, "POP DE", 1},
 		0xD2: {g._JP_NC_A16, "JP NC, a16", 3},
 		0xD3: {g._ILLEGAL, "ILLEGAL_D3", 1},
 		0xD4: {g._CALL_NC, "CALL NC, a16", 3},
@@ -282,7 +282,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xDF: {g._RST_18, "RST $18", 1},
 
 		0xE0: {g._LDH_A8_A, "LDH [a8], A", 2},
-		0xE1: {g._TODO, "POP HL", 1},
+		0xE1: {g._POP_HL, "POP HL", 1},
 		0xE2: {g._LDH_C_A, "LDH [C], A", 1},
 		0xE3: {g._ILLEGAL, "ILLEGAL_E3", 1},
 		0xE4: {g._ILLEGAL, "ILLEGAL_E4", 1},
@@ -299,7 +299,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xEF: {g._RST_28, "RST $28", 1},
 
 		0xF0: {g._LDH_A_A8, "LDH A, [a8]", 2},
-		0xF1: {g._TODO, "POP AF", 1},
+		0xF1: {g._POP_AF, "POP AF", 1},
 		0xF2: {g._LDH_A_C, "LDH A, [C]", 1},
 		0xF3: {g._DI, "DI", 1},
 		0xF4: {g._NOP, "NOP", 1},
@@ -1723,4 +1723,41 @@ func (gbz *GBZ80) _RST_30() uint {
 func (gbz *GBZ80) _RST_38() uint {
 	gbz.rst(0x0038)
 	return 16
+}
+
+func (gbz *GBZ80) _POP_BC() uint {
+	hb, lb := gbz.pop()
+	gbz.b = hb
+	gbz.c = lb
+	return 12
+}
+
+func (gbz *GBZ80) _POP_DE() uint {
+	hb, lb := gbz.pop()
+	gbz.d = hb
+	gbz.e = lb
+	return 12
+}
+
+func (gbz *GBZ80) _POP_HL() uint {
+	hb, lb := gbz.pop()
+	gbz.h = hb
+	gbz.l = lb
+	return 12
+}
+
+func (gbz *GBZ80) _POP_AF() uint {
+	hb, lb := gbz.pop()
+
+	v := ((uint16(hb) << 8) | uint16(lb)) & 0xFFF0
+
+	gbz.a = byte((v & 0xFF00) >> 8)
+	f := byte(v & 0xFF)
+
+	gbz.flags.Set(Zero, f&0x80 > 0)
+	gbz.flags.Set(Sub, f&0x40 > 0)
+	gbz.flags.Set(HalfCarry, f&0x20 > 0)
+	gbz.flags.Set(Carry, f&0x10 > 0)
+
+	return 12
 }

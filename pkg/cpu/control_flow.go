@@ -45,3 +45,10 @@ func (gbz *GBZ80) rst(addr uint16) {
 
 	gbz.pc = addr
 }
+
+func (gbz *GBZ80) pop() (hb byte, lb byte) {
+	lob, hib := gbz.mem.Read(gbz.sp), gbz.mem.Read(gbz.sp+1)
+	gbz.sp += 2
+
+	return hib, lob
+}

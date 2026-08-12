@@ -2628,3 +2628,70 @@ func Test_LD_HL_SP_E8(t *testing.T) {
 		})
 	}
 }
+
+func Test_POP_BC(t *testing.T) {
+	gbz := createGBZ()
+	gbz.sp = 0xFFFC
+	gbz.mem.Write(gbz.sp, 0x34)
+	gbz.mem.Write(gbz.sp+1, 0x12)
+	gbz.mem.Write(gbz.pc, 0xC1)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 12)
+	assertPC(t, gbz, 0x101)
+	assertRegister(t, 0x12, gbz.b, "B")
+	assertRegister(t, 0x34, gbz.c, "C")
+	assertSP(t, 0xFFFE, gbz.sp)
+}
+
+func Test_POP_DE(t *testing.T) {
+	gbz := createGBZ()
+	gbz.sp = 0xFFFC
+	gbz.mem.Write(gbz.sp, 0x56)
+	gbz.mem.Write(gbz.sp+1, 0x78)
+	gbz.mem.Write(gbz.pc, 0xD1)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 12)
+	assertPC(t, gbz, 0x101)
+	assertRegister(t, 0x78, gbz.d, "D")
+	assertRegister(t, 0x56, gbz.e, "E")
+	assertSP(t, 0xFFFE, gbz.sp)
+}
+
+func Test_POP_HL(t *testing.T) {
+	gbz := createGBZ()
+	gbz.sp = 0xFFFC
+	gbz.mem.Write(gbz.sp, 0x9A)
+	gbz.mem.Write(gbz.sp+1, 0xBC)
+	gbz.mem.Write(gbz.pc, 0xE1)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 12)
+	assertPC(t, gbz, 0x101)
+	assertRegister(t, 0xBC, gbz.h, "H")
+	assertRegister(t, 0x9A, gbz.l, "L")
+	assertSP(t, 0xFFFE, gbz.sp)
+}
+
+func Test_POP_AF(t *testing.T) {
+	gbz := createGBZ()
+	gbz.sp = 0xFFFC
+	gbz.mem.Write(gbz.sp, 0x00)
+	gbz.mem.Write(gbz.sp+1, 0x12)
+	gbz.mem.Write(gbz.pc, 0xF1)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 12)
+	assertPC(t, gbz, 0x101)
+	assertRegister(t, 0x12, gbz.a, "A")
+	assert.Equal(t, false, gbz.flags.Get(Zero), "Zero flag mismatch")
+	assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag mismatch")
+	assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag mismatch")
+	assert.Equal(t, false, gbz.flags.Get(Carry), "Carry flag mismatch")
+	assertSP(t, 0xFFFE, gbz.sp)
+}
