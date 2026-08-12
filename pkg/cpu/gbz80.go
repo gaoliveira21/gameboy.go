@@ -68,7 +68,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x15: {g._DEC_D, "DEC D", 1},
 		0x16: {g._LD_D_n8, "LD D, n8", 2},
 		0x17: {g._TODO, "RLA", 1},
-		0x18: {g._TODO, "JR e8", 2},
+		0x18: {g._JR_E8, "JR e8", 2},
 		0x19: {g._ADD_HL_DE, "ADD HL, DE", 1},
 		0x1A: {g._LD_A_DE, "LD A, [DE]", 1},
 		0x1B: {g._DEC_DE, "DEC DE", 1},
@@ -77,7 +77,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x1E: {g._LD_E_n8, "LD E, n8", 2},
 		0x1F: {g._TODO, "RRA", 1},
 
-		0x20: {g._TODO, "JR NZ, e8", 2},
+		0x20: {g._JR_NZ_E8, "JR NZ, e8", 2},
 		0x21: {g._LD_HL_n16, "LD HL, n16 ", 3},
 		0x22: {g._LD_HLI_A, "LD [HL+], A", 1},
 		0x23: {g._INC_HL, "INC HL", 1},
@@ -85,7 +85,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x25: {g._DEC_H, "DEC H", 1},
 		0x26: {g._LD_H_n8, "LD H, n8", 2},
 		0x27: {g._TODO, "DAA", 1},
-		0x28: {g._TODO, "JR Z, e8", 2},
+		0x28: {g._JR_Z_E8, "JR Z, e8", 2},
 		0x29: {g._ADD_HL_HL, "ADD HL, HL", 1},
 		0x2A: {g._LD_A_HLI, "LD A, [HL+]", 1},
 		0x2B: {g._DEC_HL, "DEC HL", 1},
@@ -94,7 +94,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x2E: {g._LD_L_n8, "LD L, n8", 2},
 		0x2F: {g._TODO, "CPL", 1},
 
-		0x30: {g._TODO, "JR NC, e8", 2},
+		0x30: {g._JR_NC_E8, "JR NC, e8", 2},
 		0x31: {g._LD_SP_n16, "LD SP, n16", 3},
 		0x32: {g._LD_HLD_A, "LD [HL-], A", 1},
 		0x33: {g._INC_SP, "INC SP", 1},
@@ -102,7 +102,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x35: {g._DEC_HLX, "DEC [HL]", 1},
 		0x36: {g._LD_HL_n8, "LD [HL], n8", 2},
 		0x37: {g._TODO, "SCF", 1},
-		0x38: {g._TODO, "JR C, e8", 2},
+		0x38: {g._JR_C_E8, "JR C, e8", 2},
 		0x39: {g._ADD_HL_SP, "ADD HL, SP", 1},
 		0x3A: {g._LD_A_HLD, "LD A, [HL-]", 1},
 		0x3B: {g._DEC_SP, "DEC SP", 1},
@@ -1416,6 +1416,51 @@ func (gbz *GBZ80) _CP_A_A() uint {
 
 func (gbz *GBZ80) _CP_A_N8() uint {
 	gbz.cp(gbz.mem.Read(gbz.pc))
+	gbz.pc++
+	return 8
+}
+
+func (gbz *GBZ80) _JR_E8() uint {
+	gbz.jumpE8()
+	return 12
+}
+
+func (gbz *GBZ80) _JR_NZ_E8() uint {
+	if !gbz.flags.Get(Zero) {
+		gbz.jumpE8()
+		return 12
+	}
+
+	gbz.pc++
+	return 8
+}
+
+func (gbz *GBZ80) _JR_NC_E8() uint {
+	if !gbz.flags.Get(Carry) {
+		gbz.jumpE8()
+		return 12
+	}
+
+	gbz.pc++
+	return 8
+}
+
+func (gbz *GBZ80) _JR_Z_E8() uint {
+	if gbz.flags.Get(Zero) {
+		gbz.jumpE8()
+		return 12
+	}
+
+	gbz.pc++
+	return 8
+}
+
+func (gbz *GBZ80) _JR_C_E8() uint {
+	if gbz.flags.Get(Carry) {
+		gbz.jumpE8()
+		return 12
+	}
+
 	gbz.pc++
 	return 8
 }
