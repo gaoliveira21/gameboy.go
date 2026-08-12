@@ -2491,3 +2491,37 @@ func Test_CALL_C(t *testing.T) {
 		})
 	}
 }
+
+func Test_RST(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode     uint8
+		targetAddr uint16
+	}{
+		{"RST_00", 0xC7, 0x0000},
+		{"RST_08", 0xCF, 0x0008},
+		{"RST_10", 0xD7, 0x0010},
+		{"RST_18", 0xDF, 0x0018},
+		{"RST_20", 0xE7, 0x0020},
+		{"RST_28", 0xEF, 0x0028},
+		{"RST_30", 0xF7, 0x0030},
+		{"RST_38", 0xFF, 0x0038},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.sp = 0xFFFE
+			gbz.mem.Write(gbz.pc, c.opcode)
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 16)
+			assertPC(t, gbz, c.targetAddr)
+			assertSP(t, 0xFFFC, gbz.sp)
+			assertMemory(t, gbz, 0xFFFC, byte(0x101&0xFF))
+			assertMemory(t, gbz, 0xFFFD, byte(0x101>>8))
+			resetGBZ(gbz)
+		})
+	}
+}

@@ -35,3 +35,12 @@ func (gbz *GBZ80) call() {
 
 	gbz.pc = addr
 }
+
+func (gbz *GBZ80) rst(addr uint16) {
+	gbz.sp--
+	gbz.mem.Write(gbz.sp, byte(gbz.pc>>8))
+	gbz.sp--
+	gbz.mem.Write(gbz.sp, byte(gbz.pc&0xFF))
+
+	gbz.pc = addr
+}

@@ -254,7 +254,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xC4: {g._CALL_NZ, "CALL NZ, a16", 3},
 		0xC5: {g._TODO, "PUSH BC", 1},
 		0xC6: {g._TODO, "ADD A, n8", 2},
-		0xC7: {g._TODO, "RST $00", 1},
+		0xC7: {g._RST_00, "RST $00", 1},
 		0xC8: {g._RET_Z, "RET Z", 1},
 		0xC9: {g._RET, "RET", 1},
 		0xCA: {g._JP_Z_A16, "JP Z, a16", 3},
@@ -262,7 +262,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xCC: {g._CALL_Z, "CALL Z, a16", 3},
 		0xCD: {g._CALL, "CALL a16", 3},
 		0xCE: {g._ADC_A_N8, "ADC A, n8", 2},
-		0xCF: {g._TODO, "RST $08", 1},
+		0xCF: {g._RST_08, "RST $08", 1},
 
 		0xD0: {g._RET_NC, "RET NC", 1},
 		0xD1: {g._TODO, "POP DE", 1},
@@ -271,7 +271,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xD4: {g._CALL_NC, "CALL NC, a16", 3},
 		0xD5: {g._TODO, "PUSH DE", 1},
 		0xD6: {g._SUB_A_N8, "SUB A, n8", 2},
-		0xD7: {g._TODO, "RST $10", 1},
+		0xD7: {g._RST_10, "RST $10", 1},
 		0xD8: {g._RET_C, "RET C", 1},
 		0xD9: {g._RETI, "RETI", 1},
 		0xDA: {g._JP_C_A16, "JP C, a16", 3},
@@ -279,7 +279,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xDC: {g._CALL_C, "CALL C, a16", 3},
 		0xDD: {g._ILLEGAL, "ILLEGAL_DD", 1},
 		0xDE: {g._SBC_A_N8, "SBC A, n8", 2},
-		0xDF: {g._TODO, "RST $18", 1},
+		0xDF: {g._RST_18, "RST $18", 1},
 
 		0xE0: {g._TODO, "LDH [a8], A", 2},
 		0xE1: {g._TODO, "POP HL", 1},
@@ -288,7 +288,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xE4: {g._ILLEGAL, "ILLEGAL_E4", 1},
 		0xE5: {g._TODO, "PUSH HL", 1},
 		0xE6: {g._AND_A_N8, "AND A, n8", 2},
-		0xE7: {g._TODO, "RST $20", 1},
+		0xE7: {g._RST_20, "RST $20", 1},
 		0xE8: {g._TODO, "ADD SP, e8", 2},
 		0xE9: {g._JP_HL, "JP HL", 1},
 		0xEA: {g._TODO, "LD [a16], A", 3},
@@ -296,7 +296,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xEC: {g._ILLEGAL, "ILLEGAL_EC", 1},
 		0xED: {g._ILLEGAL, "ILLEGAL_ED", 1},
 		0xEE: {g._XOR_A_N8, "XOR A, n8", 2},
-		0xEF: {g._TODO, "RST $28", 1},
+		0xEF: {g._RST_28, "RST $28", 1},
 
 		0xF0: {g._TODO, "LDH A, [a8]", 2},
 		0xF1: {g._TODO, "POP AF", 1},
@@ -305,7 +305,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xF4: {g._NOP, "NOP", 1},
 		0xF5: {g._TODO, "PUSH AF", 1},
 		0xF6: {g._OR_A_N8, "OR A, n8", 2},
-		0xF7: {g._TODO, "RST $30", 1},
+		0xF7: {g._RST_30, "RST $30", 1},
 		0xF8: {g._TODO, "LD HL, SP + e8", 2},
 		0xF9: {g._TODO, "LD SP, HL", 1},
 		0xFA: {g._TODO, "LD A, [a16]", 3},
@@ -313,7 +313,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0xFC: {g._NOP, "NOP", 1},
 		0xFD: {g._ILLEGAL, "ILLEGAL_FD", 1},
 		0xFE: {g._CP_A_N8, "CP A, n8", 2},
-		0xFF: {g._TODO, "RST $38", 1},
+		0xFF: {g._RST_38, "RST $38", 1},
 	}
 
 	g.boot()
@@ -1606,4 +1606,44 @@ func (gbz *GBZ80) _CALL_C() uint {
 
 	gbz.pc += 2
 	return 12
+}
+
+func (gbz *GBZ80) _RST_00() uint {
+	gbz.rst(0x0000)
+	return 16
+}
+
+func (gbz *GBZ80) _RST_08() uint {
+	gbz.rst(0x0008)
+	return 16
+}
+
+func (gbz *GBZ80) _RST_10() uint {
+	gbz.rst(0x0010)
+	return 16
+}
+
+func (gbz *GBZ80) _RST_18() uint {
+	gbz.rst(0x0018)
+	return 16
+}
+
+func (gbz *GBZ80) _RST_20() uint {
+	gbz.rst(0x0020)
+	return 16
+}
+
+func (gbz *GBZ80) _RST_28() uint {
+	gbz.rst(0x0028)
+	return 16
+}
+
+func (gbz *GBZ80) _RST_30() uint {
+	gbz.rst(0x0030)
+	return 16
+}
+
+func (gbz *GBZ80) _RST_38() uint {
+	gbz.rst(0x0038)
+	return 16
 }
