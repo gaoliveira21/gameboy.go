@@ -23,7 +23,7 @@ func Run(c *cartridge.Cartridge) {
 		cycles += cpu.Run()
 		timer.Update(cycles)
 		graphics.Update(cycles)
-		cpu.Interrupt()
+		// cpu.Interrupt()
 	}
 
 	graphics.Render()
