@@ -19,7 +19,9 @@ type GBZ80 struct {
 
 	cycles uint
 
-	interruptEnabled bool
+	InterruptEnabled bool
+	Halt             bool
+	IsStopped        bool
 
 	mem            memory.MemReadWriter
 	instructionSet [256]*instruction
@@ -60,7 +62,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x0E: {g._LD_C_n8, "LD C, n8", 2},
 		0x0F: {g._RRCA, "RRCA", 1},
 
-		0x10: {g._TODO, "STOP n8", 2},
+		0x10: {g._STOP, "STOP n8", 2},
 		0x11: {g._LD_DE_n16, "LD DE, n16", 3},
 		0x12: {g._LD_DE_A, "LD [DE], A", 1},
 		0x13: {g._INC_DE, "INC DE", 1},
@@ -168,7 +170,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x73: {g._LD_HL_E, "LD HL, E", 1},
 		0x74: {g._LD_HL_H, "LD HL, H", 1},
 		0x75: {g._LD_HL_L, "LD HL, L", 1},
-		0x76: {g._TODO, "HALT", 1},
+		0x76: {g._HALT, "HALT", 1},
 		0x77: {g._LD_HL_A, "LD HL, A", 1},
 		0x78: {g._LD_A_B, "LD A, B", 1},
 		0x79: {g._LD_A_C, "LD A, C", 1},
@@ -321,13 +323,11 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 	return g
 }
 
-func (gbz *GBZ80) Interrupt() {
-	return
-}
-
 func (gbz *GBZ80) Run() uint {
 	opcode := gbz.fetch()
-	cycles := gbz.exec(opcode)
+	instr := gbz.decode(opcode)
+	cycles := gbz.exec(instr)
+
 	gbz.cycles += cycles
 
 	return cycles
@@ -339,9 +339,12 @@ func (gbz *GBZ80) fetch() byte {
 	return opcode
 }
 
-func (gbz *GBZ80) exec(opcode byte) uint {
-	instruction := gbz.instructionSet[opcode]
-	return instruction.operation()
+func (gbz *GBZ80) decode(opcode byte) *instruction {
+	return gbz.instructionSet[opcode]
+}
+
+func (gbz *GBZ80) exec(instr *instruction) uint {
+	return instr.operation()
 }
 
 func (gbz *GBZ80) boot() {
@@ -402,12 +405,23 @@ func (gbz *GBZ80) _ILLEGAL() uint {
 }
 
 func (gbz *GBZ80) _DI() uint {
-	gbz.interruptEnabled = false
+	gbz.InterruptEnabled = false
 	return 4
 }
 
 func (gbz *GBZ80) _EI() uint {
-	gbz.interruptEnabled = true
+	gbz.InterruptEnabled = true
+	return 4
+}
+
+func (gbz *GBZ80) _HALT() uint {
+	gbz.Halt = true
+	return 4
+}
+
+func (gbz *GBZ80) _STOP() uint {
+	gbz.pc++ // Skips the immediate byte following the STOP opcode
+	gbz.IsStopped = true
 	return 4
 }
 
@@ -1636,7 +1650,7 @@ func (gbz *GBZ80) _RET_C() uint {
 
 func (gbz *GBZ80) _RETI() uint {
 	gbz.ret()
-	gbz.interruptEnabled = true
+	gbz.InterruptEnabled = true
 	return 16
 }
 

@@ -35,7 +35,7 @@ func resetGBZ(gbz *GBZ80) *GBZ80 {
 	gbz.sp = 0xFFFE
 	gbz.mem = &Memory{}
 	gbz.cycles = 0
-	gbz.interruptEnabled = false
+	gbz.InterruptEnabled = false
 
 	return gbz
 }
@@ -435,26 +435,26 @@ func Test_LdR8R8(t *testing.T) {
 
 func Test_DI(t *testing.T) {
 	gbz := createGBZWithOpcode(0xF3)
-	gbz.interruptEnabled = true
+	gbz.InterruptEnabled = true
 	pc := gbz.pc
 
 	gbz.Run()
 
 	assertCycles(t, gbz, 4)
 	assertPC(t, gbz, pc+1)
-	assert.Equal(t, false, gbz.interruptEnabled, "DI should disable interrupts")
+	assert.Equal(t, false, gbz.InterruptEnabled, "DI should disable interrupts")
 }
 
 func Test_EI(t *testing.T) {
 	gbz := createGBZWithOpcode(0xFB)
-	gbz.interruptEnabled = false
+	gbz.InterruptEnabled = false
 	pc := gbz.pc
 
 	gbz.Run()
 
 	assertCycles(t, gbz, 4)
 	assertPC(t, gbz, pc+1)
-	assert.Equal(t, true, gbz.interruptEnabled, "EI should enable interrupts")
+	assert.Equal(t, true, gbz.InterruptEnabled, "EI should enable interrupts")
 }
 
 func Test_INCR16(t *testing.T) {
@@ -1262,15 +1262,15 @@ func Test_AND_AR8(t *testing.T) {
 	gbz := createGBZ()
 
 	cases := []struct {
-		name          string
-		opcode        uint8
-		reg           *uint8
-		regName       string
-		initialA      byte
-		initialReg    byte
-		wantValue     byte
-		wantZero      bool
-		cycles        uint
+		name       string
+		opcode     uint8
+		reg        *uint8
+		regName    string
+		initialA   byte
+		initialReg byte
+		wantValue  byte
+		wantZero   bool
+		cycles     uint
 	}{
 		{"AND_A_B_NoFlags", 0xA0, &gbz.b, "B", 0xFF, 0x0F, 0x0F, false, 4},
 		{"AND_A_B_Zero", 0xA0, &gbz.b, "B", 0xFF, 0x00, 0x00, true, 4},
@@ -1348,11 +1348,11 @@ func Test_AND_A_N8(t *testing.T) {
 	gbz := createGBZ()
 
 	cases := []struct {
-		name       string
-		imm        byte
-		initialA   byte
-		wantValue  byte
-		wantZero   bool
+		name      string
+		imm       byte
+		initialA  byte
+		wantValue byte
+		wantZero  bool
 	}{
 		{"AND_A_N8_NoFlags", 0x0F, 0xFF, 0x0F, false},
 		{"AND_A_N8_Zero", 0x00, 0xFF, 0x00, true},
@@ -1384,15 +1384,15 @@ func Test_XOR_AR8(t *testing.T) {
 	gbz := createGBZ()
 
 	cases := []struct {
-		name          string
-		opcode        uint8
-		reg           *uint8
-		regName       string
-		initialA      byte
-		initialReg    byte
-		wantValue     byte
-		wantZero      bool
-		cycles        uint
+		name       string
+		opcode     uint8
+		reg        *uint8
+		regName    string
+		initialA   byte
+		initialReg byte
+		wantValue  byte
+		wantZero   bool
+		cycles     uint
 	}{
 		{"XOR_A_B_NoFlags", 0xA8, &gbz.b, "B", 0xFF, 0x0F, 0xF0, false, 4},
 		{"XOR_A_B_Zero", 0xA8, &gbz.b, "B", 0xFF, 0xFF, 0x00, true, 4},
@@ -1469,11 +1469,11 @@ func Test_XOR_A_N8(t *testing.T) {
 	gbz := createGBZ()
 
 	cases := []struct {
-		name       string
-		imm        byte
-		initialA   byte
-		wantValue  byte
-		wantZero   bool
+		name      string
+		imm       byte
+		initialA  byte
+		wantValue byte
+		wantZero  bool
 	}{
 		{"XOR_A_N8_NoFlags", 0x0F, 0xFF, 0xF0, false},
 		{"XOR_A_N8_Zero", 0xFF, 0xFF, 0x00, true},
@@ -1505,15 +1505,15 @@ func Test_OR_AR8(t *testing.T) {
 	gbz := createGBZ()
 
 	cases := []struct {
-		name          string
-		opcode        uint8
-		reg           *uint8
-		regName       string
-		initialA      byte
-		initialReg    byte
-		wantValue     byte
-		wantZero      bool
-		cycles        uint
+		name       string
+		opcode     uint8
+		reg        *uint8
+		regName    string
+		initialA   byte
+		initialReg byte
+		wantValue  byte
+		wantZero   bool
+		cycles     uint
 	}{
 		{"OR_A_B_NoFlags", 0xB0, &gbz.b, "B", 0x0F, 0xF0, 0xFF, false, 4},
 		{"OR_A_B_Zero", 0xB0, &gbz.b, "B", 0x00, 0x00, 0x00, true, 4},
@@ -1590,11 +1590,11 @@ func Test_OR_A_N8(t *testing.T) {
 	gbz := createGBZ()
 
 	cases := []struct {
-		name       string
-		imm        byte
-		initialA   byte
-		wantValue  byte
-		wantZero   bool
+		name      string
+		imm       byte
+		initialA  byte
+		wantValue byte
+		wantZero  bool
 	}{
 		{"OR_A_N8_NoFlags", 0xF0, 0x0F, 0xFF, false},
 		{"OR_A_N8_Zero", 0x00, 0x00, 0x00, true},
@@ -1676,12 +1676,12 @@ func Test_CP_A_HLX(t *testing.T) {
 
 	cases := []struct {
 		name          string
-		hl           uint16
-		memValue     byte
-		initialA     byte
-		wantCarry    bool
+		hl            uint16
+		memValue      byte
+		initialA      byte
+		wantCarry     bool
 		wantHalfCarry bool
-		wantZero     bool
+		wantZero      bool
 	}{
 		{"CP_A_HLX_NoFlags", 0xC000, 0x02, 0x03, false, false, false},
 		{"CP_A_HLX_Carry", 0xC000, 0x01, 0x00, true, true, false},
@@ -1897,10 +1897,10 @@ func Test_ADD_HL_SP(t *testing.T) {
 
 func Test_JR_E8(t *testing.T) {
 	cases := []struct {
-		name    string
-		offset  int8
-		wantPC  uint16
-		cycles  uint
+		name   string
+		offset int8
+		wantPC uint16
+		cycles uint
 	}{
 		{"PositiveOffset", 0x10, 0x0112, 12},
 		{"NegativeOffset", -16, 0x00F2, 12},
@@ -2330,7 +2330,7 @@ func Test_RETI(t *testing.T) {
 	gbz := createGBZ()
 	returnAddr := uint16(0x1234)
 	gbz.sp = 0xFFFE
-	gbz.interruptEnabled = false
+	gbz.InterruptEnabled = false
 	gbz.mem.Write(gbz.sp, byte(returnAddr))
 	gbz.mem.Write(gbz.sp+1, byte(returnAddr>>8))
 	gbz.mem.Write(gbz.pc, 0xD9)
@@ -2340,7 +2340,7 @@ func Test_RETI(t *testing.T) {
 	assertCycles(t, gbz, 16)
 	assertPC(t, gbz, returnAddr)
 	assertSP(t, 0x0000, gbz.sp)
-	assert.Equal(t, true, gbz.interruptEnabled, "RETI should enable interrupts")
+	assert.Equal(t, true, gbz.InterruptEnabled, "RETI should enable interrupts")
 }
 
 func Test_CALL(t *testing.T) {
@@ -2494,7 +2494,7 @@ func Test_CALL_C(t *testing.T) {
 
 func Test_RST(t *testing.T) {
 	cases := []struct {
-		name        string
+		name       string
 		opcode     uint8
 		targetAddr uint16
 	}{
@@ -2767,10 +2767,10 @@ func Test_RLCA(t *testing.T) {
 	gbz := createGBZ()
 
 	cases := []struct {
-		name         string
-		initialA     byte
-		wantValue    byte
-		wantCarry    bool
+		name      string
+		initialA  byte
+		wantValue byte
+		wantCarry bool
 	}{
 		{"Rotate_0x00_NoCarry", 0x00, 0x00, false},
 		{"Rotate_0x01_NoCarry", 0x01, 0x02, false},
@@ -2805,10 +2805,10 @@ func Test_RRCA(t *testing.T) {
 	gbz := createGBZ()
 
 	cases := []struct {
-		name         string
-		initialA     byte
-		wantValue    byte
-		wantCarry    bool
+		name      string
+		initialA  byte
+		wantValue byte
+		wantCarry bool
 	}{
 		{"Rotate_0x00_NoCarry", 0x00, 0x00, false},
 		{"Rotate_0x01_Carry", 0x01, 0x80, true},
@@ -2842,11 +2842,11 @@ func Test_RLA(t *testing.T) {
 	gbz := createGBZ()
 
 	cases := []struct {
-		name        string
-		initialA    byte
+		name         string
+		initialA     byte
 		initialCarry bool
-		wantValue   byte
-		wantCarry   bool
+		wantValue    byte
+		wantCarry    bool
 	}{
 		{"Rotate_0x00_NoCarry_In", 0x00, false, 0x00, false},
 		{"Rotate_0x00_Carry_In", 0x00, true, 0x01, false},
@@ -2884,11 +2884,11 @@ func Test_RRA(t *testing.T) {
 	gbz := createGBZ()
 
 	cases := []struct {
-		name        string
-		initialA    byte
+		name         string
+		initialA     byte
 		initialCarry bool
-		wantValue   byte
-		wantCarry   bool
+		wantValue    byte
+		wantCarry    bool
 	}{
 		{"Rotate_0x00_NoCarry_In", 0x00, false, 0x00, false},
 		{"Rotate_0x00_Carry_In", 0x00, true, 0x80, false},
@@ -2920,4 +2920,33 @@ func Test_RRA(t *testing.T) {
 			resetGBZ(gbz)
 		})
 	}
+}
+
+func Test_HALT(t *testing.T) {
+	gbz := createGBZ()
+	gbz.Halt = false
+	pc := gbz.pc
+
+	gbz.mem.Write(gbz.pc, 0x76)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 4)
+	assertPC(t, gbz, pc+1)
+	assert.Equal(t, true, gbz.Halt, "Halt flag should be true")
+}
+
+func Test_STOP(t *testing.T) {
+	gbz := createGBZ()
+	gbz.IsStopped = false
+	pc := gbz.pc
+
+	gbz.mem.Write(gbz.pc, 0x10)
+	gbz.mem.Write(gbz.pc+1, 0x00)
+
+	gbz.Run()
+
+	assertCycles(t, gbz, 4)
+	assertPC(t, gbz, pc+2)
+	assert.Equal(t, true, gbz.IsStopped, "IsStopped flag should be true")
 }
