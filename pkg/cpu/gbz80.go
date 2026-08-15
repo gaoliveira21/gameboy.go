@@ -67,7 +67,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x14: {g._INC_D, "INC D", 1},
 		0x15: {g._DEC_D, "DEC D", 1},
 		0x16: {g._LD_D_n8, "LD D, n8", 2},
-		0x17: {g._TODO, "RLA", 1},
+		0x17: {g._RLA, "RLA", 1},
 		0x18: {g._JR_E8, "JR e8", 2},
 		0x19: {g._ADD_HL_DE, "ADD HL, DE", 1},
 		0x1A: {g._LD_A_DE, "LD A, [DE]", 1},
@@ -75,7 +75,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x1C: {g._INC_E, "INC E", 1},
 		0x1D: {g._DEC_E, "DEC E", 1},
 		0x1E: {g._LD_E_n8, "LD E, n8", 2},
-		0x1F: {g._TODO, "RRA", 1},
+		0x1F: {g._RRA, "RRA", 1},
 
 		0x20: {g._JR_NZ_E8, "JR NZ, e8", 2},
 		0x21: {g._LD_HL_n16, "LD HL, n16 ", 3},
@@ -1799,6 +1799,38 @@ func (gbz *GBZ80) _RRCA() uint {
 	gbz.flags.Set(Sub, false)
 	gbz.flags.Set(HalfCarry, false)
 	gbz.flags.Set(Carry, gbz.a > 0x7F)
+
+	return 4
+}
+
+func (gbz *GBZ80) _RLA() uint {
+	c := uint8(0x0)
+	if gbz.flags.Get(Carry) {
+		c = 0x1
+	}
+
+	gbz.flags.Set(Zero, false)
+	gbz.flags.Set(Sub, false)
+	gbz.flags.Set(HalfCarry, false)
+	gbz.flags.Set(Carry, gbz.a&0x80 > 0x0)
+
+	gbz.a = gbz.a<<1 | c
+
+	return 4
+}
+
+func (gbz *GBZ80) _RRA() uint {
+	c := uint8(0x0)
+	if gbz.flags.Get(Carry) {
+		c = 0x80
+	}
+
+	gbz.flags.Set(Zero, false)
+	gbz.flags.Set(Sub, false)
+	gbz.flags.Set(HalfCarry, false)
+	gbz.flags.Set(Carry, gbz.a&0x1 > 0x0)
+
+	gbz.a = c | gbz.a>>1
 
 	return 4
 }
