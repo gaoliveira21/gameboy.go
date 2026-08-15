@@ -2950,3 +2950,45 @@ func Test_STOP(t *testing.T) {
 	assertPC(t, gbz, pc+2)
 	assert.Equal(t, true, gbz.IsStopped, "IsStopped flag should be true")
 }
+
+func Test_DAA(t *testing.T) {
+	cases := []struct {
+		name           string
+		initialA       byte
+		sub, halfCarry, carry bool
+		wantValue      byte
+		wantZero       bool
+	}{
+		{"Add_0x01_0x02_NoFlags", 0x03, false, false, false, 0x03, false},
+		{"Add_0x09_0x01_HalfCarry", 0x0A, false, true, false, 0x10, false},
+		{"Add_0x80_0x80_Carry", 0x00, false, false, true, 0x60, false},
+		{"Add_0x01_0x01_NoCarry", 0x02, false, false, false, 0x02, false},
+		{"Add_0x0F_0x01_HalfCarry", 0x10, false, true, false, 0x16, false},
+		{"Add_0x99_0x01_Carry", 0x9A, false, false, true, 0x00, true},
+		{"Add_0x9A_0x01_Carry", 0x9B, false, true, true, 0x01, false},
+		{"Sub_0x00_0x01_Carry_HalfCarry", 0xFF, true, true, true, 0x99, false},
+		{"Sub_0x01_0x01_NoFlags", 0x00, true, false, false, 0x00, true},
+		{"Sub_0x10_0x01_HalfCarry", 0x0F, true, true, false, 0x09, false},
+		{"Sub_0x30_0x01_HalfCarry", 0x2F, true, true, false, 0x29, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0x27)
+			gbz.a = c.initialA
+			gbz.flags.Set(Sub, c.sub)
+			gbz.flags.Set(HalfCarry, c.halfCarry)
+			gbz.flags.Set(Carry, c.carry)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 4)
+			assertPC(t, gbz, pc+1)
+			assertRegister(t, c.wantValue, gbz.a, "A")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+		})
+	}
+}

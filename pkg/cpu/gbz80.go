@@ -86,7 +86,7 @@ func NewGBZ80(m memory.MemReadWriter) *GBZ80 {
 		0x24: {g._INC_H, "INC H", 1},
 		0x25: {g._DEC_H, "DEC H", 1},
 		0x26: {g._LD_H_n8, "LD H, n8", 2},
-		0x27: {g._TODO, "DAA", 1},
+		0x27: {g._DAA, "DAA", 1},
 		0x28: {g._JR_Z_E8, "JR Z, e8", 2},
 		0x29: {g._ADD_HL_HL, "ADD HL, HL", 1},
 		0x2A: {g._LD_A_HLI, "LD A, [HL+]", 1},
@@ -1077,6 +1077,38 @@ func (gbz *GBZ80) _DEC_HLX() uint {
 func (gbz *GBZ80) _DEC_SP() uint {
 	gbz.sp--
 	return 8
+}
+
+func (gbz *GBZ80) _DAA() uint {
+	adjust := uint8(0)
+
+	if gbz.flags.Get(Sub) {
+		if gbz.flags.Get(HalfCarry) {
+			adjust += 0x6
+		}
+
+		if gbz.flags.Get(Carry) {
+			adjust += 0x60
+		}
+
+		gbz.a -= adjust
+	} else {
+		if gbz.flags.Get(HalfCarry) || gbz.a&0xF > 0x9 {
+			adjust += 0x6
+		}
+
+		if gbz.flags.Get(Carry) || gbz.a > 0x99 {
+			adjust += 0x60
+			gbz.flags.Set(Carry, true)
+		}
+
+		gbz.a += adjust
+	}
+
+	gbz.flags.Set(Zero, gbz.a == 0)
+	gbz.flags.Set(HalfCarry, false)
+
+	return 4
 }
 
 func (gbz *GBZ80) _ADD_A_B() uint {
