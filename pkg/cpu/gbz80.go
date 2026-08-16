@@ -806,6 +806,27 @@ func (gbz *GBZ80) _DEC_SP() uint {
 	return 8
 }
 
+func (gbz *GBZ80) _CPL() uint {
+	gbz.a = ^gbz.a
+	gbz.flags.Set(Sub, true)
+	gbz.flags.Set(HalfCarry, true)
+	return 4
+}
+
+func (gbz *GBZ80) _SCF() uint {
+	gbz.flags.Set(Sub, false)
+	gbz.flags.Set(HalfCarry, false)
+	gbz.flags.Set(Carry, true)
+	return 4
+}
+
+func (gbz *GBZ80) _CCF() uint {
+	gbz.flags.Set(Sub, false)
+	gbz.flags.Set(HalfCarry, false)
+	gbz.flags.Set(Carry, !gbz.flags.Get(Carry))
+	return 4
+}
+
 func (gbz *GBZ80) _DAA() uint {
 	adjust := uint8(0)
 
@@ -836,6 +857,29 @@ func (gbz *GBZ80) _DAA() uint {
 	gbz.flags.Set(HalfCarry, false)
 
 	return 4
+}
+
+func (gbz *GBZ80) _ADD_A_N8() uint {
+	n8 := gbz.mem.Read(gbz.pc)
+	gbz.pc++
+	gbz.add(n8, 0)
+	return 8
+}
+
+func (gbz *GBZ80) _ADD_SP_E8() uint {
+	origSp := gbz.sp
+	e8 := int8(gbz.mem.Read(gbz.pc))
+	gbz.pc++
+
+	r := uint16(int32(gbz.sp) + int32(e8))
+	gbz.sp = r
+
+	gbz.flags.Set(Zero, false)
+	gbz.flags.Set(Sub, false)
+	gbz.flags.Set(HalfCarry, (origSp^r)&0x10 == 0x10)
+	gbz.flags.Set(Carry, (origSp^r)&0x100 == 0x100)
+
+	return 16
 }
 
 func (gbz *GBZ80) _ADD_A_B() uint {
