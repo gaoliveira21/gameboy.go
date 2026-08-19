@@ -2,14 +2,14 @@ package cpu
 
 func (g *GBZ80) initPrefixedSet() {
 	g.prefixedSet = [256]*instruction{
-		0x00: {g._TODO, "RLC B", 2},
-		0x01: {g._TODO, "RLC C", 2},
-		0x02: {g._TODO, "RLC D", 2},
-		0x03: {g._TODO, "RLC E", 2},
-		0x04: {g._TODO, "RLC H", 2},
-		0x05: {g._TODO, "RLC L", 2},
-		0x06: {g._TODO, "RLC HL", 2},
-		0x07: {g._TODO, "RLC A", 2},
+		0x00: {g._RLC_B, "RLC B", 2},
+		0x01: {g._RLC_C, "RLC C", 2},
+		0x02: {g._RLC_D, "RLC D", 2},
+		0x03: {g._RLC_E, "RLC E", 2},
+		0x04: {g._RLC_H, "RLC H", 2},
+		0x05: {g._RLC_L, "RLC L", 2},
+		0x06: {g._RLC_HL, "RLC HL", 2},
+		0x07: {g._RLC_A, "RLC A", 2},
 		0x08: {g._TODO, "RRC B", 2},
 		0x09: {g._TODO, "RRC C", 2},
 		0x0A: {g._TODO, "RRC D", 2},
@@ -263,4 +263,47 @@ func (g *GBZ80) initPrefixedSet() {
 
 func (gbz *GBZ80) _TODO() uint {
 	panic("Instruction not implemented")
+}
+
+func (gbz *GBZ80) _RLC_B() uint {
+	gbz.rlcr8(&gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _RLC_C() uint {
+	gbz.rlcr8(&gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _RLC_D() uint {
+	gbz.rlcr8(&gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _RLC_E() uint {
+	gbz.rlcr8(&gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _RLC_H() uint {
+	gbz.rlcr8(&gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _RLC_L() uint {
+	gbz.rlcr8(&gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _RLC_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.rlcr8(&b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _RLC_A() uint {
+	gbz.rlcr8(&gbz.a)
+	return 8
 }
