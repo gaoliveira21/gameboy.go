@@ -1,6 +1,6 @@
 package cpu
 
-func (gbz *GBZ80) rlcr8(r8 *uint8) {
+func (gbz *GBZ80) rlc(r8 *uint8) {
 	r := *r8
 
 	*r8 = *r8<<1 | *r8>>7

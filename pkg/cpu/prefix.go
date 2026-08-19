@@ -266,44 +266,44 @@ func (gbz *GBZ80) _TODO() uint {
 }
 
 func (gbz *GBZ80) _RLC_B() uint {
-	gbz.rlcr8(&gbz.b)
+	gbz.rlc(&gbz.b)
 	return 8
 }
 
 func (gbz *GBZ80) _RLC_C() uint {
-	gbz.rlcr8(&gbz.c)
+	gbz.rlc(&gbz.c)
 	return 8
 }
 
 func (gbz *GBZ80) _RLC_D() uint {
-	gbz.rlcr8(&gbz.d)
+	gbz.rlc(&gbz.d)
 	return 8
 }
 
 func (gbz *GBZ80) _RLC_E() uint {
-	gbz.rlcr8(&gbz.e)
+	gbz.rlc(&gbz.e)
 	return 8
 }
 
 func (gbz *GBZ80) _RLC_H() uint {
-	gbz.rlcr8(&gbz.h)
+	gbz.rlc(&gbz.h)
 	return 8
 }
 
 func (gbz *GBZ80) _RLC_L() uint {
-	gbz.rlcr8(&gbz.l)
+	gbz.rlc(&gbz.l)
 	return 8
 }
 
 func (gbz *GBZ80) _RLC_HL() uint {
 	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
 	b := gbz.mem.Read(hl)
-	gbz.rlcr8(&b)
+	gbz.rlc(&b)
 	gbz.mem.Write(hl, b)
 	return 16
 }
 
 func (gbz *GBZ80) _RLC_A() uint {
-	gbz.rlcr8(&gbz.a)
+	gbz.rlc(&gbz.a)
 	return 8
 }
