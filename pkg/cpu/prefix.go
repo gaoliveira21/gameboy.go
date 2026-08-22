@@ -10,14 +10,14 @@ func (g *GBZ80) initPrefixedSet() {
 		0x05: {g._RLC_L, "RLC L", 2},
 		0x06: {g._RLC_HL, "RLC HL", 2},
 		0x07: {g._RLC_A, "RLC A", 2},
-		0x08: {g._TODO, "RRC B", 2},
-		0x09: {g._TODO, "RRC C", 2},
-		0x0A: {g._TODO, "RRC D", 2},
-		0x0B: {g._TODO, "RRC E", 2},
-		0x0C: {g._TODO, "RRC H", 2},
-		0x0D: {g._TODO, "RRC L", 2},
-		0x0E: {g._TODO, "RRC HL", 2},
-		0x0F: {g._TODO, "RRC A", 2},
+		0x08: {g._RRC_B, "RRC B", 2},
+		0x09: {g._RRC_C, "RRC C", 2},
+		0x0A: {g._RRC_D, "RRC D", 2},
+		0x0B: {g._RRC_E, "RRC E", 2},
+		0x0C: {g._RRC_H, "RRC H", 2},
+		0x0D: {g._RRC_L, "RRC L", 2},
+		0x0E: {g._RRC_HL, "RRC HL", 2},
+		0x0F: {g._RRC_A, "RRC A", 2},
 		0x10: {g._TODO, "RL B", 2},
 		0x11: {g._TODO, "RL C", 2},
 		0x12: {g._TODO, "RL D", 2},
@@ -305,5 +305,48 @@ func (gbz *GBZ80) _RLC_HL() uint {
 
 func (gbz *GBZ80) _RLC_A() uint {
 	gbz.rlc(&gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _RRC_B() uint {
+	gbz.rrc(&gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _RRC_C() uint {
+	gbz.rrc(&gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _RRC_D() uint {
+	gbz.rrc(&gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _RRC_E() uint {
+	gbz.rrc(&gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _RRC_H() uint {
+	gbz.rrc(&gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _RRC_L() uint {
+	gbz.rrc(&gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _RRC_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.rrc(&b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _RRC_A() uint {
+	gbz.rrc(&gbz.a)
 	return 8
 }
