@@ -5160,3 +5160,324 @@ func Test_SRA_A(t *testing.T) {
 		})
 	}
 }
+
+func Test_SWAP_B(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name      string
+		initialB  byte
+		wantValue byte
+		wantZero  bool
+	}{
+		{"Swap_0x00", 0x00, 0x00, true},
+		{"Swap_0x01", 0x01, 0x10, false},
+		{"Swap_0x10", 0x10, 0x01, false},
+		{"Swap_0x12", 0x12, 0x21, false},
+		{"Swap_0xF0", 0xF0, 0x0F, false},
+		{"Swap_0xFF", 0xFF, 0xFF, false},
+		{"Swap_0xAB", 0xAB, 0xBA, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x30)
+			gbz.b = c.initialB
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, c.wantValue, gbz.b, "B")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(Carry), "Carry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SWAP_C(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name      string
+		initialC  byte
+		wantValue byte
+		wantZero  bool
+	}{
+		{"Swap_0x00", 0x00, 0x00, true},
+		{"Swap_0x01", 0x01, 0x10, false},
+		{"Swap_0x10", 0x10, 0x01, false},
+		{"Swap_0x12", 0x12, 0x21, false},
+		{"Swap_0xF0", 0xF0, 0x0F, false},
+		{"Swap_0xFF", 0xFF, 0xFF, false},
+		{"Swap_0xAB", 0xAB, 0xBA, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x31)
+			gbz.c = c.initialC
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, c.wantValue, gbz.c, "C")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(Carry), "Carry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SWAP_D(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name      string
+		initialD  byte
+		wantValue byte
+		wantZero  bool
+	}{
+		{"Swap_0x00", 0x00, 0x00, true},
+		{"Swap_0x01", 0x01, 0x10, false},
+		{"Swap_0x10", 0x10, 0x01, false},
+		{"Swap_0x12", 0x12, 0x21, false},
+		{"Swap_0xF0", 0xF0, 0x0F, false},
+		{"Swap_0xFF", 0xFF, 0xFF, false},
+		{"Swap_0xAB", 0xAB, 0xBA, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x32)
+			gbz.d = c.initialD
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, c.wantValue, gbz.d, "D")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(Carry), "Carry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SWAP_E(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name      string
+		initialE  byte
+		wantValue byte
+		wantZero  bool
+	}{
+		{"Swap_0x00", 0x00, 0x00, true},
+		{"Swap_0x01", 0x01, 0x10, false},
+		{"Swap_0x10", 0x10, 0x01, false},
+		{"Swap_0x12", 0x12, 0x21, false},
+		{"Swap_0xF0", 0xF0, 0x0F, false},
+		{"Swap_0xFF", 0xFF, 0xFF, false},
+		{"Swap_0xAB", 0xAB, 0xBA, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x33)
+			gbz.e = c.initialE
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, c.wantValue, gbz.e, "E")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(Carry), "Carry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SWAP_H(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name      string
+		initialH  byte
+		wantValue byte
+		wantZero  bool
+	}{
+		{"Swap_0x00", 0x00, 0x00, true},
+		{"Swap_0x01", 0x01, 0x10, false},
+		{"Swap_0x10", 0x10, 0x01, false},
+		{"Swap_0x12", 0x12, 0x21, false},
+		{"Swap_0xF0", 0xF0, 0x0F, false},
+		{"Swap_0xFF", 0xFF, 0xFF, false},
+		{"Swap_0xAB", 0xAB, 0xBA, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x34)
+			gbz.h = c.initialH
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, c.wantValue, gbz.h, "H")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(Carry), "Carry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SWAP_L(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name      string
+		initialL  byte
+		wantValue byte
+		wantZero  bool
+	}{
+		{"Swap_0x00", 0x00, 0x00, true},
+		{"Swap_0x01", 0x01, 0x10, false},
+		{"Swap_0x10", 0x10, 0x01, false},
+		{"Swap_0x12", 0x12, 0x21, false},
+		{"Swap_0xF0", 0xF0, 0x0F, false},
+		{"Swap_0xFF", 0xFF, 0xFF, false},
+		{"Swap_0xAB", 0xAB, 0xBA, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x35)
+			gbz.l = c.initialL
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, c.wantValue, gbz.l, "L")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(Carry), "Carry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SWAP_HL(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name      string
+		initialHL byte
+		wantValue byte
+		wantZero  bool
+	}{
+		{"Swap_0x00", 0x00, 0x00, true},
+		{"Swap_0x01", 0x01, 0x10, false},
+		{"Swap_0x10", 0x10, 0x01, false},
+		{"Swap_0x12", 0x12, 0x21, false},
+		{"Swap_0xF0", 0xF0, 0x0F, false},
+		{"Swap_0xFF", 0xFF, 0xFF, false},
+		{"Swap_0xAB", 0xAB, 0xBA, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x36)
+			hl := uint16(gbz.h)<<8 | uint16(gbz.l)
+			gbz.mem.Write(hl, c.initialHL)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 16)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.mem.Read(hl), "Memory at HL mismatch")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(Carry), "Carry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SWAP_A(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name      string
+		initialA  byte
+		wantValue byte
+		wantZero  bool
+	}{
+		{"Swap_0x00", 0x00, 0x00, true},
+		{"Swap_0x01", 0x01, 0x10, false},
+		{"Swap_0x10", 0x10, 0x01, false},
+		{"Swap_0x12", 0x12, 0x21, false},
+		{"Swap_0xF0", 0xF0, 0x0F, false},
+		{"Swap_0xFF", 0xFF, 0xFF, false},
+		{"Swap_0xAB", 0xAB, 0xBA, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x37)
+			gbz.a = c.initialA
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, c.wantValue, gbz.a, "A")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(Carry), "Carry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}

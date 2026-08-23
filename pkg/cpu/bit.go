@@ -70,3 +70,15 @@ func (gbz *GBZ80) sra(r8 *uint8) {
 	gbz.flags.Set(HalfCarry, false)
 	gbz.flags.Set(Carry, r&0x1 == 1)
 }
+
+func (gbz *GBZ80) swap(r8 *uint8) {
+	upper := *r8 & 0xF0
+	lower := *r8 & 0x0F
+
+	*r8 = lower<<4 | upper>>4
+
+	gbz.flags.Set(Zero, *r8 == 0)
+	gbz.flags.Set(Sub, false)
+	gbz.flags.Set(HalfCarry, false)
+	gbz.flags.Set(Carry, false)
+}
