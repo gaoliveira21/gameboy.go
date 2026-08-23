@@ -114,203 +114,35 @@ The CPU has an "IME" flag (interrupt master enable) - when on, interrupts are ch
 
 ---
 
-## Phase 1: CPU Opcodes
+## Phase 1: CPU Opcodes ✅ COMPLETED
 
 ### What You Need to Do
 
-The `Run()` method in `pkg/cpu/gbz80.go` currently returns 0. You need to:
+All opcodes are fully implemented and tested.
 
-1. **Implement an instruction fetch cycle**
-2. **Decode the opcode** (and CB-prefixed opcodes)
-3. **Execute the instruction**
-4. **Return the number of cycles used**
+### Implementation Summary
 
-### Step 1: Fetch-Decode-Execute Loop
+| Component | Status |
+|-----------|--------|
+| All 256 opcodes (0x00-0xFF) | ✅ Implemented |
+| All 256 CB-prefixed opcodes (0xCBxx) | ✅ Implemented |
+| Flag handling | ✅ Implemented |
+| Control flow (JP, JR, CALL, RET, RST) | ✅ Implemented |
+| Unit tests | ✅ All passing |
 
-Start by implementing the basic loop structure:
+### File Structure
 
-```go
-func (gbz *GBZ80) Run() uint {
-    opcode := gbz.fetch()
-    cycles := gbz.execute(opcode)
-    return cycles
-}
-
-func (gbz *GBZ80) fetch() byte {
-    opcode := gbz.mem.Read(gbz.pc)
-    gbz.pc++
-    return opcode
-}
-```
-
-### Step 2: Categorize Opcodes
-
-Organize opcodes by their first byte (0x00-0xFF):
-
-| Range | Opcodes | Example Instructions |
-|-------|---------|---------------------|
-| 0x00-0x3F | Misc/Load | NOP, LD, PUSH, POP, ADD, SUB, CALL, RET |
-| 0x40-0x7F | Load between registers | LD A,B, LD B,A, etc. (no immediate values) |
-| 0x80-0xBF | Arithmetic | ADD A, SUB A, AND, OR, XOR, CP |
-| 0xC0-0xDF | Control flow | JP, CALL, PUSH, POP, prefixed ops |
-| 0xE0-0xEF | Special | LD (nn), SP, RETI, etc. |
-| 0xF0-0xFF | Special | LD A, (FF00+n), EI, DI, etc. |
-
-### Step 3: Implement by Category
-
-**Category 1: 8-bit Load Instructions (0x40-0xBF)**
-These are the simplest - copy a value from one register to another.
-
-Example: `LD B, C` (0x41)
-- Read value from C register
-- Write value to B register
-- Return 4 cycles
-- PC doesn't change (single byte instruction)
-
-Example: `LD A, n` (0x3E nn)
-- Read immediate byte nn
-- Write to A register
-- Return 8 cycles (2 bytes)
-- PC advances by 2
-
-**Category 2: 16-bit Load Instructions (PUSH/POP)**
-These affect the stack.
-
-Example: `PUSH BC` (0xC5)
-- SP -= 2
-- Write B to SP+1, C to SP
-- Return 16 cycles
-
-Example: `POP DE` (0xD1)
-- Read C from SP, B from SP+1
-- SP += 2
-- Write to D (high) and E (low)
-- Return 12 cycles
-
-**Category 3: Arithmetic Instructions**
-
-Example: `ADD A, B` (0x80)
-- Add B to A
-- Set flags (Z, N=0, H if half-carry, C if carry)
-- Return 4 cycles
-
-Example: `INC A` (0x3C)
-- Increment A
-- Set Z flag if result is 0
-- Set N=0, H if half-carry
-- Return 4 cycles
-
-**Category 4: Control Flow (JP, JR, CALL, RET)**
-
-Example: `JP nn` (0xC3 nn nn)
-- Read 16-bit immediate
-- Set PC to nn
-- Return 16 cycles
-
-Example: `JR NZ, n` (0x20 nn)
-- If Z flag is 0, add signed byte n to PC
-- Return 12 cycles if taken, 8 if not
-
-Example: `CALL nn` (0xCD nn nn)
-- Push current PC to stack
-- Set PC to nn
-- Return 24 cycles
-
-Example: `RET` (0xC9)
-- Pop PC from stack
-- Return 16 cycles
-
-**Category 5: CB-Prefixed Opcodes (0xCB xx)**
-
-When you encounter 0xCB:
-1. Fetch the next byte
-2. Use it to index into CB instruction table
-3. Execute the CB instruction
-
-CB instructions include:
-- `BIT b, r` - test if bit b of register r is 0 (sets Z flag)
-- `SET b, r` - set bit b of register r to 1
-- `RES b, r` - reset bit b of register r to 0
-- `RLC r` - rotate left through carry
-- `RRC r` - rotate right through carry
-- `RL r` - rotate left through carry
-- `RR r` - rotate right through carry
-- `SLA r` - shift left arithmetic
-- `SRA r` - shift right arithmetic
-- `SRL r` - shift right logical
-- `SWAP r` - swap upper and lower nibbles
-
-### Step 4: Implement Flag Logic
-
-The flag register F has these bits:
-- Bit 7: Z (Zero) - set when result is 0
-- Bit 6: N (Subtract) - set when last operation was subtraction
-- Bit 5: H (Half-carry) - set when lower 4 bits overflowed
-- Bit 4: C (Carry) - set when there was a carry/borrow
-
-For each arithmetic operation, you must update these correctly.
-
-**Example - ADD A, B:**
-```
-temp = A + B
-if (temp > 0xFF) set C flag
-if ((A & 0x0F) + (B & 0x0F) > 0x0F) set H flag
-A = temp
-if (A == 0) set Z flag
-```
-
-### Reference: Important Opcodes to Implement
-
-You need about 156 unique instructions. Use this checklist:
-
-**Loads (about 50 instructions):**
-- LD r, r' (register to register)
-- LD r, n (immediate)
-- LD (HL), r and LD r, (HL)
-- LD (nn), A and LD A, (nn)
-- LD (FF00+n), A and LD A, (FF00+n)
-- LD (FF00+C), A
-- LD SP, nn
-- LD SP, HL
-- PUSH rr, POP rr
-- LDI (HL), A, LDI A, (HL)
-- LDD (HL), A, LDD A, (HL)
-
-**Arithmetic/Logic (about 40 instructions):**
-- ADD A, r, ADD A, n
-- ADC A, r (add with carry)
-- SUB r, SUB n
-- SBC A, r (subtract with carry)
-- AND r, AND n
-- OR r, OR n
-- XOR r, XOR n
-- CP r, CP n (compare)
-- INC r, DEC r
-- INC (HL), DEC (HL)
-
-**16-bit Arithmetic (about 10):**
-- ADD HL, SP
-- ADD HL, rr
-- INC rr, DEC rr
-- LD HL, SP+n
-
-**Control Flow (about 25):**
-- JP nn, JP cc, nn
-- JR n, JR cc, n
-- CALL nn, CALL cc, nn
-- RET, RET cc, RETI
-- RST n (restart)
-
-**Block Instructions (about 10):**
-- LDIR, LDDR, CPIR, CPDR, etc. (can skip for Tetris initially)
-
-**Prefix CB Instructions (about 50):**
-- RLC, RRC, RL, RR
-- SLA, SRA, SRL
-- SWAP
-- BIT b, r
-- SET b, r
-- RES b, r
+| File | Purpose |
+|------|---------|
+| `pkg/cpu/gbz80.go` | Main CPU struct, fetch/decode/exec cycle, boot ROM |
+| `pkg/cpu/instruction_set.go` | All 256 main opcodes |
+| `pkg/cpu/prefix.go` | CB-prefixed opcodes |
+| `pkg/cpu/load.go` | Load instruction helpers |
+| `pkg/cpu/math.go` | Math operations |
+| `pkg/cpu/bit.go` | Bit operations |
+| `pkg/cpu/control_flow.go` | Jump, call, ret, push, pop |
+| `pkg/cpu/flags.go` | Flag register handling |
+| `pkg/cpu/gbz80_test.go` | Comprehensive unit tests |
 
 ---
 
@@ -593,74 +425,38 @@ When moving from scanline 143 to 144:
 
 ### What You Need to Do
 
-Update the CPU to handle interrupts properly.
+Implement the CPU's interrupt handling. The `InterruptEnabled` flag and EI/DI opcodes exist, but the actual `Interrupt()` method needs to be implemented.
 
-### Step 1: Track Interrupt State
+### Step 1: Implement Interrupt() Method
 
-In your CPU struct:
-```go
-type GBZ80 struct {
-    // ... existing fields ...
-    ime bool // interrupt master enable
-}
-```
+In `pkg/cpu/gbz80.go`, implement the `Interrupt()` method that:
 
-Initialize ime to false (boot ROM has IME=0).
+1. Checks if `InterruptEnabled` (IME) is true
+2. Reads IE register (0xFFFF) for enabled interrupts
+3. Reads IF register (0xFF0F) for pending interrupts
+4. If an enabled interrupt is pending, calls `handleInterrupt()`
+5. `handleInterrupt()` should:
+   - Push current PC to stack
+   - Jump to the interrupt vector
+   - Clear the interrupt flag in IF
+   - Set `InterruptEnabled` to false
 
-### Step 2: Implement EI and DI
+### Interrupt Vectors
 
-- `EI` (0xFB): Set ime = true AFTER next instruction
-- `DI` (0xF3): Set ime = false immediately
+| Interrupt | Vector | Bit in IE/IF |
+|-----------|--------|--------------|
+| V-Blank | 0x40 | 0 |
+| Timer | 0x48 | 1 |
+| LCD STAT | 0x50 | 2 |
+| Joypad | 0x58 | 4 |
 
-### Step 3: Implement Interrupt Check
+### Step 2: Update Main Loop
 
-At the end of each instruction, check for interrupts:
+Uncomment and call `cpu.Interrupt()` in main.go after timer/graphics updates.
 
-```go
-func (gbz *GBZ80) checkInterrupts() {
-    if !gbz.ime {
-        return
-    }
+### Step 3: Test with cpu_instrs ROM
 
-    // Check each interrupt
-    if (gbz.mem.Read(0xFFFF) & 0x01) != 0 && (gbz.mem.Read(0xFF0F) & 0x01) != 0 {
-        // V-Blank interrupt
-        gbz.handleInterrupt(0x40)
-        return
-    }
-    if (gbz.mem.Read(0xFFFF) & 0x02) != 0 && (gbz.mem.Read(0xFF0F) & 0x02) != 0 {
-        // Timer interrupt
-        gbz.handleInterrupt(0x48)
-        return
-    }
-    // ... etc
-}
-```
-
-### Step 4: Implement Interrupt Handler
-
-```go
-func (gbz *GBZ80) handleInterrupt(vector uint16) {
-    // Push current PC to stack
-    gbz.sp--
-    gbz.mem.Write(gbz.sp, byte(gbz.pc>>8))
-    gbz.sp--
-    gbz.mem.Write(gbz.sp, byte(gbz.pc))
-
-    // Jump to vector
-    gbz.pc = vector
-
-    // Disable interrupts
-    gbz.ime = false
-
-    // Clear the interrupt flag
-    // ... (clear appropriate bit in IF)
-}
-```
-
-### Step 5: Implement RETI
-
-`RETI` (0xD9) is like `RET` but also sets ime = true.
+Once timer and interrupts are working, blargg's cpu_instrs test should show results.
 
 ---
 
@@ -704,48 +500,26 @@ When a button is pressed:
 
 ### What You Need to Do
 
-Fix the main loop in `main.go` to run properly.
+The current main loop exists but timer/graphics/ppu are stubs, and `cpu.Interrupt()` is commented out.
 
-### Step 1: Frame-Based Timing
+### Current main.go Issues
 
-The game should run like this:
-1. Run CPU until enough cycles for one frame (70224 cycles)
-2. During that time, PPU and timer advance
-3. At end of frame, display the rendered frame
+1. `timer.Update()` is empty - needs implementation
+2. `graphics.Update()` is empty - PPU not implemented
+3. `graphics.Render()` is empty - no frame output
+4. `cpu.Interrupt()` is commented out - not implemented yet
 
-### Step 2: Proper Loop Structure
+### Step 1: Implement Timer First
 
-```go
-func Run(c *cartridge.Cartridge) {
-    memory := memory.NewMemory(c)
-    cpu := cpu.NewGBZ80(memory)
-    ppu := graphics.NewPPU(memory)
-    timer := timer.NewTimer(memory)
+See Phase 3 - timer must work before interrupts can fire.
 
-    for {
-        // Run for one scanline's worth of cycles
-        cycles := 0
-        for cycles < 456 {
-            insCycles := cpu.Run()
-            cycles += insCycles
-            timer.Update(insCycles)
-            ppu.Update(insCycles)
-        }
+### Step 2: Implement Interrupt Method
 
-        // Check for interrupts
-        cpu.Interrupt()
+See Phase 5 - `cpu.Interrupt()` needs implementation.
 
-        // If on scanline 144, we're in V-Blank - safe to render
-        if ppu.LY() == 144 {
-            graphics.Render(ppu.Pixels())
-        }
-    }
-}
-```
+### Step 3: Wire Everything Together
 
-### Step 3: Handle Graceful Exit
-
-Add a way to quit (e.g., press ESC or close window).
+Once timer and interrupts are ready, uncomment `cpu.Interrupt()` in main.go and ensure proper frame timing.
 
 ---
 
@@ -787,8 +561,8 @@ You can find ROMs for testing:
 
 Before Tetris works, ensure each of these works:
 
-- [ ] CPU: All 156 opcodes implemented with correct cycle counts
-- [ ] Memory: MBC1 banking works for Tetris (RomOnly is fine for Tetris)
+- [x] CPU: All 156 opcodes implemented with correct cycle counts
+- [x] Memory: MBC1 banking works for Tetris (RomOnly is fine for Tetris)
 - [ ] Memory: I/O registers (0xFF00-0xFF7F) work properly
 - [ ] Timer: DIV, TIMA, TMA, TAC function correctly
 - [ ] Timer: Timer interrupt fires when TIMA overflows
