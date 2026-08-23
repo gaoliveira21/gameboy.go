@@ -66,70 +66,70 @@ func (g *GBZ80) initPrefixedSet() {
 		0x3D: {g._SRL_L, "SRL L", 2},
 		0x3E: {g._SRL_HL, "SRL HL", 2},
 		0x3F: {g._SRL_A, "SRL A", 2},
-		0x40: {g._TODO, "BIT 0 B", 2},
-		0x41: {g._TODO, "BIT 0 C", 2},
-		0x42: {g._TODO, "BIT 0 D", 2},
-		0x43: {g._TODO, "BIT 0 E", 2},
-		0x44: {g._TODO, "BIT 0 H", 2},
-		0x45: {g._TODO, "BIT 0 L", 2},
-		0x46: {g._TODO, "BIT 0 HL", 2},
-		0x47: {g._TODO, "BIT 0 A", 2},
-		0x48: {g._TODO, "BIT 1 B", 2},
-		0x49: {g._TODO, "BIT 1 C", 2},
-		0x4A: {g._TODO, "BIT 1 D", 2},
-		0x4B: {g._TODO, "BIT 1 E", 2},
-		0x4C: {g._TODO, "BIT 1 H", 2},
-		0x4D: {g._TODO, "BIT 1 L", 2},
-		0x4E: {g._TODO, "BIT 1 HL", 2},
-		0x4F: {g._TODO, "BIT 1 A", 2},
-		0x50: {g._TODO, "BIT 2 B", 2},
-		0x51: {g._TODO, "BIT 2 C", 2},
-		0x52: {g._TODO, "BIT 2 D", 2},
-		0x53: {g._TODO, "BIT 2 E", 2},
-		0x54: {g._TODO, "BIT 2 H", 2},
-		0x55: {g._TODO, "BIT 2 L", 2},
-		0x56: {g._TODO, "BIT 2 HL", 2},
-		0x57: {g._TODO, "BIT 2 A", 2},
-		0x58: {g._TODO, "BIT 3 B", 2},
-		0x59: {g._TODO, "BIT 3 C", 2},
-		0x5A: {g._TODO, "BIT 3 D", 2},
-		0x5B: {g._TODO, "BIT 3 E", 2},
-		0x5C: {g._TODO, "BIT 3 H", 2},
-		0x5D: {g._TODO, "BIT 3 L", 2},
-		0x5E: {g._TODO, "BIT 3 HL", 2},
-		0x5F: {g._TODO, "BIT 3 A", 2},
-		0x60: {g._TODO, "BIT 4 B", 2},
-		0x61: {g._TODO, "BIT 4 C", 2},
-		0x62: {g._TODO, "BIT 4 D", 2},
-		0x63: {g._TODO, "BIT 4 E", 2},
-		0x64: {g._TODO, "BIT 4 H", 2},
-		0x65: {g._TODO, "BIT 4 L", 2},
-		0x66: {g._TODO, "BIT 4 HL", 2},
-		0x67: {g._TODO, "BIT 4 A", 2},
-		0x68: {g._TODO, "BIT 5 B", 2},
-		0x69: {g._TODO, "BIT 5 C", 2},
-		0x6A: {g._TODO, "BIT 5 D", 2},
-		0x6B: {g._TODO, "BIT 5 E", 2},
-		0x6C: {g._TODO, "BIT 5 H", 2},
-		0x6D: {g._TODO, "BIT 5 L", 2},
-		0x6E: {g._TODO, "BIT 5 HL", 2},
-		0x6F: {g._TODO, "BIT 5 A", 2},
-		0x70: {g._TODO, "BIT 6 B", 2},
-		0x71: {g._TODO, "BIT 6 C", 2},
-		0x72: {g._TODO, "BIT 6 D", 2},
-		0x73: {g._TODO, "BIT 6 E", 2},
-		0x74: {g._TODO, "BIT 6 H", 2},
-		0x75: {g._TODO, "BIT 6 L", 2},
-		0x76: {g._TODO, "BIT 6 HL", 2},
-		0x77: {g._TODO, "BIT 6 A", 2},
-		0x78: {g._TODO, "BIT 7 B", 2},
-		0x79: {g._TODO, "BIT 7 C", 2},
-		0x7A: {g._TODO, "BIT 7 D", 2},
-		0x7B: {g._TODO, "BIT 7 E", 2},
-		0x7C: {g._TODO, "BIT 7 H", 2},
-		0x7D: {g._TODO, "BIT 7 L", 2},
-		0x7E: {g._TODO, "BIT 7 HL", 2},
-		0x7F: {g._TODO, "BIT 7 A", 2},
+		0x40: {g._BIT_0_B, "BIT 0 B", 2},
+		0x41: {g._BIT_0_C, "BIT 0 C", 2},
+		0x42: {g._BIT_0_D, "BIT 0 D", 2},
+		0x43: {g._BIT_0_E, "BIT 0 E", 2},
+		0x44: {g._BIT_0_H, "BIT 0 H", 2},
+		0x45: {g._BIT_0_L, "BIT 0 L", 2},
+		0x46: {g._BIT_0_HL, "BIT 0 HL", 2},
+		0x47: {g._BIT_0_A, "BIT 0 A", 2},
+		0x48: {g._BIT_1_B, "BIT 1 B", 2},
+		0x49: {g._BIT_1_C, "BIT 1 C", 2},
+		0x4A: {g._BIT_1_D, "BIT 1 D", 2},
+		0x4B: {g._BIT_1_E, "BIT 1 E", 2},
+		0x4C: {g._BIT_1_H, "BIT 1 H", 2},
+		0x4D: {g._BIT_1_L, "BIT 1 L", 2},
+		0x4E: {g._BIT_1_HL, "BIT 1 HL", 2},
+		0x4F: {g._BIT_1_A, "BIT 1 A", 2},
+		0x50: {g._BIT_2_B, "BIT 2 B", 2},
+		0x51: {g._BIT_2_C, "BIT 2 C", 2},
+		0x52: {g._BIT_2_D, "BIT 2 D", 2},
+		0x53: {g._BIT_2_E, "BIT 2 E", 2},
+		0x54: {g._BIT_2_H, "BIT 2 H", 2},
+		0x55: {g._BIT_2_L, "BIT 2 L", 2},
+		0x56: {g._BIT_2_HL, "BIT 2 HL", 2},
+		0x57: {g._BIT_2_A, "BIT 2 A", 2},
+		0x58: {g._BIT_3_B, "BIT 3 B", 2},
+		0x59: {g._BIT_3_C, "BIT 3 C", 2},
+		0x5A: {g._BIT_3_D, "BIT 3 D", 2},
+		0x5B: {g._BIT_3_E, "BIT 3 E", 2},
+		0x5C: {g._BIT_3_H, "BIT 3 H", 2},
+		0x5D: {g._BIT_3_L, "BIT 3 L", 2},
+		0x5E: {g._BIT_3_HL, "BIT 3 HL", 2},
+		0x5F: {g._BIT_3_A, "BIT 3 A", 2},
+		0x60: {g._BIT_4_B, "BIT 4 B", 2},
+		0x61: {g._BIT_4_C, "BIT 4 C", 2},
+		0x62: {g._BIT_4_D, "BIT 4 D", 2},
+		0x63: {g._BIT_4_E, "BIT 4 E", 2},
+		0x64: {g._BIT_4_H, "BIT 4 H", 2},
+		0x65: {g._BIT_4_L, "BIT 4 L", 2},
+		0x66: {g._BIT_4_HL, "BIT 4 HL", 2},
+		0x67: {g._BIT_4_A, "BIT 4 A", 2},
+		0x68: {g._BIT_5_B, "BIT 5 B", 2},
+		0x69: {g._BIT_5_C, "BIT 5 C", 2},
+		0x6A: {g._BIT_5_D, "BIT 5 D", 2},
+		0x6B: {g._BIT_5_E, "BIT 5 E", 2},
+		0x6C: {g._BIT_5_H, "BIT 5 H", 2},
+		0x6D: {g._BIT_5_L, "BIT 5 L", 2},
+		0x6E: {g._BIT_5_HL, "BIT 5 HL", 2},
+		0x6F: {g._BIT_5_A, "BIT 5 A", 2},
+		0x70: {g._BIT_6_B, "BIT 6 B", 2},
+		0x71: {g._BIT_6_C, "BIT 6 C", 2},
+		0x72: {g._BIT_6_D, "BIT 6 D", 2},
+		0x73: {g._BIT_6_E, "BIT 6 E", 2},
+		0x74: {g._BIT_6_H, "BIT 6 H", 2},
+		0x75: {g._BIT_6_L, "BIT 6 L", 2},
+		0x76: {g._BIT_6_HL, "BIT 6 HL", 2},
+		0x77: {g._BIT_6_A, "BIT 6 A", 2},
+		0x78: {g._BIT_7_B, "BIT 7 B", 2},
+		0x79: {g._BIT_7_C, "BIT 7 C", 2},
+		0x7A: {g._BIT_7_D, "BIT 7 D", 2},
+		0x7B: {g._BIT_7_E, "BIT 7 E", 2},
+		0x7C: {g._BIT_7_H, "BIT 7 H", 2},
+		0x7D: {g._BIT_7_L, "BIT 7 L", 2},
+		0x7E: {g._BIT_7_HL, "BIT 7 HL", 2},
+		0x7F: {g._BIT_7_A, "BIT 7 A", 2},
 		0x80: {g._TODO, "RES 0 B", 2},
 		0x81: {g._TODO, "RES 0 C", 2},
 		0x82: {g._TODO, "RES 0 D", 2},
@@ -606,5 +606,341 @@ func (gbz *GBZ80) _SRL_HL() uint {
 
 func (gbz *GBZ80) _SRL_A() uint {
 	gbz.srl(&gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_0_B() uint {
+	gbz.bit(0, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_0_C() uint {
+	gbz.bit(0, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_0_D() uint {
+	gbz.bit(0, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_0_E() uint {
+	gbz.bit(0, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_0_H() uint {
+	gbz.bit(0, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_0_L() uint {
+	gbz.bit(0, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_0_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.bit(0, &b)
+	return 12
+}
+
+func (gbz *GBZ80) _BIT_0_A() uint {
+	gbz.bit(0, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_1_B() uint {
+	gbz.bit(1, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_1_C() uint {
+	gbz.bit(1, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_1_D() uint {
+	gbz.bit(1, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_1_E() uint {
+	gbz.bit(1, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_1_H() uint {
+	gbz.bit(1, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_1_L() uint {
+	gbz.bit(1, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_1_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.bit(1, &b)
+	return 12
+}
+
+func (gbz *GBZ80) _BIT_1_A() uint {
+	gbz.bit(1, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_2_B() uint {
+	gbz.bit(2, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_2_C() uint {
+	gbz.bit(2, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_2_D() uint {
+	gbz.bit(2, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_2_E() uint {
+	gbz.bit(2, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_2_H() uint {
+	gbz.bit(2, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_2_L() uint {
+	gbz.bit(2, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_2_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.bit(2, &b)
+	return 12
+}
+
+func (gbz *GBZ80) _BIT_2_A() uint {
+	gbz.bit(2, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_3_B() uint {
+	gbz.bit(3, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_3_C() uint {
+	gbz.bit(3, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_3_D() uint {
+	gbz.bit(3, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_3_E() uint {
+	gbz.bit(3, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_3_H() uint {
+	gbz.bit(3, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_3_L() uint {
+	gbz.bit(3, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_3_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.bit(3, &b)
+	return 12
+}
+
+func (gbz *GBZ80) _BIT_3_A() uint {
+	gbz.bit(3, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_4_B() uint {
+	gbz.bit(4, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_4_C() uint {
+	gbz.bit(4, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_4_D() uint {
+	gbz.bit(4, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_4_E() uint {
+	gbz.bit(4, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_4_H() uint {
+	gbz.bit(4, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_4_L() uint {
+	gbz.bit(4, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_4_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.bit(4, &b)
+	return 12
+}
+
+func (gbz *GBZ80) _BIT_4_A() uint {
+	gbz.bit(4, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_5_B() uint {
+	gbz.bit(5, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_5_C() uint {
+	gbz.bit(5, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_5_D() uint {
+	gbz.bit(5, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_5_E() uint {
+	gbz.bit(5, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_5_H() uint {
+	gbz.bit(5, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_5_L() uint {
+	gbz.bit(5, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_5_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.bit(5, &b)
+	return 12
+}
+
+func (gbz *GBZ80) _BIT_5_A() uint {
+	gbz.bit(5, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_6_B() uint {
+	gbz.bit(6, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_6_C() uint {
+	gbz.bit(6, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_6_D() uint {
+	gbz.bit(6, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_6_E() uint {
+	gbz.bit(6, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_6_H() uint {
+	gbz.bit(6, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_6_L() uint {
+	gbz.bit(6, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_6_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.bit(6, &b)
+	return 12
+}
+
+func (gbz *GBZ80) _BIT_6_A() uint {
+	gbz.bit(6, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_7_B() uint {
+	gbz.bit(7, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_7_C() uint {
+	gbz.bit(7, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_7_D() uint {
+	gbz.bit(7, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_7_E() uint {
+	gbz.bit(7, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_7_H() uint {
+	gbz.bit(7, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_7_L() uint {
+	gbz.bit(7, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _BIT_7_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.bit(7, &b)
+	return 12
+}
+
+func (gbz *GBZ80) _BIT_7_A() uint {
+	gbz.bit(7, &gbz.a)
 	return 8
 }

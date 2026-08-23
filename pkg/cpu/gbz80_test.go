@@ -5802,3 +5802,315 @@ func Test_SRL_A(t *testing.T) {
 		})
 	}
 }
+
+func Test_BIT_B_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		bit         uint8
+		regValue    byte
+		wantZero    bool
+	}{
+		{"BIT_0_Zero", 0x40, 0, 0x00, true},
+		{"BIT_0_Set", 0x40, 0, 0x01, false},
+		{"BIT_1_Zero", 0x48, 1, 0x00, true},
+		{"BIT_1_Set", 0x48, 1, 0x02, false},
+		{"BIT_2_Zero", 0x50, 2, 0x00, true},
+		{"BIT_2_Set", 0x50, 2, 0x04, false},
+		{"BIT_3_Zero", 0x58, 3, 0x00, true},
+		{"BIT_3_Set", 0x58, 3, 0x08, false},
+		{"BIT_4_Zero", 0x60, 4, 0x00, true},
+		{"BIT_4_Set", 0x60, 4, 0x10, false},
+		{"BIT_5_Zero", 0x68, 5, 0x00, true},
+		{"BIT_5_Set", 0x68, 5, 0x20, false},
+		{"BIT_6_Zero", 0x70, 6, 0x00, true},
+		{"BIT_6_Set", 0x70, 6, 0x40, false},
+		{"BIT_7_Zero", 0x78, 7, 0x00, true},
+		{"BIT_7_Set", 0x78, 7, 0x80, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.b = c.regValue
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, true, gbz.flags.Get(HalfCarry), "HalfCarry flag should be true")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_BIT_C_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regValue    byte
+		wantZero    bool
+	}{
+		{"BIT_0_Zero", 0x41, 0x00, true},
+		{"BIT_0_Set", 0x41, 0x01, false},
+		{"BIT_1_Zero", 0x49, 0x00, true},
+		{"BIT_1_Set", 0x49, 0x02, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.c = c.regValue
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, true, gbz.flags.Get(HalfCarry), "HalfCarry flag should be true")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_BIT_D_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regValue    byte
+		wantZero    bool
+	}{
+		{"BIT_0_Zero", 0x42, 0x00, true},
+		{"BIT_0_Set", 0x42, 0x01, false},
+		{"BIT_1_Zero", 0x4A, 0x00, true},
+		{"BIT_1_Set", 0x4A, 0x02, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.d = c.regValue
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, true, gbz.flags.Get(HalfCarry), "HalfCarry flag should be true")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_BIT_E_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regValue    byte
+		wantZero    bool
+	}{
+		{"BIT_0_Zero", 0x43, 0x00, true},
+		{"BIT_0_Set", 0x43, 0x01, false},
+		{"BIT_1_Zero", 0x4B, 0x00, true},
+		{"BIT_1_Set", 0x4B, 0x02, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.e = c.regValue
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, true, gbz.flags.Get(HalfCarry), "HalfCarry flag should be true")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_BIT_H_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regValue    byte
+		wantZero    bool
+	}{
+		{"BIT_0_Zero", 0x44, 0x00, true},
+		{"BIT_0_Set", 0x44, 0x01, false},
+		{"BIT_7_Zero", 0x7C, 0x00, true},
+		{"BIT_7_Set", 0x7C, 0x80, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.h = c.regValue
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, true, gbz.flags.Get(HalfCarry), "HalfCarry flag should be true")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_BIT_L_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regValue    byte
+		wantZero    bool
+	}{
+		{"BIT_0_Zero", 0x45, 0x00, true},
+		{"BIT_0_Set", 0x45, 0x01, false},
+		{"BIT_7_Zero", 0x7D, 0x00, true},
+		{"BIT_7_Set", 0x7D, 0x80, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.l = c.regValue
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, true, gbz.flags.Get(HalfCarry), "HalfCarry flag should be true")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_BIT_HL_Memory(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		memValue    byte
+		wantZero    bool
+	}{
+		{"BIT_0_Zero", 0x46, 0x00, true},
+		{"BIT_0_Set", 0x46, 0x01, false},
+		{"BIT_1_Zero", 0x4E, 0x00, true},
+		{"BIT_1_Set", 0x4E, 0x02, false},
+		{"BIT_2_Zero", 0x56, 0x00, true},
+		{"BIT_2_Set", 0x56, 0x04, false},
+		{"BIT_3_Zero", 0x5E, 0x00, true},
+		{"BIT_3_Set", 0x5E, 0x08, false},
+		{"BIT_4_Zero", 0x66, 0x00, true},
+		{"BIT_4_Set", 0x66, 0x10, false},
+		{"BIT_5_Zero", 0x6E, 0x00, true},
+		{"BIT_5_Set", 0x6E, 0x20, false},
+		{"BIT_6_Zero", 0x76, 0x00, true},
+		{"BIT_6_Set", 0x76, 0x40, false},
+		{"BIT_7_Zero", 0x7E, 0x00, true},
+		{"BIT_7_Set", 0x7E, 0x80, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.h = 0xC0
+			gbz.l = 0x00
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.mem.Write(0xC000, c.memValue)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 12)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, true, gbz.flags.Get(HalfCarry), "HalfCarry flag should be true")
+			assert.Equal(t, c.memValue, gbz.mem.Read(0xC000), "Memory should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_BIT_A_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regValue    byte
+		wantZero    bool
+	}{
+		{"BIT_0_Zero", 0x47, 0x00, true},
+		{"BIT_0_Set", 0x47, 0x01, false},
+		{"BIT_1_Zero", 0x4F, 0x00, true},
+		{"BIT_1_Set", 0x4F, 0x02, false},
+		{"BIT_2_Zero", 0x57, 0x00, true},
+		{"BIT_2_Set", 0x57, 0x04, false},
+		{"BIT_3_Zero", 0x5F, 0x00, true},
+		{"BIT_3_Set", 0x5F, 0x08, false},
+		{"BIT_4_Zero", 0x67, 0x00, true},
+		{"BIT_4_Set", 0x67, 0x10, false},
+		{"BIT_5_Zero", 0x6F, 0x00, true},
+		{"BIT_5_Set", 0x6F, 0x20, false},
+		{"BIT_6_Zero", 0x77, 0x00, true},
+		{"BIT_6_Set", 0x77, 0x40, false},
+		{"BIT_7_Zero", 0x7F, 0x00, true},
+		{"BIT_7_Set", 0x7F, 0x80, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.a = c.regValue
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, true, gbz.flags.Get(HalfCarry), "HalfCarry flag should be true")
+
+			resetGBZ(gbz)
+		})
+	}
+}
