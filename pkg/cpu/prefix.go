@@ -34,22 +34,22 @@ func (g *GBZ80) initPrefixedSet() {
 		0x1D: {g._RR_L, "RR L", 2},
 		0x1E: {g._RR_HL, "RR HL", 2},
 		0x1F: {g._RR_A, "RR A", 2},
-		0x20: {g._TODO, "SLA B", 2},
-		0x21: {g._TODO, "SLA C", 2},
-		0x22: {g._TODO, "SLA D", 2},
-		0x23: {g._TODO, "SLA E", 2},
-		0x24: {g._TODO, "SLA H", 2},
-		0x25: {g._TODO, "SLA L", 2},
-		0x26: {g._TODO, "SLA HL", 2},
-		0x27: {g._TODO, "SLA A", 2},
-		0x28: {g._TODO, "SRA B", 2},
-		0x29: {g._TODO, "SRA C", 2},
-		0x2A: {g._TODO, "SRA D", 2},
-		0x2B: {g._TODO, "SRA E", 2},
-		0x2C: {g._TODO, "SRA H", 2},
-		0x2D: {g._TODO, "SRA L", 2},
-		0x2E: {g._TODO, "SRA HL", 2},
-		0x2F: {g._TODO, "SRA A", 2},
+		0x20: {g._SLA_B, "SLA B", 2},
+		0x21: {g._SLA_C, "SLA C", 2},
+		0x22: {g._SLA_D, "SLA D", 2},
+		0x23: {g._SLA_E, "SLA E", 2},
+		0x24: {g._SLA_H, "SLA H", 2},
+		0x25: {g._SLA_L, "SLA L", 2},
+		0x26: {g._SLA_HL, "SLA HL", 2},
+		0x27: {g._SLA_A, "SLA A", 2},
+		0x28: {g._SRA_B, "SRA B", 2},
+		0x29: {g._SRA_C, "SRA C", 2},
+		0x2A: {g._SRA_D, "SRA D", 2},
+		0x2B: {g._SRA_E, "SRA E", 2},
+		0x2C: {g._SRA_H, "SRA H", 2},
+		0x2D: {g._SRA_L, "SRA L", 2},
+		0x2E: {g._SRA_HL, "SRA HL", 2},
+		0x2F: {g._SRA_A, "SRA A", 2},
 		0x30: {g._TODO, "SWAP B", 2},
 		0x31: {g._TODO, "SWAP C", 2},
 		0x32: {g._TODO, "SWAP D", 2},
@@ -434,5 +434,91 @@ func (gbz *GBZ80) _RR_HL() uint {
 
 func (gbz *GBZ80) _RR_A() uint {
 	gbz.rr(&gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _SLA_B() uint {
+	gbz.sla(&gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _SLA_C() uint {
+	gbz.sla(&gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _SLA_D() uint {
+	gbz.sla(&gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _SLA_E() uint {
+	gbz.sla(&gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _SLA_H() uint {
+	gbz.sla(&gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _SLA_L() uint {
+	gbz.sla(&gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _SLA_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.sla(&b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _SLA_A() uint {
+	gbz.sla(&gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _SRA_B() uint {
+	gbz.sra(&gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _SRA_C() uint {
+	gbz.sra(&gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _SRA_D() uint {
+	gbz.sra(&gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _SRA_E() uint {
+	gbz.sra(&gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _SRA_H() uint {
+	gbz.sra(&gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _SRA_L() uint {
+	gbz.sra(&gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _SRA_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.sra(&b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _SRA_A() uint {
+	gbz.sra(&gbz.a)
 	return 8
 }

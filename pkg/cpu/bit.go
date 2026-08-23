@@ -50,3 +50,23 @@ func (gbz *GBZ80) rr(r8 *uint8) {
 	gbz.flags.Set(HalfCarry, false)
 	gbz.flags.Set(Carry, r&0x1 == 1)
 }
+
+func (gbz *GBZ80) sla(r8 *uint8) {
+	r := *r8
+	*r8 = *r8 << 1
+
+	gbz.flags.Set(Zero, *r8 == 0)
+	gbz.flags.Set(Sub, false)
+	gbz.flags.Set(HalfCarry, false)
+	gbz.flags.Set(Carry, r>>7 == 1)
+}
+
+func (gbz *GBZ80) sra(r8 *uint8) {
+	r := *r8
+	*r8 = (*r8 & 0x80) | *r8>>1
+
+	gbz.flags.Set(Zero, *r8 == 0)
+	gbz.flags.Set(Sub, false)
+	gbz.flags.Set(HalfCarry, false)
+	gbz.flags.Set(Carry, r&0x1 == 1)
+}
