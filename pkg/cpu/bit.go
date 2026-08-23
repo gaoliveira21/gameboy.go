@@ -82,3 +82,13 @@ func (gbz *GBZ80) swap(r8 *uint8) {
 	gbz.flags.Set(HalfCarry, false)
 	gbz.flags.Set(Carry, false)
 }
+
+func (gbz *GBZ80) srl(r8 *uint8) {
+	r := *r8
+	*r8 = *r8 >> 1
+
+	gbz.flags.Set(Zero, *r8 == 0)
+	gbz.flags.Set(Sub, false)
+	gbz.flags.Set(HalfCarry, false)
+	gbz.flags.Set(Carry, r&0x1 == 1)
+}

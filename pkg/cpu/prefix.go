@@ -58,14 +58,14 @@ func (g *GBZ80) initPrefixedSet() {
 		0x35: {g._SWAP_L, "SWAP L", 2},
 		0x36: {g._SWAP_HL, "SWAP HL", 2},
 		0x37: {g._SWAP_A, "SWAP A", 2},
-		0x38: {g._TODO, "SRL B", 2},
-		0x39: {g._TODO, "SRL C", 2},
-		0x3A: {g._TODO, "SRL D", 2},
-		0x3B: {g._TODO, "SRL E", 2},
-		0x3C: {g._TODO, "SRL H", 2},
-		0x3D: {g._TODO, "SRL L", 2},
-		0x3E: {g._TODO, "SRL HL", 2},
-		0x3F: {g._TODO, "SRL A", 2},
+		0x38: {g._SRL_B, "SRL B", 2},
+		0x39: {g._SRL_C, "SRL C", 2},
+		0x3A: {g._SRL_D, "SRL D", 2},
+		0x3B: {g._SRL_E, "SRL E", 2},
+		0x3C: {g._SRL_H, "SRL H", 2},
+		0x3D: {g._SRL_L, "SRL L", 2},
+		0x3E: {g._SRL_HL, "SRL HL", 2},
+		0x3F: {g._SRL_A, "SRL A", 2},
 		0x40: {g._TODO, "BIT 0 B", 2},
 		0x41: {g._TODO, "BIT 0 C", 2},
 		0x42: {g._TODO, "BIT 0 D", 2},
@@ -563,5 +563,48 @@ func (gbz *GBZ80) _SWAP_HL() uint {
 
 func (gbz *GBZ80) _SWAP_A() uint {
 	gbz.swap(&gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _SRL_B() uint {
+	gbz.srl(&gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _SRL_C() uint {
+	gbz.srl(&gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _SRL_D() uint {
+	gbz.srl(&gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _SRL_E() uint {
+	gbz.srl(&gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _SRL_H() uint {
+	gbz.srl(&gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _SRL_L() uint {
+	gbz.srl(&gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _SRL_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.srl(&b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _SRL_A() uint {
+	gbz.srl(&gbz.a)
 	return 8
 }
