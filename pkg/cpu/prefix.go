@@ -130,139 +130,135 @@ func (g *GBZ80) initPrefixedSet() {
 		0x7D: {g._BIT_7_L, "BIT 7 L", 2},
 		0x7E: {g._BIT_7_HL, "BIT 7 HL", 2},
 		0x7F: {g._BIT_7_A, "BIT 7 A", 2},
-		0x80: {g._TODO, "RES 0 B", 2},
-		0x81: {g._TODO, "RES 0 C", 2},
-		0x82: {g._TODO, "RES 0 D", 2},
-		0x83: {g._TODO, "RES 0 E", 2},
-		0x84: {g._TODO, "RES 0 H", 2},
-		0x85: {g._TODO, "RES 0 L", 2},
-		0x86: {g._TODO, "RES 0 HL", 2},
-		0x87: {g._TODO, "RES 0 A", 2},
-		0x88: {g._TODO, "RES 1 B", 2},
-		0x89: {g._TODO, "RES 1 C", 2},
-		0x8A: {g._TODO, "RES 1 D", 2},
-		0x8B: {g._TODO, "RES 1 E", 2},
-		0x8C: {g._TODO, "RES 1 H", 2},
-		0x8D: {g._TODO, "RES 1 L", 2},
-		0x8E: {g._TODO, "RES 1 HL", 2},
-		0x8F: {g._TODO, "RES 1 A", 2},
-		0x90: {g._TODO, "RES 2 B", 2},
-		0x91: {g._TODO, "RES 2 C", 2},
-		0x92: {g._TODO, "RES 2 D", 2},
-		0x93: {g._TODO, "RES 2 E", 2},
-		0x94: {g._TODO, "RES 2 H", 2},
-		0x95: {g._TODO, "RES 2 L", 2},
-		0x96: {g._TODO, "RES 2 HL", 2},
-		0x97: {g._TODO, "RES 2 A", 2},
-		0x98: {g._TODO, "RES 3 B", 2},
-		0x99: {g._TODO, "RES 3 C", 2},
-		0x9A: {g._TODO, "RES 3 D", 2},
-		0x9B: {g._TODO, "RES 3 E", 2},
-		0x9C: {g._TODO, "RES 3 H", 2},
-		0x9D: {g._TODO, "RES 3 L", 2},
-		0x9E: {g._TODO, "RES 3 HL", 2},
-		0x9F: {g._TODO, "RES 3 A", 2},
-		0xA0: {g._TODO, "RES 4 B", 2},
-		0xA1: {g._TODO, "RES 4 C", 2},
-		0xA2: {g._TODO, "RES 4 D", 2},
-		0xA3: {g._TODO, "RES 4 E", 2},
-		0xA4: {g._TODO, "RES 4 H", 2},
-		0xA5: {g._TODO, "RES 4 L", 2},
-		0xA6: {g._TODO, "RES 4 HL", 2},
-		0xA7: {g._TODO, "RES 4 A", 2},
-		0xA8: {g._TODO, "RES 5 B", 2},
-		0xA9: {g._TODO, "RES 5 C", 2},
-		0xAA: {g._TODO, "RES 5 D", 2},
-		0xAB: {g._TODO, "RES 5 E", 2},
-		0xAC: {g._TODO, "RES 5 H", 2},
-		0xAD: {g._TODO, "RES 5 L", 2},
-		0xAE: {g._TODO, "RES 5 HL", 2},
-		0xAF: {g._TODO, "RES 5 A", 2},
-		0xB0: {g._TODO, "RES 6 B", 2},
-		0xB1: {g._TODO, "RES 6 C", 2},
-		0xB2: {g._TODO, "RES 6 D", 2},
-		0xB3: {g._TODO, "RES 6 E", 2},
-		0xB4: {g._TODO, "RES 6 H", 2},
-		0xB5: {g._TODO, "RES 6 L", 2},
-		0xB6: {g._TODO, "RES 6 HL", 2},
-		0xB7: {g._TODO, "RES 6 A", 2},
-		0xB8: {g._TODO, "RES 7 B", 2},
-		0xB9: {g._TODO, "RES 7 C", 2},
-		0xBA: {g._TODO, "RES 7 D", 2},
-		0xBB: {g._TODO, "RES 7 E", 2},
-		0xBC: {g._TODO, "RES 7 H", 2},
-		0xBD: {g._TODO, "RES 7 L", 2},
-		0xBE: {g._TODO, "RES 7 HL", 2},
-		0xBF: {g._TODO, "RES 7 A", 2},
-		0xC0: {g._TODO, "SET 0 B", 2},
-		0xC1: {g._TODO, "SET 0 C", 2},
-		0xC2: {g._TODO, "SET 0 D", 2},
-		0xC3: {g._TODO, "SET 0 E", 2},
-		0xC4: {g._TODO, "SET 0 H", 2},
-		0xC5: {g._TODO, "SET 0 L", 2},
-		0xC6: {g._TODO, "SET 0 HL", 2},
-		0xC7: {g._TODO, "SET 0 A", 2},
-		0xC8: {g._TODO, "SET 1 B", 2},
-		0xC9: {g._TODO, "SET 1 C", 2},
-		0xCA: {g._TODO, "SET 1 D", 2},
-		0xCB: {g._TODO, "SET 1 E", 2},
-		0xCC: {g._TODO, "SET 1 H", 2},
-		0xCD: {g._TODO, "SET 1 L", 2},
-		0xCE: {g._TODO, "SET 1 HL", 2},
-		0xCF: {g._TODO, "SET 1 A", 2},
-		0xD0: {g._TODO, "SET 2 B", 2},
-		0xD1: {g._TODO, "SET 2 C", 2},
-		0xD2: {g._TODO, "SET 2 D", 2},
-		0xD3: {g._TODO, "SET 2 E", 2},
-		0xD4: {g._TODO, "SET 2 H", 2},
-		0xD5: {g._TODO, "SET 2 L", 2},
-		0xD6: {g._TODO, "SET 2 HL", 2},
-		0xD7: {g._TODO, "SET 2 A", 2},
-		0xD8: {g._TODO, "SET 3 B", 2},
-		0xD9: {g._TODO, "SET 3 C", 2},
-		0xDA: {g._TODO, "SET 3 D", 2},
-		0xDB: {g._TODO, "SET 3 E", 2},
-		0xDC: {g._TODO, "SET 3 H", 2},
-		0xDD: {g._TODO, "SET 3 L", 2},
-		0xDE: {g._TODO, "SET 3 HL", 2},
-		0xDF: {g._TODO, "SET 3 A", 2},
-		0xE0: {g._TODO, "SET 4 B", 2},
-		0xE1: {g._TODO, "SET 4 C", 2},
-		0xE2: {g._TODO, "SET 4 D", 2},
-		0xE3: {g._TODO, "SET 4 E", 2},
-		0xE4: {g._TODO, "SET 4 H", 2},
-		0xE5: {g._TODO, "SET 4 L", 2},
-		0xE6: {g._TODO, "SET 4 HL", 2},
-		0xE7: {g._TODO, "SET 4 A", 2},
-		0xE8: {g._TODO, "SET 5 B", 2},
-		0xE9: {g._TODO, "SET 5 C", 2},
-		0xEA: {g._TODO, "SET 5 D", 2},
-		0xEB: {g._TODO, "SET 5 E", 2},
-		0xEC: {g._TODO, "SET 5 H", 2},
-		0xED: {g._TODO, "SET 5 L", 2},
-		0xEE: {g._TODO, "SET 5 HL", 2},
-		0xEF: {g._TODO, "SET 5 A", 2},
-		0xF0: {g._TODO, "SET 6 B", 2},
-		0xF1: {g._TODO, "SET 6 C", 2},
-		0xF2: {g._TODO, "SET 6 D", 2},
-		0xF3: {g._TODO, "SET 6 E", 2},
-		0xF4: {g._TODO, "SET 6 H", 2},
-		0xF5: {g._TODO, "SET 6 L", 2},
-		0xF6: {g._TODO, "SET 6 HL", 2},
-		0xF7: {g._TODO, "SET 6 A", 2},
-		0xF8: {g._TODO, "SET 7 B", 2},
-		0xF9: {g._TODO, "SET 7 C", 2},
-		0xFA: {g._TODO, "SET 7 D", 2},
-		0xFB: {g._TODO, "SET 7 E", 2},
-		0xFC: {g._TODO, "SET 7 H", 2},
-		0xFD: {g._TODO, "SET 7 L", 2},
-		0xFE: {g._TODO, "SET 7 HL", 2},
-		0xFF: {g._TODO, "SET 7 A", 2},
+		0x80: {g._RES_0_B, "RES 0 B", 2},
+		0x81: {g._RES_0_C, "RES 0 C", 2},
+		0x82: {g._RES_0_D, "RES 0 D", 2},
+		0x83: {g._RES_0_E, "RES 0 E", 2},
+		0x84: {g._RES_0_H, "RES 0 H", 2},
+		0x85: {g._RES_0_L, "RES 0 L", 2},
+		0x86: {g._RES_0_HL, "RES 0 HL", 2},
+		0x87: {g._RES_0_A, "RES 0 A", 2},
+		0x88: {g._RES_1_B, "RES 1 B", 2},
+		0x89: {g._RES_1_C, "RES 1 C", 2},
+		0x8A: {g._RES_1_D, "RES 1 D", 2},
+		0x8B: {g._RES_1_E, "RES 1 E", 2},
+		0x8C: {g._RES_1_H, "RES 1 H", 2},
+		0x8D: {g._RES_1_L, "RES 1 L", 2},
+		0x8E: {g._RES_1_HL, "RES 1 HL", 2},
+		0x8F: {g._RES_1_A, "RES 1 A", 2},
+		0x90: {g._RES_2_B, "RES 2 B", 2},
+		0x91: {g._RES_2_C, "RES 2 C", 2},
+		0x92: {g._RES_2_D, "RES 2 D", 2},
+		0x93: {g._RES_2_E, "RES 2 E", 2},
+		0x94: {g._RES_2_H, "RES 2 H", 2},
+		0x95: {g._RES_2_L, "RES 2 L", 2},
+		0x96: {g._RES_2_HL, "RES 2 HL", 2},
+		0x97: {g._RES_2_A, "RES 2 A", 2},
+		0x98: {g._RES_3_B, "RES 3 B", 2},
+		0x99: {g._RES_3_C, "RES 3 C", 2},
+		0x9A: {g._RES_3_D, "RES 3 D", 2},
+		0x9B: {g._RES_3_E, "RES 3 E", 2},
+		0x9C: {g._RES_3_H, "RES 3 H", 2},
+		0x9D: {g._RES_3_L, "RES 3 L", 2},
+		0x9E: {g._RES_3_HL, "RES 3 HL", 2},
+		0x9F: {g._RES_3_A, "RES 3 A", 2},
+		0xA0: {g._RES_4_B, "RES 4 B", 2},
+		0xA1: {g._RES_4_C, "RES 4 C", 2},
+		0xA2: {g._RES_4_D, "RES 4 D", 2},
+		0xA3: {g._RES_4_E, "RES 4 E", 2},
+		0xA4: {g._RES_4_H, "RES 4 H", 2},
+		0xA5: {g._RES_4_L, "RES 4 L", 2},
+		0xA6: {g._RES_4_HL, "RES 4 HL", 2},
+		0xA7: {g._RES_4_A, "RES 4 A", 2},
+		0xA8: {g._RES_5_B, "RES 5 B", 2},
+		0xA9: {g._RES_5_C, "RES 5 C", 2},
+		0xAA: {g._RES_5_D, "RES 5 D", 2},
+		0xAB: {g._RES_5_E, "RES 5 E", 2},
+		0xAC: {g._RES_5_H, "RES 5 H", 2},
+		0xAD: {g._RES_5_L, "RES 5 L", 2},
+		0xAE: {g._RES_5_HL, "RES 5 HL", 2},
+		0xAF: {g._RES_5_A, "RES 5 A", 2},
+		0xB0: {g._RES_6_B, "RES 6 B", 2},
+		0xB1: {g._RES_6_C, "RES 6 C", 2},
+		0xB2: {g._RES_6_D, "RES 6 D", 2},
+		0xB3: {g._RES_6_E, "RES 6 E", 2},
+		0xB4: {g._RES_6_H, "RES 6 H", 2},
+		0xB5: {g._RES_6_L, "RES 6 L", 2},
+		0xB6: {g._RES_6_HL, "RES 6 HL", 2},
+		0xB7: {g._RES_6_A, "RES 6 A", 2},
+		0xB8: {g._RES_7_B, "RES 7 B", 2},
+		0xB9: {g._RES_7_C, "RES 7 C", 2},
+		0xBA: {g._RES_7_D, "RES 7 D", 2},
+		0xBB: {g._RES_7_E, "RES 7 E", 2},
+		0xBC: {g._RES_7_H, "RES 7 H", 2},
+		0xBD: {g._RES_7_L, "RES 7 L", 2},
+		0xBE: {g._RES_7_HL, "RES 7 HL", 2},
+		0xBF: {g._RES_7_A, "RES 7 A", 2},
+		0xC0: {g._SET_0_B, "SET 0 B", 2},
+		0xC1: {g._SET_0_C, "SET 0 C", 2},
+		0xC2: {g._SET_0_D, "SET 0 D", 2},
+		0xC3: {g._SET_0_E, "SET 0 E", 2},
+		0xC4: {g._SET_0_H, "SET 0 H", 2},
+		0xC5: {g._SET_0_L, "SET 0 L", 2},
+		0xC6: {g._SET_0_HL, "SET 0 HL", 2},
+		0xC7: {g._SET_0_A, "SET 0 A", 2},
+		0xC8: {g._SET_1_B, "SET 1 B", 2},
+		0xC9: {g._SET_1_C, "SET 1 C", 2},
+		0xCA: {g._SET_1_D, "SET 1 D", 2},
+		0xCB: {g._SET_1_E, "SET 1 E", 2},
+		0xCC: {g._SET_1_H, "SET 1 H", 2},
+		0xCD: {g._SET_1_L, "SET 1 L", 2},
+		0xCE: {g._SET_1_HL, "SET 1 HL", 2},
+		0xCF: {g._SET_1_A, "SET 1 A", 2},
+		0xD0: {g._SET_2_B, "SET 2 B", 2},
+		0xD1: {g._SET_2_C, "SET 2 C", 2},
+		0xD2: {g._SET_2_D, "SET 2 D", 2},
+		0xD3: {g._SET_2_E, "SET 2 E", 2},
+		0xD4: {g._SET_2_H, "SET 2 H", 2},
+		0xD5: {g._SET_2_L, "SET 2 L", 2},
+		0xD6: {g._SET_2_HL, "SET 2 HL", 2},
+		0xD7: {g._SET_2_A, "SET 2 A", 2},
+		0xD8: {g._SET_3_B, "SET 3 B", 2},
+		0xD9: {g._SET_3_C, "SET 3 C", 2},
+		0xDA: {g._SET_3_D, "SET 3 D", 2},
+		0xDB: {g._SET_3_E, "SET 3 E", 2},
+		0xDC: {g._SET_3_H, "SET 3 H", 2},
+		0xDD: {g._SET_3_L, "SET 3 L", 2},
+		0xDE: {g._SET_3_HL, "SET 3 HL", 2},
+		0xDF: {g._SET_3_A, "SET 3 A", 2},
+		0xE0: {g._SET_4_B, "SET 4 B", 2},
+		0xE1: {g._SET_4_C, "SET 4 C", 2},
+		0xE2: {g._SET_4_D, "SET 4 D", 2},
+		0xE3: {g._SET_4_E, "SET 4 E", 2},
+		0xE4: {g._SET_4_H, "SET 4 H", 2},
+		0xE5: {g._SET_4_L, "SET 4 L", 2},
+		0xE6: {g._SET_4_HL, "SET 4 HL", 2},
+		0xE7: {g._SET_4_A, "SET 4 A", 2},
+		0xE8: {g._SET_5_B, "SET 5 B", 2},
+		0xE9: {g._SET_5_C, "SET 5 C", 2},
+		0xEA: {g._SET_5_D, "SET 5 D", 2},
+		0xEB: {g._SET_5_E, "SET 5 E", 2},
+		0xEC: {g._SET_5_H, "SET 5 H", 2},
+		0xED: {g._SET_5_L, "SET 5 L", 2},
+		0xEE: {g._SET_5_HL, "SET 5 HL", 2},
+		0xEF: {g._SET_5_A, "SET 5 A", 2},
+		0xF0: {g._SET_6_B, "SET 6 B", 2},
+		0xF1: {g._SET_6_C, "SET 6 C", 2},
+		0xF2: {g._SET_6_D, "SET 6 D", 2},
+		0xF3: {g._SET_6_E, "SET 6 E", 2},
+		0xF4: {g._SET_6_H, "SET 6 H", 2},
+		0xF5: {g._SET_6_L, "SET 6 L", 2},
+		0xF6: {g._SET_6_HL, "SET 6 HL", 2},
+		0xF7: {g._SET_6_A, "SET 6 A", 2},
+		0xF8: {g._SET_7_B, "SET 7 B", 2},
+		0xF9: {g._SET_7_C, "SET 7 C", 2},
+		0xFA: {g._SET_7_D, "SET 7 D", 2},
+		0xFB: {g._SET_7_E, "SET 7 E", 2},
+		0xFC: {g._SET_7_H, "SET 7 H", 2},
+		0xFD: {g._SET_7_L, "SET 7 L", 2},
+		0xFE: {g._SET_7_HL, "SET 7 HL", 2},
+		0xFF: {g._SET_7_A, "SET 7 A", 2},
 	}
-}
-
-func (gbz *GBZ80) _TODO() uint {
-	panic("Instruction not implemented")
 }
 
 func (gbz *GBZ80) _RLC_B() uint {
@@ -942,5 +938,693 @@ func (gbz *GBZ80) _BIT_7_HL() uint {
 
 func (gbz *GBZ80) _BIT_7_A() uint {
 	gbz.bit(7, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_0_B() uint {
+	gbz.res(0, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_0_C() uint {
+	gbz.res(0, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_0_D() uint {
+	gbz.res(0, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_0_E() uint {
+	gbz.res(0, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_0_H() uint {
+	gbz.res(0, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_0_L() uint {
+	gbz.res(0, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_0_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.res(0, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _RES_0_A() uint {
+	gbz.res(0, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_1_B() uint {
+	gbz.res(1, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_1_C() uint {
+	gbz.res(1, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_1_D() uint {
+	gbz.res(1, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_1_E() uint {
+	gbz.res(1, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_1_H() uint {
+	gbz.res(1, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_1_L() uint {
+	gbz.res(1, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_1_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.res(1, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _RES_1_A() uint {
+	gbz.res(1, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_2_B() uint {
+	gbz.res(2, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_2_C() uint {
+	gbz.res(2, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_2_D() uint {
+	gbz.res(2, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_2_E() uint {
+	gbz.res(2, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_2_H() uint {
+	gbz.res(2, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_2_L() uint {
+	gbz.res(2, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_2_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.res(2, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _RES_2_A() uint {
+	gbz.res(2, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_3_B() uint {
+	gbz.res(3, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_3_C() uint {
+	gbz.res(3, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_3_D() uint {
+	gbz.res(3, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_3_E() uint {
+	gbz.res(3, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_3_H() uint {
+	gbz.res(3, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_3_L() uint {
+	gbz.res(3, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_3_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.res(3, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _RES_3_A() uint {
+	gbz.res(3, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_4_B() uint {
+	gbz.res(4, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_4_C() uint {
+	gbz.res(4, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_4_D() uint {
+	gbz.res(4, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_4_E() uint {
+	gbz.res(4, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_4_H() uint {
+	gbz.res(4, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_4_L() uint {
+	gbz.res(4, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_4_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.res(4, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _RES_4_A() uint {
+	gbz.res(4, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_5_B() uint {
+	gbz.res(5, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_5_C() uint {
+	gbz.res(5, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_5_D() uint {
+	gbz.res(5, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_5_E() uint {
+	gbz.res(5, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_5_H() uint {
+	gbz.res(5, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_5_L() uint {
+	gbz.res(5, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_5_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.res(5, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _RES_5_A() uint {
+	gbz.res(5, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_6_B() uint {
+	gbz.res(6, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_6_C() uint {
+	gbz.res(6, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_6_D() uint {
+	gbz.res(6, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_6_E() uint {
+	gbz.res(6, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_6_H() uint {
+	gbz.res(6, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_6_L() uint {
+	gbz.res(6, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_6_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.res(6, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _RES_6_A() uint {
+	gbz.res(6, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_7_B() uint {
+	gbz.res(7, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_7_C() uint {
+	gbz.res(7, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_7_D() uint {
+	gbz.res(7, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_7_E() uint {
+	gbz.res(7, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_7_H() uint {
+	gbz.res(7, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_7_L() uint {
+	gbz.res(7, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _RES_7_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.res(7, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _RES_7_A() uint {
+	gbz.res(7, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_0_B() uint {
+	gbz.set(0, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_0_C() uint {
+	gbz.set(0, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_0_D() uint {
+	gbz.set(0, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_0_E() uint {
+	gbz.set(0, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_0_H() uint {
+	gbz.set(0, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_0_L() uint {
+	gbz.set(0, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_0_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.set(0, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _SET_0_A() uint {
+	gbz.set(0, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_1_B() uint {
+	gbz.set(1, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_1_C() uint {
+	gbz.set(1, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_1_D() uint {
+	gbz.set(1, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_1_E() uint {
+	gbz.set(1, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_1_H() uint {
+	gbz.set(1, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_1_L() uint {
+	gbz.set(1, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_1_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.set(1, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _SET_1_A() uint {
+	gbz.set(1, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_2_B() uint {
+	gbz.set(2, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_2_C() uint {
+	gbz.set(2, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_2_D() uint {
+	gbz.set(2, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_2_E() uint {
+	gbz.set(2, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_2_H() uint {
+	gbz.set(2, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_2_L() uint {
+	gbz.set(2, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_2_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.set(2, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _SET_2_A() uint {
+	gbz.set(2, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_3_B() uint {
+	gbz.set(3, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_3_C() uint {
+	gbz.set(3, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_3_D() uint {
+	gbz.set(3, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_3_E() uint {
+	gbz.set(3, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_3_H() uint {
+	gbz.set(3, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_3_L() uint {
+	gbz.set(3, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_3_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.set(3, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _SET_3_A() uint {
+	gbz.set(3, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_4_B() uint {
+	gbz.set(4, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_4_C() uint {
+	gbz.set(4, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_4_D() uint {
+	gbz.set(4, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_4_E() uint {
+	gbz.set(4, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_4_H() uint {
+	gbz.set(4, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_4_L() uint {
+	gbz.set(4, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_4_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.set(4, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _SET_4_A() uint {
+	gbz.set(4, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_5_B() uint {
+	gbz.set(5, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_5_C() uint {
+	gbz.set(5, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_5_D() uint {
+	gbz.set(5, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_5_E() uint {
+	gbz.set(5, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_5_H() uint {
+	gbz.set(5, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_5_L() uint {
+	gbz.set(5, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_5_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.set(5, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _SET_5_A() uint {
+	gbz.set(5, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_6_B() uint {
+	gbz.set(6, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_6_C() uint {
+	gbz.set(6, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_6_D() uint {
+	gbz.set(6, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_6_E() uint {
+	gbz.set(6, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_6_H() uint {
+	gbz.set(6, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_6_L() uint {
+	gbz.set(6, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_6_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.set(6, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _SET_6_A() uint {
+	gbz.set(6, &gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_7_B() uint {
+	gbz.set(7, &gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_7_C() uint {
+	gbz.set(7, &gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_7_D() uint {
+	gbz.set(7, &gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_7_E() uint {
+	gbz.set(7, &gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_7_H() uint {
+	gbz.set(7, &gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_7_L() uint {
+	gbz.set(7, &gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _SET_7_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.set(7, &b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _SET_7_A() uint {
+	gbz.set(7, &gbz.a)
 	return 8
 }

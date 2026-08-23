@@ -98,3 +98,11 @@ func (gbz *GBZ80) bit(pos uint8, r8 *uint8) {
 	gbz.flags.Set(Sub, false)
 	gbz.flags.Set(HalfCarry, true)
 }
+
+func (gbz *GBZ80) res(pos uint8, r8 *uint8) {
+	*r8 = *r8 &^ (1 << pos)
+}
+
+func (gbz *GBZ80) set(pos uint8, r8 *uint8) {
+	*r8 |= 1 << pos
+}

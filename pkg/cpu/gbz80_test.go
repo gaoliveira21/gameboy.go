@@ -6114,3 +6114,566 @@ func Test_BIT_A_Reg(t *testing.T) {
 		})
 	}
 }
+
+func Test_RES_B_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regInitial  byte
+		wantValue   byte
+	}{
+		{"RES_0_FromSet", 0x80, 0xFF, 0xFE},
+		{"RES_0_FromClear", 0x80, 0x00, 0x00},
+		{"RES_1_FromSet", 0x88, 0xFF, 0xFD},
+		{"RES_2_FromSet", 0x90, 0xFF, 0xFB},
+		{"RES_3_FromSet", 0x98, 0xFF, 0xF7},
+		{"RES_4_FromSet", 0xA0, 0xFF, 0xEF},
+		{"RES_5_FromSet", 0xA8, 0xFF, 0xDF},
+		{"RES_6_FromSet", 0xB0, 0xFF, 0xBF},
+		{"RES_7_FromSet", 0xB8, 0xFF, 0x7F},
+		{"RES_7_From0x80", 0xB8, 0x80, 0x00},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.b = c.regInitial
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.b, "Register B value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RES_C_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regInitial  byte
+		wantValue   byte
+	}{
+		{"RES_0_FromSet", 0x81, 0xFF, 0xFE},
+		{"RES_0_FromClear", 0x81, 0x00, 0x00},
+		{"RES_1_FromSet", 0x89, 0xFF, 0xFD},
+		{"RES_7_FromSet", 0xB9, 0xFF, 0x7F},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.c = c.regInitial
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.c, "Register C value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RES_D_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regInitial  byte
+		wantValue   byte
+	}{
+		{"RES_0_FromSet", 0x82, 0xFF, 0xFE},
+		{"RES_7_FromSet", 0xBA, 0xFF, 0x7F},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.d = c.regInitial
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.d, "Register D value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RES_E_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regInitial  byte
+		wantValue   byte
+	}{
+		{"RES_0_FromSet", 0x83, 0xFF, 0xFE},
+		{"RES_7_FromSet", 0xBB, 0xFF, 0x7F},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.e = c.regInitial
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.e, "Register E value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RES_H_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regInitial  byte
+		wantValue   byte
+	}{
+		{"RES_0_FromSet", 0x84, 0xFF, 0xFE},
+		{"RES_7_FromSet", 0xBC, 0xFF, 0x7F},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.h = c.regInitial
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.h, "Register H value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RES_L_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regInitial  byte
+		wantValue   byte
+	}{
+		{"RES_0_FromSet", 0x85, 0xFF, 0xFE},
+		{"RES_7_FromSet", 0xBD, 0xFF, 0x7F},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.l = c.regInitial
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.l, "Register L value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RES_HL_Memory(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		memInitial  byte
+		wantValue   byte
+	}{
+		{"RES_0_FromSet", 0x86, 0xFF, 0xFE},
+		{"RES_0_FromClear", 0x86, 0x00, 0x00},
+		{"RES_1_FromSet", 0x8E, 0xFF, 0xFD},
+		{"RES_2_FromSet", 0x96, 0xFF, 0xFB},
+		{"RES_3_FromSet", 0x9E, 0xFF, 0xF7},
+		{"RES_4_FromSet", 0xA6, 0xFF, 0xEF},
+		{"RES_5_FromSet", 0xAE, 0xFF, 0xDF},
+		{"RES_6_FromSet", 0xB6, 0xFF, 0xBF},
+		{"RES_7_FromSet", 0xBE, 0xFF, 0x7F},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.h = 0xC0
+			gbz.l = 0x00
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.mem.Write(0xC000, c.memInitial)
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 16)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.mem.Read(0xC000), "Memory value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RES_A_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regInitial  byte
+		wantValue   byte
+	}{
+		{"RES_0_FromSet", 0x87, 0xFF, 0xFE},
+		{"RES_0_FromClear", 0x87, 0x00, 0x00},
+		{"RES_1_FromSet", 0x8F, 0xFF, 0xFD},
+		{"RES_2_FromSet", 0x97, 0xFF, 0xFB},
+		{"RES_3_FromSet", 0x9F, 0xFF, 0xF7},
+		{"RES_4_FromSet", 0xA7, 0xFF, 0xEF},
+		{"RES_5_FromSet", 0xAF, 0xFF, 0xDF},
+		{"RES_6_FromSet", 0xB7, 0xFF, 0xBF},
+		{"RES_7_FromSet", 0xBF, 0xFF, 0x7F},
+		{"RES_7_From0x80", 0xBF, 0x80, 0x00},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.a = c.regInitial
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.a, "Register A value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SET_B_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regInitial  byte
+		wantValue   byte
+	}{
+		{"SET_0_FromClear", 0xC0, 0x00, 0x01},
+		{"SET_0_FromSet", 0xC0, 0xFF, 0xFF},
+		{"SET_1_FromClear", 0xC8, 0x00, 0x02},
+		{"SET_2_FromClear", 0xD0, 0x00, 0x04},
+		{"SET_3_FromClear", 0xD8, 0x00, 0x08},
+		{"SET_4_FromClear", 0xE0, 0x00, 0x10},
+		{"SET_5_FromClear", 0xE8, 0x00, 0x20},
+		{"SET_6_FromClear", 0xF0, 0x00, 0x40},
+		{"SET_7_FromClear", 0xF8, 0x00, 0x80},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.b = c.regInitial
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.b, "Register B value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SET_C_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regInitial  byte
+		wantValue   byte
+	}{
+		{"SET_0_FromClear", 0xC1, 0x00, 0x01},
+		{"SET_7_FromClear", 0xF9, 0x00, 0x80},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.c = c.regInitial
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.c, "Register C value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SET_D_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regInitial  byte
+		wantValue   byte
+	}{
+		{"SET_0_FromClear", 0xC2, 0x00, 0x01},
+		{"SET_7_FromClear", 0xFA, 0x00, 0x80},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.d = c.regInitial
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.d, "Register D value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SET_E_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regInitial  byte
+		wantValue   byte
+	}{
+		{"SET_0_FromClear", 0xC3, 0x00, 0x01},
+		{"SET_7_FromClear", 0xFB, 0x00, 0x80},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.e = c.regInitial
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.e, "Register E value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SET_H_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regInitial  byte
+		wantValue   byte
+	}{
+		{"SET_0_FromClear", 0xC4, 0x00, 0x01},
+		{"SET_7_FromClear", 0xFC, 0x00, 0x80},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.h = c.regInitial
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.h, "Register H value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SET_L_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regInitial  byte
+		wantValue   byte
+	}{
+		{"SET_0_FromClear", 0xC5, 0x00, 0x01},
+		{"SET_7_FromClear", 0xFD, 0x00, 0x80},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.l = c.regInitial
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.l, "Register L value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SET_HL_Memory(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		memInitial  byte
+		wantValue   byte
+	}{
+		{"SET_0_FromClear", 0xC6, 0x00, 0x01},
+		{"SET_0_FromSet", 0xC6, 0xFF, 0xFF},
+		{"SET_1_FromClear", 0xCE, 0x00, 0x02},
+		{"SET_2_FromClear", 0xD6, 0x00, 0x04},
+		{"SET_3_FromClear", 0xDE, 0x00, 0x08},
+		{"SET_4_FromClear", 0xE6, 0x00, 0x10},
+		{"SET_5_FromClear", 0xEE, 0x00, 0x20},
+		{"SET_6_FromClear", 0xF6, 0x00, 0x40},
+		{"SET_7_FromClear", 0xFE, 0x00, 0x80},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.h = 0xC0
+			gbz.l = 0x00
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.mem.Write(0xC000, c.memInitial)
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 16)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.mem.Read(0xC000), "Memory value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_SET_A_Reg(t *testing.T) {
+	cases := []struct {
+		name        string
+		opcode      uint8
+		regInitial  byte
+		wantValue   byte
+	}{
+		{"SET_0_FromClear", 0xC7, 0x00, 0x01},
+		{"SET_0_FromSet", 0xC7, 0xFF, 0xFF},
+		{"SET_1_FromClear", 0xCF, 0x00, 0x02},
+		{"SET_2_FromClear", 0xD7, 0x00, 0x04},
+		{"SET_3_FromClear", 0xDF, 0x00, 0x08},
+		{"SET_4_FromClear", 0xE7, 0x00, 0x10},
+		{"SET_5_FromClear", 0xEF, 0x00, 0x20},
+		{"SET_6_FromClear", 0xF7, 0x00, 0x40},
+		{"SET_7_FromClear", 0xFF, 0x00, 0x80},
+		{"SET_7_From0x7F", 0xFF, 0x7F, 0xFF},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz := createGBZ()
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, c.opcode)
+			gbz.a = c.regInitial
+			initialFlags := gbz.flags.value
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.a, "Register A value mismatch")
+			assert.Equal(t, initialFlags, gbz.flags.value, "Flags should be unchanged")
+
+			resetGBZ(gbz)
+		})
+	}
+}
