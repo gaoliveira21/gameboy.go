@@ -4149,3 +4149,372 @@ func Test_RL_A(t *testing.T) {
 		})
 	}
 }
+
+func Test_RR_B(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name         string
+		initialB     byte
+		initialCarry bool
+		wantValue    byte
+		wantCarry    bool
+		wantZero     bool
+	}{
+		{"Rotate_0x00_NoCarry_In", 0x00, false, 0x00, false, true},
+		{"Rotate_0x00_Carry_In", 0x00, true, 0x80, false, false},
+		{"Rotate_0x01_NoCarry_In", 0x01, false, 0x00, true, true},
+		{"Rotate_0x01_Carry_In", 0x01, true, 0x80, true, false},
+		{"Rotate_0x40_NoCarry_In", 0x40, false, 0x20, false, false},
+		{"Rotate_0x40_Carry_In", 0x40, true, 0xA0, false, false},
+		{"Rotate_0x80_NoCarry_In", 0x80, false, 0x40, false, false},
+		{"Rotate_0x80_Carry_In", 0x80, true, 0xC0, false, false},
+		{"Rotate_0xFF_NoCarry_In", 0xFF, false, 0x7F, true, false},
+		{"Rotate_0xFF_Carry_In", 0xFF, true, 0xFF, true, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x18)
+			gbz.b = c.initialB
+			gbz.flags.Set(Carry, c.initialCarry)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, c.wantValue, gbz.b, "B")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RR_C(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name         string
+		initialC     byte
+		initialCarry bool
+		wantValue    byte
+		wantCarry    bool
+		wantZero     bool
+	}{
+		{"Rotate_0x00_NoCarry_In", 0x00, false, 0x00, false, true},
+		{"Rotate_0x00_Carry_In", 0x00, true, 0x80, false, false},
+		{"Rotate_0x01_NoCarry_In", 0x01, false, 0x00, true, true},
+		{"Rotate_0x01_Carry_In", 0x01, true, 0x80, true, false},
+		{"Rotate_0x40_NoCarry_In", 0x40, false, 0x20, false, false},
+		{"Rotate_0x40_Carry_In", 0x40, true, 0xA0, false, false},
+		{"Rotate_0x80_NoCarry_In", 0x80, false, 0x40, false, false},
+		{"Rotate_0x80_Carry_In", 0x80, true, 0xC0, false, false},
+		{"Rotate_0xFF_NoCarry_In", 0xFF, false, 0x7F, true, false},
+		{"Rotate_0xFF_Carry_In", 0xFF, true, 0xFF, true, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x19)
+			gbz.c = c.initialC
+			gbz.flags.Set(Carry, c.initialCarry)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, c.wantValue, gbz.c, "C")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RR_D(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name         string
+		initialD     byte
+		initialCarry bool
+		wantValue    byte
+		wantCarry    bool
+		wantZero     bool
+	}{
+		{"Rotate_0x00_NoCarry_In", 0x00, false, 0x00, false, true},
+		{"Rotate_0x00_Carry_In", 0x00, true, 0x80, false, false},
+		{"Rotate_0x01_NoCarry_In", 0x01, false, 0x00, true, true},
+		{"Rotate_0x01_Carry_In", 0x01, true, 0x80, true, false},
+		{"Rotate_0x40_NoCarry_In", 0x40, false, 0x20, false, false},
+		{"Rotate_0x40_Carry_In", 0x40, true, 0xA0, false, false},
+		{"Rotate_0x80_NoCarry_In", 0x80, false, 0x40, false, false},
+		{"Rotate_0x80_Carry_In", 0x80, true, 0xC0, false, false},
+		{"Rotate_0xFF_NoCarry_In", 0xFF, false, 0x7F, true, false},
+		{"Rotate_0xFF_Carry_In", 0xFF, true, 0xFF, true, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x1A)
+			gbz.d = c.initialD
+			gbz.flags.Set(Carry, c.initialCarry)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, c.wantValue, gbz.d, "D")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RR_E(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name         string
+		initialE     byte
+		initialCarry bool
+		wantValue    byte
+		wantCarry    bool
+		wantZero     bool
+	}{
+		{"Rotate_0x00_NoCarry_In", 0x00, false, 0x00, false, true},
+		{"Rotate_0x00_Carry_In", 0x00, true, 0x80, false, false},
+		{"Rotate_0x01_NoCarry_In", 0x01, false, 0x00, true, true},
+		{"Rotate_0x01_Carry_In", 0x01, true, 0x80, true, false},
+		{"Rotate_0x40_NoCarry_In", 0x40, false, 0x20, false, false},
+		{"Rotate_0x40_Carry_In", 0x40, true, 0xA0, false, false},
+		{"Rotate_0x80_NoCarry_In", 0x80, false, 0x40, false, false},
+		{"Rotate_0x80_Carry_In", 0x80, true, 0xC0, false, false},
+		{"Rotate_0xFF_NoCarry_In", 0xFF, false, 0x7F, true, false},
+		{"Rotate_0xFF_Carry_In", 0xFF, true, 0xFF, true, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x1B)
+			gbz.e = c.initialE
+			gbz.flags.Set(Carry, c.initialCarry)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, c.wantValue, gbz.e, "E")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RR_H(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name         string
+		initialH     byte
+		initialCarry bool
+		wantValue    byte
+		wantCarry    bool
+		wantZero     bool
+	}{
+		{"Rotate_0x00_NoCarry_In", 0x00, false, 0x00, false, true},
+		{"Rotate_0x00_Carry_In", 0x00, true, 0x80, false, false},
+		{"Rotate_0x01_NoCarry_In", 0x01, false, 0x00, true, true},
+		{"Rotate_0x01_Carry_In", 0x01, true, 0x80, true, false},
+		{"Rotate_0x40_NoCarry_In", 0x40, false, 0x20, false, false},
+		{"Rotate_0x40_Carry_In", 0x40, true, 0xA0, false, false},
+		{"Rotate_0x80_NoCarry_In", 0x80, false, 0x40, false, false},
+		{"Rotate_0x80_Carry_In", 0x80, true, 0xC0, false, false},
+		{"Rotate_0xFF_NoCarry_In", 0xFF, false, 0x7F, true, false},
+		{"Rotate_0xFF_Carry_In", 0xFF, true, 0xFF, true, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x1C)
+			gbz.h = c.initialH
+			gbz.flags.Set(Carry, c.initialCarry)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, c.wantValue, gbz.h, "H")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RR_L(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name         string
+		initialL     byte
+		initialCarry bool
+		wantValue    byte
+		wantCarry    bool
+		wantZero     bool
+	}{
+		{"Rotate_0x00_NoCarry_In", 0x00, false, 0x00, false, true},
+		{"Rotate_0x00_Carry_In", 0x00, true, 0x80, false, false},
+		{"Rotate_0x01_NoCarry_In", 0x01, false, 0x00, true, true},
+		{"Rotate_0x01_Carry_In", 0x01, true, 0x80, true, false},
+		{"Rotate_0x40_NoCarry_In", 0x40, false, 0x20, false, false},
+		{"Rotate_0x40_Carry_In", 0x40, true, 0xA0, false, false},
+		{"Rotate_0x80_NoCarry_In", 0x80, false, 0x40, false, false},
+		{"Rotate_0x80_Carry_In", 0x80, true, 0xC0, false, false},
+		{"Rotate_0xFF_NoCarry_In", 0xFF, false, 0x7F, true, false},
+		{"Rotate_0xFF_Carry_In", 0xFF, true, 0xFF, true, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x1D)
+			gbz.l = c.initialL
+			gbz.flags.Set(Carry, c.initialCarry)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, c.wantValue, gbz.l, "L")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RR_HL(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name         string
+		initialHL    byte
+		initialCarry bool
+		wantValue    byte
+		wantCarry    bool
+		wantZero     bool
+	}{
+		{"Rotate_0x00_NoCarry_In", 0x00, false, 0x00, false, true},
+		{"Rotate_0x00_Carry_In", 0x00, true, 0x80, false, false},
+		{"Rotate_0x01_NoCarry_In", 0x01, false, 0x00, true, true},
+		{"Rotate_0x01_Carry_In", 0x01, true, 0x80, true, false},
+		{"Rotate_0x40_NoCarry_In", 0x40, false, 0x20, false, false},
+		{"Rotate_0x40_Carry_In", 0x40, true, 0xA0, false, false},
+		{"Rotate_0x80_NoCarry_In", 0x80, false, 0x40, false, false},
+		{"Rotate_0x80_Carry_In", 0x80, true, 0xC0, false, false},
+		{"Rotate_0xFF_NoCarry_In", 0xFF, false, 0x7F, true, false},
+		{"Rotate_0xFF_Carry_In", 0xFF, true, 0xFF, true, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x1E)
+			hl := uint16(gbz.h)<<8 | uint16(gbz.l)
+			gbz.mem.Write(hl, c.initialHL)
+			gbz.flags.Set(Carry, c.initialCarry)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 16)
+			assertPC(t, gbz, pc+2)
+			assert.Equal(t, c.wantValue, gbz.mem.Read(hl), "Memory at HL mismatch")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}
+
+func Test_RR_A(t *testing.T) {
+	gbz := createGBZ()
+
+	cases := []struct {
+		name         string
+		initialA     byte
+		initialCarry bool
+		wantValue    byte
+		wantCarry    bool
+		wantZero     bool
+	}{
+		{"Rotate_0x00_NoCarry_In", 0x00, false, 0x00, false, true},
+		{"Rotate_0x00_Carry_In", 0x00, true, 0x80, false, false},
+		{"Rotate_0x01_NoCarry_In", 0x01, false, 0x00, true, true},
+		{"Rotate_0x01_Carry_In", 0x01, true, 0x80, true, false},
+		{"Rotate_0x40_NoCarry_In", 0x40, false, 0x20, false, false},
+		{"Rotate_0x40_Carry_In", 0x40, true, 0xA0, false, false},
+		{"Rotate_0x80_NoCarry_In", 0x80, false, 0x40, false, false},
+		{"Rotate_0x80_Carry_In", 0x80, true, 0xC0, false, false},
+		{"Rotate_0xFF_NoCarry_In", 0xFF, false, 0x7F, true, false},
+		{"Rotate_0xFF_Carry_In", 0xFF, true, 0xFF, true, false},
+	}
+
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			gbz.mem.Write(gbz.pc, 0xCB)
+			gbz.mem.Write(gbz.pc+1, 0x1F)
+			gbz.a = c.initialA
+			gbz.flags.Set(Carry, c.initialCarry)
+			pc := gbz.pc
+
+			gbz.Run()
+
+			assertCycles(t, gbz, 8)
+			assertPC(t, gbz, pc+2)
+			assertRegister(t, c.wantValue, gbz.a, "A")
+			assert.Equal(t, c.wantCarry, gbz.flags.Get(Carry), "Carry flag mismatch")
+			assert.Equal(t, c.wantZero, gbz.flags.Get(Zero), "Zero flag mismatch")
+			assert.Equal(t, false, gbz.flags.Get(Sub), "Sub flag should be false")
+			assert.Equal(t, false, gbz.flags.Get(HalfCarry), "HalfCarry flag should be false")
+
+			resetGBZ(gbz)
+		})
+	}
+}

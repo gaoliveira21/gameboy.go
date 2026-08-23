@@ -26,14 +26,14 @@ func (g *GBZ80) initPrefixedSet() {
 		0x15: {g._RL_L, "RL L", 2},
 		0x16: {g._RL_HL, "RL HL", 2},
 		0x17: {g._RL_A, "RL A", 2},
-		0x18: {g._TODO, "RR B", 2},
-		0x19: {g._TODO, "RR C", 2},
-		0x1A: {g._TODO, "RR D", 2},
-		0x1B: {g._TODO, "RR E", 2},
-		0x1C: {g._TODO, "RR H", 2},
-		0x1D: {g._TODO, "RR L", 2},
-		0x1E: {g._TODO, "RR HL", 2},
-		0x1F: {g._TODO, "RR A", 2},
+		0x18: {g._RR_B, "RR B", 2},
+		0x19: {g._RR_C, "RR C", 2},
+		0x1A: {g._RR_D, "RR D", 2},
+		0x1B: {g._RR_E, "RR E", 2},
+		0x1C: {g._RR_H, "RR H", 2},
+		0x1D: {g._RR_L, "RR L", 2},
+		0x1E: {g._RR_HL, "RR HL", 2},
+		0x1F: {g._RR_A, "RR A", 2},
 		0x20: {g._TODO, "SLA B", 2},
 		0x21: {g._TODO, "SLA C", 2},
 		0x22: {g._TODO, "SLA D", 2},
@@ -391,5 +391,48 @@ func (gbz *GBZ80) _RL_HL() uint {
 
 func (gbz *GBZ80) _RL_A() uint {
 	gbz.rl(&gbz.a)
+	return 8
+}
+
+func (gbz *GBZ80) _RR_B() uint {
+	gbz.rr(&gbz.b)
+	return 8
+}
+
+func (gbz *GBZ80) _RR_C() uint {
+	gbz.rr(&gbz.c)
+	return 8
+}
+
+func (gbz *GBZ80) _RR_D() uint {
+	gbz.rr(&gbz.d)
+	return 8
+}
+
+func (gbz *GBZ80) _RR_E() uint {
+	gbz.rr(&gbz.e)
+	return 8
+}
+
+func (gbz *GBZ80) _RR_H() uint {
+	gbz.rr(&gbz.h)
+	return 8
+}
+
+func (gbz *GBZ80) _RR_L() uint {
+	gbz.rr(&gbz.l)
+	return 8
+}
+
+func (gbz *GBZ80) _RR_HL() uint {
+	hl := (uint16(gbz.h) << 8) | uint16(gbz.l)
+	b := gbz.mem.Read(hl)
+	gbz.rr(&b)
+	gbz.mem.Write(hl, b)
+	return 16
+}
+
+func (gbz *GBZ80) _RR_A() uint {
+	gbz.rr(&gbz.a)
 	return 8
 }
